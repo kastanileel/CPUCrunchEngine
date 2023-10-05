@@ -56,14 +56,15 @@ int mapS = 64;      //map cube size
     void drawPlayer2D()
     {
         drawingWindow.green();
-        drawingWindow.drawRect((int) px,(int) py,(int) px+ (int)pdx*20, (int)py+ (int) pdy*20);
+        drawingWindow.drawPoint((int) px-5,(int) py-5,10, 10);
         // glVertex2i(px,py); glVertex2i(px+pdx*20,py+pdy*20); glEnd();
+        drawingWindow.drawLine(px -5, py- 5,px+pdx*2 -5 ,py+pdy*2  -5);
     }
 
     void Buttons()
     {
-        if(MKeyListener.keyList['a']){ pa+=0.5; pa=FixAng((int) pa); pdx= (float) cos(degToRad((int) pa)); pdy= (float) -sin(degToRad((int) pa));}
-            if(MKeyListener.keyList['d']){ pa-=0.5; pa=FixAng((int) pa); pdx= (float) cos(degToRad((int) pa)); pdy= (float) -sin(degToRad((int) pa));}
+        if(MKeyListener.keyList['a']){ pa+=5; pa=FixAng((int) pa); pdx= (float) cos(degToRad((int) pa)); pdy= (float) -sin(degToRad((int) pa));}
+            if(MKeyListener.keyList['d']){ pa-=5; pa=FixAng((int) pa); pdx= (float) cos(degToRad((int) pa)); pdy= (float) -sin(degToRad((int) pa));}
                 if(MKeyListener.keyList['w']){ px+=pdx*0.1; py+=pdy*0.1;}
                     if(MKeyListener.keyList['s']){ px-=pdx*0.1; py-=pdy*0.1;}
 

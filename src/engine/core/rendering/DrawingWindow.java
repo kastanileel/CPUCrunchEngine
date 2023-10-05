@@ -14,7 +14,7 @@ public class DrawingWindow extends JPanel {
     private BufferedImage imageBuffer;
     private Graphics graphics;
 
-    int debugOffset = 500;
+    int debugOffset = 0;
 
 
     public DrawingWindow(int width, int height){
@@ -33,6 +33,10 @@ public class DrawingWindow extends JPanel {
 
     public void blue(){
         graphics.setColor(Color.blue);
+    }
+
+    public void drawPoint(float x, float y, float x2, float y2){
+        graphics.fillOval((int) x, (int) y, (int) x2, (int) y2);
     }
 
     public void red(){
