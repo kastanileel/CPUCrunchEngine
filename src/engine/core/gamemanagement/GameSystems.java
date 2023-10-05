@@ -40,7 +40,7 @@ public class GameSystems {
     }
 
     static float FixAng(float a){ if(a>359){ a-=360;} if(a<0){ a+=360;} return a;}
-    static float degToRad(float a) { return (float) (a*3.1415/180.0);}
+    static float degToRad(float a) { return a;}
 
     public static class Render {
         public void update(EntityManager manager) {

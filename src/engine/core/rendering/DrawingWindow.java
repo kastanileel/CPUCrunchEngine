@@ -31,6 +31,21 @@ public class DrawingWindow extends JPanel {
 
     }
 
+    public void blue(){
+        graphics.setColor(Color.blue);
+    }
+
+    public void red(){
+        graphics.setColor(Color.red);
+    }
+    public void green(){
+        graphics.setColor(Color.green);
+    }
+
+    public void drawRect(int x, int y, int x2, int y2){
+        graphics.fillRect(x,y,x2, y2);
+    }
+
     /***
      * This method draws the image buffer after every object in this render cycle is drawn.
      *

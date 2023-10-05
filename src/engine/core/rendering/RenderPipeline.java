@@ -66,7 +66,7 @@ public class RenderPipeline {
 
 
     float M_PI = 3.1415f;
-    float degToRad(float a) { return (float) (a*3.1415/180.0);}
+    float degToRad(float a) { return a;}
     int FixAng(int a){ if(a>359){ a-=360;} if(a<0){ a+=360;} return a;}
 
     public void renderRays2() {
