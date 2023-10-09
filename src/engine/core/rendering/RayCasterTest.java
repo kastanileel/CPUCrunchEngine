@@ -89,7 +89,7 @@ public class RayCasterTest {
         float wallHeight = 300.f / distance;
 
         int width = 800;
-        int startPoint = (int) (800-wallHeight);
+        int startPoint = (int) (700-wallHeight);
 
         //float r = 255.0f * (- 4* (ratio - 0.5f) * (ratio - 0.5f) + 1.f);
 
@@ -101,7 +101,7 @@ public class RayCasterTest {
         System.out.println(ratio + ", " + r);
 
         drawingWindow.setColor((int) r, (int) r, (int) r);
-        drawingWindow.drawRect((int) (width*ratio), startPoint, 12, (int) wallHeight);
+        drawingWindow.drawRect((int) (width*ratio), startPoint, (int) (double) (width / numRays) +1, (int) wallHeight);
 
     }
 
