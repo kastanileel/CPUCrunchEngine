@@ -35,6 +35,10 @@ public class DrawingWindow extends JPanel {
         graphics.setColor(Color.blue);
     }
 
+    public void setColor(int r, int g, int b){
+        graphics.setColor(new Color(r,g,b));
+    }
+
     public void drawPoint(float x, float y, float x2, float y2){
         graphics.fillOval((int) x, (int) y, (int) x2, (int) y2);
     }
