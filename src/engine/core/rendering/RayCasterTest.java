@@ -55,9 +55,9 @@ public class RayCasterTest {
     }
 
 
-    void raycast(){
+    void raycast(float rayCastAngle, float ratio, int numRays){
         //convert angle to radians
-        float rayAngle = (float) (angle * (Math.PI / 180));
+        float rayAngle = (float) (rayCastAngle * (Math.PI / 180));
 
         float dx = (float) cos(rayAngle);
         float dy = (float) sin(rayAngle);
@@ -84,14 +84,37 @@ public class RayCasterTest {
         drawingWindow.setColor(125, 0, 255);
        drawingWindow.drawRect((int) (x*tileSize), (int) (y*tileSize), 4, 4);
 
-        float distance = (float) Math.sqrt(Math.pow((x - playerX) , 2) + Math.pow((y - playerY) ,2));
+        float distance = (float) Math.sqrt(Math.pow((x - playerX/tileSize) , 2) + Math.pow((y - playerY/tileSize) ,2));
 
-        System.out.println("Distance: " + distance);
-        float wallHeight = 3000.f / distance;
+        float wallHeight = 300.f / distance;
 
-        drawingWindow.setColor(255, 255, 255);
-        drawingWindow.drawRect(400, 400, 4, (int) wallHeight);
+        int width = 800;
+        int startPoint = (int) (800-wallHeight);
 
+        //float r = 255.0f * (- 4* (ratio - 0.5f) * (ratio - 0.5f) + 1.f);
+
+        float r = 1/distance * 150.0f;
+
+        if(r > 255)
+            r = 255;
+
+        System.out.println(ratio + ", " + r);
+
+        drawingWindow.setColor((int) r, (int) r, (int) r);
+        drawingWindow.drawRect((int) (width*ratio), startPoint, 12, (int) wallHeight);
+
+    }
+
+    void multipleRays(){
+
+        float fov = 60;
+        int numRays = 300;
+        float rayAngleSize = fov / numRays;
+        float rayAngleStart = angle - fov/2;
+
+        for(int i = 0; i< numRays; i++){
+            raycast(rayAngleStart + i * rayAngleSize, i / (float) numRays, numRays);
+        }
 
 
     }
@@ -137,7 +160,7 @@ public class RayCasterTest {
         checkButtons();
         drawRoom();
         drawPlayer();
-        raycast();
+        multipleRays();
 
 
         drawingWindow.redraw();
@@ -147,15 +170,15 @@ public class RayCasterTest {
     public RayCasterTest(){
 
 
-        angle = 0;
+        angle = 45;
         width = 800;
         height = 800;
         frame = new Frame((int) width, (int) height);
         frame.setVisible(true);
         drawingWindow = frame.getPanel();
 
-        playerX = 40;
-        playerY = 40;
+        playerX = 90;
+        playerY = 90;
 
 
         MKeyListener mKeyListener = new MKeyListener();
