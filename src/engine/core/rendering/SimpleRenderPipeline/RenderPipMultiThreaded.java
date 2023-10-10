@@ -95,6 +95,7 @@ public class RenderPipMultiThreaded {
             objectBuffer.modelMatrix = modelMatrix;
             objectBuffer.viewMatrix = viewMatrix;
             objectBuffer.finish = new boolean[firstStepThreads];
+            objectBuffer.threadCount = firstStepThreads;
 
             for(int j = 0; j < firstStepThreads; j++){
               //  pips[j] = new PipelineTillDepthSort(objectBuffer);
@@ -127,8 +128,7 @@ public class RenderPipMultiThreaded {
             return -1;
         });
 
-            if(true)
-                return;
+
 
             objectBuffer.finish = new boolean[secondStepThreads];
             objectBuffer.projectionMatrix = projectionMatrix;

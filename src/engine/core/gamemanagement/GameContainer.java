@@ -40,7 +40,7 @@ public class GameContainer {
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
             manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
         }
-         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+       /*  id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if (id > -1) {
 
             //print current path
@@ -80,7 +80,7 @@ public class GameContainer {
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
             manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
         }
-
+ */
 
 
 
@@ -96,9 +96,9 @@ public class GameContainer {
             velocitySystem.update(manager);
 
             System.out.println("--------- \nSingle Core\n \n");
-           //renderingSystem.update(manager);
+           renderingSystem.update(manager);
             System.out.println("--------- \nMulti Core  \n \n");
-           renderMultiSystem.update(manager);
+          // renderMultiSystem.update(manager);
 
 
         }

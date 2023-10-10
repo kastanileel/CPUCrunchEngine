@@ -31,8 +31,8 @@ public class RenderTillDepthSort extends Thread {
         while (true){
             if(run){
                 int size = objectBuffer.triangles.length;
-                int startPos = id * (size / 4);
-                int endPos = startPos + (size / 4);
+                int startPos = id * (size / objectBuffer.threadCount);
+                int endPos = startPos + (size / objectBuffer.threadCount);
 
                 LinkedList<Triangle> triangles = new LinkedList<>();
 

@@ -78,7 +78,7 @@ public class RenderTillDrawing extends Thread {
 
                 }
                 run = false;
-                objectBuffer.setFinish(id);
+               // objectBuffer.setFinish(id);
             }
         }
     }

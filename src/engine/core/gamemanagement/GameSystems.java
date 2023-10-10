@@ -11,7 +11,7 @@ public class GameSystems {
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents){
                    // manager.pos[i].x += manager.vel[i].velx;
-                    manager.transform[i].pos.z -= 0.01f;
+                    manager.transform[i].pos.z = -10.01f;
 
                 }
             }
