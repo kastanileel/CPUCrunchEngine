@@ -1,6 +1,8 @@
 package src.engine.core.rendering;
 
 
+import src.engine.core.matutils.Triangle;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -86,36 +88,17 @@ public class DrawingWindow extends JPanel {
 
     }
 
-    public void drawPlayer(int x, int y, float angle) {
 
-        float dx = Camera.getInstance().rotX;
-        float dy = Camera.getInstance().rotZ;
 
-        graphics.setColor(Color.red);
-        graphics.fillOval(x + debugOffset, y, 10, 10);
-        graphics.drawLine(x+debugOffset + 5,y + 5, (int) (x + debugOffset + dx + 5 ), (int) (y+dy + 5));
+    public void drawTriangle(Triangle triangle){
+        graphics.setColor(triangle.color);
+
+        graphics.fillPolygon( new Polygon(
+                new int[]{(int) triangle.vertices[0].x, (int) triangle.vertices[1].x, (int) triangle.vertices[2].x},
+                new int[]{(int) triangle.vertices[0].y, (int) triangle.vertices[1].y, (int) triangle.vertices[2].y},
+                3
+        ));
     }
-
-    public void drawMap(float[][] map){
-
-        int size = (int) RenderPipeline.gridSize;
-
-        for(int i = 0; i< map.length; i++){
-            for(int j = 0; j < map.length; j++){
-                if(map[i][j] != 0)
-                    graphics.setColor(Color.blue);
-                else
-                    graphics.setColor(Color.CYAN);
-                graphics.fillRect(debugOffset + i*size + 1, j*size +1, size-1, size-1);
-            }
-        }
-    }
-
-    public void drawLine(float x, float y, float x2, float y2){
-        graphics.setColor(Color.RED);
-        graphics.drawLine((int) (x + debugOffset + 5), (int) (y + 5), (int) (x + debugOffset + 5-x2), (int) (y2 + 5));
-    }
-
 
 
 

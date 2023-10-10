@@ -1,5 +1,8 @@
 package src.engine.core.gamemanagement;
 
+import src.engine.core.matutils.Mesh;
+import src.engine.core.matutils.Vector3;
+
 public class GameComponents {
 
     public final static int POS = 1 << 0,
@@ -17,7 +20,9 @@ public class GameComponents {
 
     public static class Rendering {
         String name; // for sake of having at least one field inside.
-        boolean rayCast;
+        Mesh mesh;
+        Vector3 pos;
+        Vector3 rot;
     }
 
     public static class RAYCAST {

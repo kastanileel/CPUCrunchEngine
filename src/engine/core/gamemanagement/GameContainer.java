@@ -2,11 +2,16 @@ package src.engine.core.gamemanagement;
 
 
 import src.engine.core.inputsystem.MKeyListener;
-import src.engine.core.rendering.RenderPipeline;
+import src.engine.core.matutils.Mesh;
+import src.engine.core.matutils.Vector3;
+
+import java.io.IOException;
 
 public class GameContainer {
 
-    public static void main(String[] args) {
+    
+
+    public static void main(String[] args) throws IOException {
         new GameContainer();
     }
 
@@ -14,13 +19,12 @@ public class GameContainer {
     GameSystems.Render renderingSystem;
     GameSystems.Velocity velocitySystem;
 
-    GameContainer() {
+    GameContainer() throws IOException {
         manager = new EntityManager(5);
         renderingSystem = new GameSystems.Render();
         velocitySystem = new GameSystems.Velocity();
 
         MKeyListener mKeyListener = new MKeyListener();
-        RenderPipeline.getInstance().addKeyListener(mKeyListener);
 
         int id = manager.createEntity(GameComponents.POS | GameComponents.VEL | GameComponents.RENDER);
         if (id > -1) {
@@ -29,38 +33,14 @@ public class GameContainer {
             manager.vel[id].velx = 0.1f;
             manager.vel[id].vely = 0.1f;
             manager.rendering[id].name = "player";
-            manager.rendering[id].rayCast = true;
+            //print current path
+            System.out.println(System.getProperty("user.dir"));
+            manager.rendering[id].mesh = new Mesh("./src/objects/teapot/teapot.obj");
+            manager.rendering[id].pos = new Vector3(0.0f, 0.0f, -8.0f);
+            manager.rendering[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
         }
 
-        id = manager.createEntity(GameComponents.POS | GameComponents.VEL | GameComponents.RENDER);
-        if (id > -1) {
-            manager.pos[id].x = 2;
-            manager.pos[id].y = 1;
-            manager.vel[id].velx = 0.1f;
-            manager.vel[id].vely = 0.1f;
-            manager.rendering[id].name = "player";
-            manager.rendering[id].rayCast = true;
-        }
 
-        id = manager.createEntity(GameComponents.POS | GameComponents.VEL | GameComponents.RENDER);
-        if (id > -1) {
-            manager.pos[id].x = 3;
-            manager.pos[id].y = 1;
-            manager.vel[id].velx = 0.1f;
-            manager.vel[id].vely = 0.1f;
-            manager.rendering[id].name = "player";
-            manager.rendering[id].rayCast = true;
-        }
-
-        id = manager.createEntity(GameComponents.POS | GameComponents.VEL | GameComponents.RENDER);
-        if (id > -1) {
-            manager.pos[id].x = 2;
-            manager.pos[id].y = 2;
-            manager.vel[id].velx = 0.1f;
-            manager.vel[id].vely = 0.1f;
-            manager.rendering[id].name = "player";
-            manager.rendering[id].rayCast = true;
-        }
         /*id = manager.createEntity(GameComponents.POS | GameComponents.RENDER);
         if (id > -1) {
             manager.pos[id].x = 0;
