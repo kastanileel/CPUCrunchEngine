@@ -12,7 +12,7 @@ public class GameContainer {
 
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         new GameContainer();
     }
 
@@ -20,14 +20,57 @@ public class GameContainer {
     GameSystems.Render renderingSystem;
     GameSystems.Velocity velocitySystem;
 
-    GameContainer() throws IOException {
+    GameSystems.RenderMulti renderMultiSystem;
+
+    GameContainer() throws IOException, InterruptedException {
         manager = new EntityManager(5);
         renderingSystem = new GameSystems.Render();
         velocitySystem = new GameSystems.Velocity();
+        renderMultiSystem = new GameSystems.RenderMulti();
 
         MKeyListener mKeyListener = new MKeyListener();
 
         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+        if (id > -1) {
+
+            //print current path
+            System.out.println(System.getProperty("user.dir"));
+            manager.rendering[id].mesh = new Mesh("./src/objects/burger2.obj");
+            manager.transform[id].pos = new Vector3(0.0f, -1.5f, -8.0f);
+            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
+         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+        if (id > -1) {
+
+            //print current path
+            System.out.println(System.getProperty("user.dir"));
+            manager.rendering[id].mesh = new Mesh("./src/objects/burger2.obj");
+            manager.transform[id].pos = new Vector3(0.0f, -1.5f, -8.0f);
+            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
+         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+        if (id > -1) {
+
+            //print current path
+            System.out.println(System.getProperty("user.dir"));
+            manager.rendering[id].mesh = new Mesh("./src/objects/burger2.obj");
+            manager.transform[id].pos = new Vector3(0.0f, -1.5f, -8.0f);
+            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
+         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+        if (id > -1) {
+
+            //print current path
+            System.out.println(System.getProperty("user.dir"));
+            manager.rendering[id].mesh = new Mesh("./src/objects/teapot/teapot.obj");
+            manager.transform[id].pos = new Vector3(0.0f, -1.5f, -8.0f);
+            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
+        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if (id > -1) {
 
             //print current path
@@ -39,23 +82,23 @@ public class GameContainer {
         }
 
 
-        /*id = manager.createEntity(GameComponents.POS | GameComponents.RENDER);
-        if (id > -1) {
-            manager.pos[id].x = 0;
-            manager.pos[id].y = 0;
-            manager.rendering[id].name = "tree";
-        }*/
+
+
         startGameLoop();
     }
 
-    void startGameLoop() {
+    void startGameLoop() throws InterruptedException {
 
         long lastTime = System.nanoTime() / 1000000000;
         int counter = 0;
 
         while(true) {
             velocitySystem.update(manager);
-            renderingSystem.update(manager);
+
+            System.out.println("--------- \nSingle Core\n \n");
+           //renderingSystem.update(manager);
+            System.out.println("--------- \nMulti Core  \n \n");
+           renderMultiSystem.update(manager);
 
 
         }

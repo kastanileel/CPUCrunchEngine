@@ -90,7 +90,7 @@ public class DrawingWindow extends JPanel {
 
 
 
-    public void drawTriangle(Triangle triangle){
+    public synchronized void drawTriangle(Triangle triangle){
         graphics.setColor(triangle.color);
 
         // invert y axis

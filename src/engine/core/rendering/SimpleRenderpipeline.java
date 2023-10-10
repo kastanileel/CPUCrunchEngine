@@ -124,6 +124,8 @@ public class SimpleRenderpipeline {
             return -1;
         });
 
+        if(true)
+            return;
         // @@@@@@@@@@@@ still need triangle clipping
        for(int i = 0; i < triangles.size(); i++){
             Triangle triangle = triangles.get(i);
