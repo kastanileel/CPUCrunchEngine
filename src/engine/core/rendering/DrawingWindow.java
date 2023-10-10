@@ -93,6 +93,12 @@ public class DrawingWindow extends JPanel {
     public void drawTriangle(Triangle triangle){
         graphics.setColor(triangle.color);
 
+        // invert y axis
+        triangle.vertices[0].y = getHeight() - triangle.vertices[0].y;
+        triangle.vertices[1].y = getHeight()-triangle.vertices[1].y;
+        triangle.vertices[2].y = getHeight()-triangle.vertices[2].y;
+
+
         graphics.fillPolygon( new Polygon(
                 new int[]{(int) triangle.vertices[0].x, (int) triangle.vertices[1].x, (int) triangle.vertices[2].x},
                 new int[]{(int) triangle.vertices[0].y, (int) triangle.vertices[1].y, (int) triangle.vertices[2].y},

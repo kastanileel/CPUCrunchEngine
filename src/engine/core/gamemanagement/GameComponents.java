@@ -5,28 +5,21 @@ import src.engine.core.matutils.Vector3;
 
 public class GameComponents {
 
-    public final static int POS = 1 << 0,
-            VEL = 1 << 1,
-            RENDER = 1 << 2,
-            RAYCAST = 1 << 3;
+    public final static int
 
-    public static class Velocity {
-        float velx, vely;
-    }
+            TRANSFORM = 1 << 0,
+            RENDER = 1 << 1;
 
-    public static class Position {
-        float x, y;
+    public static class Transform {
+        Vector3 pos;
+        Vector3 rot;
+        Vector3 scale;
     }
 
     public static class Rendering {
-        String name; // for sake of having at least one field inside.
         Mesh mesh;
-        Vector3 pos;
-        Vector3 rot;
+
     }
 
-    public static class RAYCAST {
-        float width;
-        float height;
-    }
+
 }
