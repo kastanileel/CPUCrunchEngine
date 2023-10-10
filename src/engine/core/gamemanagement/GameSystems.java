@@ -1,7 +1,11 @@
 package src.engine.core.gamemanagement;
 
+import src.engine.core.rendering.Camera;
+import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 import src.engine.core.rendering.SimpleRenderPipeline.RenderPipMultiThreaded;
 import src.engine.core.rendering.SimpleRenderpipeline;
+
+import java.util.Objects;
 
 public class GameSystems {
 
@@ -11,8 +15,18 @@ public class GameSystems {
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents){
                    // manager.pos[i].x += manager.vel[i].velx;
-                    manager.transform[i].pos.z = -10.01f;
+                  //  manager.transform[i].pos.z += 0.11f;
+                  //  manager.transform[i].rot.x += 0.1f;
+                   // manager.transform[i].rot.y += 0.31f;
+                   // manager.transform[i].rot.z += 0.01f;
 
+                    manager.transform[i].rot.y += 0.01f;
+
+                    if (Objects.equals(manager.rendering[i].name, "rock")){
+                        manager.transform[i].pos.z -= 0.03f;
+                    }
+
+                    //Camera.getInstance().rotation.y += 0.001f;
                 }
             }
         }
@@ -42,7 +56,7 @@ public class GameSystems {
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
 
-                    simpleRenderpipeline.renderObject(manager.rendering[i].mesh, manager.transform[i].pos, manager.transform[i].rot);
+                    simpleRenderpipeline.renderObject(manager.rendering[i].mesh, manager.transform[i].pos, manager.transform[i].rot, manager.transform[i].scale);
                 }
 
 
@@ -64,7 +78,7 @@ public class GameSystems {
 
 
 
-            RenderPipMultiThreaded renderPipMultiThreaded = RenderPipMultiThreaded.getInstance(800, 600);
+            SimpleAdvancedRenderPipeline renderPipMultiThreaded = SimpleAdvancedRenderPipeline.getInstance(800, 600);
 
             if ((System.nanoTime() / 1000000000) - lastTime >= 1) {
                 renderPipMultiThreaded.setTitle("FPS:" + counter);
@@ -82,11 +96,12 @@ public class GameSystems {
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
 
-                    renderPipMultiThreaded.renderObject(manager.rendering[i].mesh, manager.transform[i].pos, manager.transform[i].rot);
+                    renderPipMultiThreaded.renderObject(manager.rendering[i].mesh, manager.transform[i].pos, manager.transform[i].rot, manager.transform[i].scale);
                 }
 
 
             }
+            renderPipMultiThreaded.stepTwo();
 
 
             renderPipMultiThreaded.draw();

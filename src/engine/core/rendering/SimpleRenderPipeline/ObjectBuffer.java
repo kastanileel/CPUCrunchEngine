@@ -21,10 +21,14 @@ public class ObjectBuffer {
     public int threadCount = 4;
 
 
-    public boolean[] finish;
+    public volatile boolean[] finish;
 
     public volatile boolean[] finishTri;
     public LinkedList<Triangle> trianglesToRender;
+
+    public ObjectBuffer(){
+        trianglesToRender = new LinkedList<>();
+    }
 
 
     public synchronized void setFinish(int id){

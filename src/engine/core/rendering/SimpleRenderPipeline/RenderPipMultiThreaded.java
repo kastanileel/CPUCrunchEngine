@@ -20,8 +20,8 @@ public class RenderPipMultiThreaded {
     private DrawingWindow drawingWindow;
     private Frame frame;
 
-    private int firstStepThreads = 4;
-    private int secondStepThreads = 4;
+    private int firstStepThreads = 8;
+    private int secondStepThreads = 1;
     private RenderTillDepthSort[] pips;
     private RenderTillDrawing[] pips2;
 

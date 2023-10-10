@@ -1,7 +1,9 @@
 package src.engine.core.rendering;
 
 
+import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
+import src.engine.core.matutils.Vector3;
 
 import javax.swing.*;
 import java.awt.*;
@@ -93,10 +95,7 @@ public class DrawingWindow extends JPanel {
     public synchronized void drawTriangle(Triangle triangle){
         graphics.setColor(triangle.color);
 
-        // invert y axis
-        triangle.vertices[0].y = getHeight() - triangle.vertices[0].y;
-        triangle.vertices[1].y = getHeight()-triangle.vertices[1].y;
-        triangle.vertices[2].y = getHeight()-triangle.vertices[2].y;
+
 
 
         graphics.fillPolygon( new Polygon(
@@ -114,7 +113,7 @@ public class DrawingWindow extends JPanel {
      * @param textureTriangle The corresponding texture triangle with uv coordinates.
      * @param texture The texture to draw.
      */
-  /*  public void drawTriangle(Triangle triangle, Triangle textureTriangle, BufferedImage texture) {
+   public void drawTriangle(Triangle triangle, Triangle textureTriangle, BufferedImage texture) {
 
         Graphics2D g2d = (Graphics2D) graphics;
 
@@ -148,6 +147,6 @@ public class DrawingWindow extends JPanel {
                 g2d.fillRect(x, y, 3, 3);
             }
         }
-    }*/
+    }
 
 }

@@ -8,7 +8,8 @@ public class GameComponents {
     public final static int
 
             TRANSFORM = 1 << 0,
-            RENDER = 1 << 1;
+            RENDER = 1 << 1,
+            NAME = 1 << 2;
 
     public static class Transform {
         Vector3 pos;
@@ -19,7 +20,11 @@ public class GameComponents {
     public static class Rendering {
         Mesh mesh;
 
+        String name;
+
     }
+
+
 
 
 }

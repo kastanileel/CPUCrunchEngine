@@ -44,7 +44,7 @@ public class SimpleRenderpipeline {
     /***
      * This method is called every render cycle for each RenderObject in the scene.
      */
-    public void renderObject(Mesh mesh, Vector3 pos, Vector3 rot){
+    public void renderObject(Mesh mesh, Vector3 pos, Vector3 rot, Vector3 scale){
         List<Triangle> triangles = new ArrayList<>();
         Camera camera = Camera.getInstance();
 

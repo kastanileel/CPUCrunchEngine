@@ -37,6 +37,7 @@ public class RenderTillDepthSort extends Thread {
                 LinkedList<Triangle> triangles = new LinkedList<>();
 
                 for(int i = startPos; i < endPos; i++){
+                    System.out.println("Thread " + id + " is rendering triangle " + i);
                     // render object
 
                     Triangle triangle = objectBuffer.triangles[i];
