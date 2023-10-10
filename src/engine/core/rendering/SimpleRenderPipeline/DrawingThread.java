@@ -20,6 +20,9 @@ public class DrawingThread extends Thread{
 
                     for(int i = 0; i < size; i++){
 
+                        while (!objectBuffer.finishTri[i]){
+
+                        }
                         objectBuffer.drawingWindow.drawTriangle(objectBuffer.trianglesToRender.get(i));
                     }
 

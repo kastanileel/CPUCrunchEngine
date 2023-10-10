@@ -96,9 +96,9 @@ public class GameContainer {
             velocitySystem.update(manager);
 
             System.out.println("--------- \nSingle Core\n \n");
-           renderingSystem.update(manager);
+          // renderingSystem.update(manager);
             System.out.println("--------- \nMulti Core  \n \n");
-          // renderMultiSystem.update(manager);
+          renderMultiSystem.update(manager);
 
 
         }
