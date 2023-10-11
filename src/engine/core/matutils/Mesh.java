@@ -34,6 +34,25 @@ public class Mesh {
         this.triangles = triangles.toArray(new Triangle[0]);
     }
 
+    public Mesh(String path, Color c) throws IOException {
+        // Read a obj file and create a mesh from it
+        BufferedReader reader = new BufferedReader (new FileReader(path));
+        LinkedList<Vector3> vertices = new LinkedList<Vector3>();
+        LinkedList<Triangle> triangles = new LinkedList<Triangle>();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] tokens = line.split(" ");
+            if (tokens[0].equals("v")) {
+                vertices.add(new Vector3(Float.parseFloat(tokens[1]), Float.parseFloat(tokens[2]), Float.parseFloat(tokens[3])));
+            } else if (tokens[0].equals("f")) {
+                Triangle t = new Triangle(vertices.get(Integer.parseInt(tokens[1]) - 1), vertices.get(Integer.parseInt(tokens[2]) - 1), vertices.get(Integer.parseInt(tokens[3]) - 1));
+                t.color = c;
+                triangles.add(t);
+            }
+        }
+        this.triangles = triangles.toArray(new Triangle[0]);
+    }
+
     public Mesh(String objPath, String texturePath) throws IOException {
 
         try {

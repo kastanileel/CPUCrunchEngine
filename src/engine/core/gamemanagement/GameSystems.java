@@ -157,7 +157,7 @@ public class GameSystems {
         public void update(EntityManager manager, float deltaTime) throws InterruptedException {
 
 
-            SimpleAdvancedRenderPipeline renderPip = SimpleAdvancedRenderPipeline.getInstance(800, 600);
+            SimpleAdvancedRenderPipeline renderPip = SimpleAdvancedRenderPipeline.getInstance(1200, 700);
 
             if ((System.nanoTime() / 1000000000) - lastTime >= 1) {
                 renderPip.setTitle("FPS:" + counter);

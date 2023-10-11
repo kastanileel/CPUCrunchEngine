@@ -262,7 +262,9 @@ public class SimpleAdvancedRenderPipeline {
 
                 tri.brightness = dp;
 
-                tri.color = Color.getHSBColor(0.7f, 1.0f, Float.min(0.99f, Float.max(dp, 0.2f)));
+
+
+                tri.color = Color.getHSBColor((float) (0.45f + sin(tri.vertices[1].x)*0.25), 1.0f, Float.min(0.99f, Float.max(dp, 0.2f)));
 
                 // apply view matrix
                 tri.vertices[0] = RenderMaths.multiplyMatrixVector(tri.vertices[0], viewMatrix);

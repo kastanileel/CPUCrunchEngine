@@ -7,6 +7,7 @@ import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleRenderpipeline;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class GameContainer {
@@ -55,6 +56,15 @@ public class GameContainer {
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
             manager.transform[id].scale = new Vector3(.2f,.2f,.2f);
             manager.rendering[id].name = "pistol";
+        }
+
+        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+        if(id > -1){
+            manager.rendering[id].mesh = new Mesh("./src/objects/teapot/teapot.obj", Color.red);
+            manager.transform[id].pos = new Vector3(5.0f, 0.0f, 0);
+            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+            manager.transform[id].scale = new Vector3(.2f,.2f,.2f);
+            manager.rendering[id].name = "environment";
         }
 
 

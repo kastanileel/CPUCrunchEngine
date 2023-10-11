@@ -108,6 +108,9 @@ public class DrawingWindow extends JPanel {
     public void drawTriangleOutline(Triangle triangle){
         graphics.setColor(triangle.color);
 
+        // set stroke
+        ((Graphics2D) graphics).setStroke(new BasicStroke(2));
+
         graphics.drawPolygon( new Polygon(
                 new int[]{(int) triangle.vertices[0].x, (int) triangle.vertices[1].x, (int) triangle.vertices[2].x},
                 new int[]{(int) triangle.vertices[0].y, (int) triangle.vertices[1].y, (int) triangle.vertices[2].y},
