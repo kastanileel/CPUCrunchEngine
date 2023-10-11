@@ -7,7 +7,8 @@ public class Camera {
 
     private static Camera instance;
 
-    public Vector3 position, rotation;
+    public Vector3 position;
+    public Vector3 rotation;
 
     private Camera() {
         position = new Vector3(0.0f, 0, 0.0f);
@@ -26,6 +27,7 @@ public class Camera {
         m[1][3] = position.y;
         m[2][3] = position.z;
         m = RenderMaths.inverseMatrix(m);
+
         return m;
     }
 }

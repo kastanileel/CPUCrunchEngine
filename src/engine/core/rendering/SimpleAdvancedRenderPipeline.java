@@ -1,6 +1,7 @@
 package src.engine.core.rendering;
 
 
+import src.engine.core.inputsystem.MMouseListener;
 import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
@@ -24,6 +25,8 @@ import static java.lang.Math.*;
 public class SimpleAdvancedRenderPipeline {
 
     private LinkedList<Triangle> trianglesToRender;
+
+    private ArrayList<Mesh> meshesToRender;
     private Mesh mesh;
     private float[][] projectionMatrix;
     private float width, height;
@@ -38,7 +41,14 @@ public class SimpleAdvancedRenderPipeline {
         frame.setVisible(true);
         drawingWindow = frame.getPanel();
 
+
+        frame.addKeyListener(MKeyListener.getInstance());
+        frame.addMouseListener(MMouseListener.getInstance());
+
+        frame.addMouseMotionListener(MMouseListener.getInstance());
+
         this.trianglesToRender = new LinkedList<>();
+        this.meshesToRender = new ArrayList<>();
     }
 
     public static SimpleAdvancedRenderPipeline getInstance(int width, int height){
@@ -183,19 +193,30 @@ public class SimpleAdvancedRenderPipeline {
      * This method is called every render cycle for each RenderObject in the scene.
      */
     public void renderObject(Mesh mesh, Vector3 pos, Vector3 rot, Vector3 scale) {
+
+        int trianglesMeshId = -1;
+        if(mesh.texture != null){
+
+            int meshId = meshesToRender.size();
+            meshesToRender.add(mesh);
+
+            trianglesMeshId = meshId;
+        }
+
         List<Triangle> triangles = new ArrayList<>();
         Camera camera = Camera.getInstance();
 
         // The model matrix is used to transform the object coordinates into world coordinates.
         // (essentially positioning the obj model in the scene)
         float[][] modelMatrix = RenderMaths.identityMatrix();
+        modelMatrix[0][0] *= scale.x;
+        modelMatrix[1][1] *= scale.y;
+        modelMatrix[2][2] *= scale.z;
         modelMatrix = RenderMaths.multiplyMatrices(modelMatrix, RenderMaths.makeRotationMatrix(rot.x, rot.y, rot.z));
         modelMatrix[0][3] = pos.x;
         modelMatrix[1][3] = pos.y;
         modelMatrix[2][3] = pos.z;
-        modelMatrix[0][0] *= scale.x;
-        modelMatrix[1][1] *= scale.y;
-        modelMatrix[2][2] *= scale.z;
+
         // scale to fit the screen width and height
 
 
@@ -234,24 +255,24 @@ public class SimpleAdvancedRenderPipeline {
 
             if (RenderMaths.dotProduct(cameraRay, normal) > 0.0f) {
                 tri.textureIndex = i;
-                Vector3 lightDirection = new Vector3(0.0f, 0.0f, 1.0f);
+                Vector3 lightDirection = new Vector3(0.0f, -1.0f, 1.0f);
                 lightDirection = RenderMaths.normalizeVector(lightDirection);
 
                 float dp = RenderMaths.dotProduct(normal, lightDirection);
 
                 tri.brightness = dp;
 
-                tri.color = Color.getHSBColor(0.7f, 1.0f, Float.min(0.99f, Float.max(dp, 0.05f)));
+                tri.color = Color.getHSBColor(0.7f, 1.0f, Float.min(0.99f, Float.max(dp, 0.2f)));
 
                 // apply view matrix
                 tri.vertices[0] = RenderMaths.multiplyMatrixVector(tri.vertices[0], viewMatrix);
                 tri.vertices[1] = RenderMaths.multiplyMatrixVector(tri.vertices[1], viewMatrix);
                 tri.vertices[2] = RenderMaths.multiplyMatrixVector(tri.vertices[2], viewMatrix);
-
+                tri.meshIndex = trianglesMeshId;
                 trianglesToRender.add(tri);
             }
         }
-        this.mesh = mesh;
+
     }
     public void stepTwo(){
 
@@ -270,7 +291,7 @@ public class SimpleAdvancedRenderPipeline {
         for (Triangle tri : trianglesToRender) {
 
             Vector3 plane_p = new Vector3(0, 0, 1.f);
-            Vector3 plane_n = new Vector3(0, 0, 1f);
+            Vector3 plane_n = new Vector3(0, 0, 0.1f);
             Triangle[] clipped = Triangle_ClipAgainstPlane(plane_p, plane_n, tri);
             int clipCount = (clipped == null) ? 0 : clipped.length;
 
@@ -313,7 +334,7 @@ public class SimpleAdvancedRenderPipeline {
             clippedTriangs.add(tri);
             int nNewTriangles = 1;
 
-            for (int p = 0; p < 1; p++) {
+            for (int p = 0; p < 4; p++) {
                 int nTrisToAdd = 0;
                 while (nNewTriangles > 0) {
                     // Take triangle from front of queue
@@ -354,12 +375,15 @@ public class SimpleAdvancedRenderPipeline {
             }
 
             for (Triangle triangle : clippedTriangs) {
-                if(triangle.textureIndex != -1 && triangle.textureIndex < mesh.textureTriangles.length){
+                if(triangle.meshIndex != -1){
+                    mesh = meshesToRender.get(triangle.meshIndex);
                     System.out.println("textureIndex: " + triangle.textureIndex);
                   drawingWindow.drawTriangle(triangle,mesh.textureTriangles[triangle.textureIndex], mesh.texture);}
-                else
-                  drawingWindow.drawTriangle(triangle);
-                //graphicSystem.drawTriangle(triangle);
+                else{
+                    drawingWindow.drawTriangle(triangle);
+                }
+                  //drawingWindow.drawTriangle(triangle);
+
             }
         }
 
@@ -368,6 +392,7 @@ public class SimpleAdvancedRenderPipeline {
         }
 
         trianglesToRender.clear();
+        meshesToRender.clear();
     }
 
     public void setTitle(String title){

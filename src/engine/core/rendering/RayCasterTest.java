@@ -121,7 +121,7 @@ public class RayCasterTest {
 
     void checkButtons(){
 
-        if(MKeyListener.keyList['w']){
+        if(MKeyListener.getInstance().getKeyList()['w']){
             // move player based on angle
             float rayAngle = (float) (angle * (Math.PI / 180));
 
@@ -131,7 +131,7 @@ public class RayCasterTest {
             playerX += dx * 0.1f;
             playerY += dy * 0.1f;
         }
-        if(MKeyListener.keyList['s']){
+        if(MKeyListener.getInstance().getKeyList()['s']){
             float rayAngle = (float) (angle * (Math.PI / 180));
 
             float dx = (float)cos(rayAngle);
@@ -140,10 +140,10 @@ public class RayCasterTest {
             playerX -= dx * 0.1f;
             playerY -= dy * 0.1f;
         }
-        if(MKeyListener.keyList['a']){
+        if(MKeyListener.getInstance().getKeyList()['a']){
             angle -= 0.1f;
         }
-        if(MKeyListener.keyList['d']){
+        if(MKeyListener.getInstance().getKeyList()['d']){
             angle += 0.1f;
         }
 
@@ -181,9 +181,9 @@ public class RayCasterTest {
         playerY = 90;
 
 
-        MKeyListener mKeyListener = new MKeyListener();
 
-        frame.addKeyListener(mKeyListener);
+
+        frame.addKeyListener(MKeyListener.getInstance());
 
 
 

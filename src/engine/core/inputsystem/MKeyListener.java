@@ -4,9 +4,19 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class MKeyListener extends KeyAdapter {
-    public static boolean[] keyList;
 
-    public MKeyListener(){
+    private static MKeyListener instance;
+    private static boolean[] keyList;
+
+    public static MKeyListener getInstance(){
+        if (instance == null) instance = new MKeyListener();
+        return instance;
+    }
+
+    public boolean[] getKeyList() {
+        return keyList;
+    }
+    private MKeyListener(){
         keyList = new boolean[128];
     }
 

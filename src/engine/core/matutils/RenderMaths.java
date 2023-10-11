@@ -33,7 +33,7 @@ public class RenderMaths {
     }
 
     public static float[][] makeRotationMatrix(float x, float y, float z){
-        return multiplyMatrices(matrixRotateX(x), multiplyMatrices(matrixRotateY(y), matrixRotateZ(z)));
+        return  multiplyMatrices(matrixRotateY(y), multiplyMatrices(matrixRotateX(x), matrixRotateZ(z)));
     }
 
     public static Vector3 substractVectors(Vector3 v1, Vector3 v2) {

@@ -8,6 +8,8 @@ public class Triangle{
 
     public int textureIndex;
 
+    public int meshIndex = -1;
+
     public float brightness = 0.0f;
 
     public Triangle(){
