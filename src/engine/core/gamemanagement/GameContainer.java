@@ -69,16 +69,16 @@ public class GameContainer {
 
 
 
-        /*// create wall
+       // create wall
         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
-            manager.transform[id].pos = new Vector3(0, -1.0f, 15);
-            manager.transform[id].rot = new Vector3(270.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(30.0f, 3.0f, 3.0f);
-            manager.rendering[id].name = "room";
+            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock64.png");
+            manager.transform[id].pos = new Vector3(5.0f, -1.0f, 5.0f);
+            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+            manager.rendering[id].name = "rock";
         }
-        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+       /*  id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
             manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
             manager.transform[id].pos = new Vector3(0, -1.0f, -15);

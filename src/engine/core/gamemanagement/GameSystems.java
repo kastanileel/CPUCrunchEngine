@@ -29,7 +29,7 @@ public class GameSystems {
                     //  manager.transform[i].rot.x += 0.1f;
                     // manager.transform[i].rot.y += 0.31f;
                     // manager.transform[i].rot.z += 0.01f;
-                    if(manager.rendering[i].name == "environment" | (manager.rendering[i].name == "bullet" && manager.velocity[i].lifetime > .5f)){
+                    if(manager.rendering[i].name == "environment" | manager.rendering[i].name== "rock"|(manager.rendering[i].name == "bullet" && manager.velocity[i].lifetime > .5f)){
 
 
 
@@ -72,6 +72,12 @@ public class GameSystems {
 
 
                     }
+                    }
+
+                    if(manager.rendering[i].name == "rock") {
+                        //manager.transform[i].rot.x += deltaTime;
+                        manager.transform[i].rot.y +=  deltaTime;
+                      //  manager.transform[i].rot.z += deltaTime;
                     }
 
                     if(manager.rendering[i].name == "pistol"){
