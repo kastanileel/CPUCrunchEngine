@@ -51,10 +51,10 @@ public class GameContainer {
         }
         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/teapot/teapot.obj");
+            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.red);
             manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0);
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(.2f,.2f,.2f);
+            manager.transform[id].scale = new Vector3(.1f,.1f,.1f);
             manager.rendering[id].name = "pistol";
         }
 
@@ -72,8 +72,17 @@ public class GameContainer {
        // create wall
         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock64.png");
-            manager.transform[id].pos = new Vector3(5.0f, -1.0f, 5.0f);
+            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock128.png");
+            manager.transform[id].pos = new Vector3(5.0f, -0.5f, 5.0f);
+            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+            manager.rendering[id].name = "rock";
+        }
+
+        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+        if(id > -1){
+            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock8.png", true);
+            manager.transform[id].pos = new Vector3(8.0f, -0.5f, 5.0f);
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
             manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
             manager.rendering[id].name = "rock";
