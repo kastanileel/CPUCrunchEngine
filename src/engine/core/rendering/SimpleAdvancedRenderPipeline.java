@@ -242,7 +242,6 @@ public class SimpleAdvancedRenderPipeline {
             tri.vertices[1] = RenderMaths.multiplyMatrixVector(tri.vertices[1], modelMatrix);
             tri.vertices[2] = RenderMaths.multiplyMatrixVector(tri.vertices[2], modelMatrix);
 
-
             //calculate normal of triangle for lighting
             Vector3 normal, line1, line2;
 
@@ -262,9 +261,22 @@ public class SimpleAdvancedRenderPipeline {
 
                 tri.brightness = dp;
 
+                if(tri.color == null){
+                    tri.color = Color.pink;
+                }
+
+                float[] color = Color.RGBtoHSB(tri.color.getRed(), tri.color.getGreen(), tri.color.getBlue(), null);
+
+                // apply lighting
+                color[2] = Float.min(1.0f, Float.max(dp, 0.2f));
+                tri.color = Color.getHSBColor(color[0], color[1], color[2]);
 
 
-                tri.color = Color.getHSBColor((float) (0.45f + sin(i)*0.25), 1.0f, Float.min(0.99f, Float.max(dp, 0.2f)));
+
+
+
+
+                //tri.color = Color.getHSBColor((float) (0.45f + sin(i)*0.25), 1.0f, Float.min(0.99f, Float.max(dp, 0.2f)));
 
                 // apply view matrix
                 tri.vertices[0] = RenderMaths.multiplyMatrixVector(tri.vertices[0], viewMatrix);
@@ -377,10 +389,11 @@ public class SimpleAdvancedRenderPipeline {
             }
 
             for (Triangle triangle : clippedTriangs) {
-                if(triangle.meshIndex != -1){
+                if(triangle.meshIndex != -1 && triangle.ide == -1 ){
                     mesh = meshesToRender.get(triangle.meshIndex);
-                    System.out.println("textureIndex: " + triangle.textureIndex);
-                  drawingWindow.drawTriangle(triangle,mesh.textureTriangles[triangle.textureIndex], mesh.texture);}
+                  //  System.out.println("textureIndex: " + triangle.textureIndex);
+                  drawingWindow.drawTriangleImproved(triangle,mesh.textureTriangles[triangle.textureIndex], mesh.texture);}
+                  //  drawingWindow.drawTriangle(triangle);}
                 else{
                     drawingWindow.drawTriangle(triangle);
                 }

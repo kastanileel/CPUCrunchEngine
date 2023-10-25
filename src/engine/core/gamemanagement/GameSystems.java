@@ -90,15 +90,15 @@ public class GameSystems {
                         manager.transform[i].pos.y = Camera.getInstance().position.y - 0.5f;
                         manager.transform[i].pos.z = Camera.getInstance().position.z;
                         manager.transform[i].rot.x = Camera.getInstance().rotation.x;
-                        manager.transform[i].rot.y = Camera.getInstance().rotation.y - 3.3f*(float) Math.PI/2;
+                        manager.transform[i].rot.y = Camera.getInstance().rotation.y; //- 3.3f*(float) Math.PI/2;
                         manager.transform[i].rot.z = Camera.getInstance().rotation.z;
 
                         manager.transform[i].pos.x -=  1.5f * x;
                         manager.transform[i].pos.z -=  1.5f * z;
 
                         // offset to the right
-                        manager.transform[i].pos.x +=  0.5f * z;
-                        manager.transform[i].pos.z -=  0.5f * x;
+                        manager.transform[i].pos.x +=  0.3f * z;
+                        manager.transform[i].pos.z -=  0.3f * x;
                     }
 
                     if(MMouseListener.getInstance().isLeftButtonPressed()){

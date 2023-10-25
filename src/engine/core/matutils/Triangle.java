@@ -4,6 +4,8 @@ import java.awt.*;
 
 public class Triangle{
     public Vector3[] vertices;
+
+    public Vector3 normal;
     public Color color;
 
     public int textureIndex;
@@ -11,6 +13,8 @@ public class Triangle{
     public int meshIndex = -1;
 
     public float brightness = 0.0f;
+
+    public int ide = -1;
 
     public Triangle(){
         vertices = new Vector3[]{
@@ -24,11 +28,12 @@ public class Triangle{
         this.vertices = vertices;
     }
 
-    public Triangle(Color color, float brightness, int textureIndex, Vector3 ... vertices){
+    public Triangle(Color color, float brightness, int textureIndex, int ide, Vector3 ... vertices){
         this.vertices = vertices;
         this.color = color;
         this.brightness = brightness;
         this.textureIndex = textureIndex;
+        this.ide = ide;
     }
 
 
@@ -43,6 +48,7 @@ public class Triangle{
                 color,
                 brightness,
                 textureIndex,
+                ide,
                 vertices[0].clone(),
                 vertices[1].clone(),
                 vertices[2].clone());
