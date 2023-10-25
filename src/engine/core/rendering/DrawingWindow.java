@@ -183,9 +183,19 @@ public class DrawingWindow extends JPanel {
     public void drawTriangleImproved(Triangle triangle, Triangle textureTriangle, BufferedImage texture) {
 
         System.out.println("drawTriangleImproved");
+        int maxAccuracy = 64;
+        int accuracy = maxAccuracy;
 
-        int accuracy = 32;
+        // calculate distance from camera to triangle (midpoint of triangle)
+        float distance = triangle.distance;
 
+        System.out.println(distance);
+
+        // the bigger the distance the less accurate the triangle is drawn
+        accuracy = (int) (accuracy/(distance/10.0f));
+        // accuracy must be at least 1
+        accuracy = Math.max(1, accuracy);
+        accuracy = Math.min(maxAccuracy, accuracy);
        
         Graphics2D g2d = (Graphics2D) graphics;
 
@@ -228,7 +238,7 @@ public class DrawingWindow extends JPanel {
                 g2d.setColor(color);
 
 
-                g2d.fillRect(x,y, xInkrement, yInkrement);
+                g2d.fillRect(x-1  ,y-1, xInkrement + 1, yInkrement + 1);
             }
         }
     }

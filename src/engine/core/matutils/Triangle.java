@@ -14,6 +14,8 @@ public class Triangle{
 
     public float brightness = 0.0f;
 
+    public float distance = 0.0f;
+
     public int ide = -1;
 
     public Triangle(){

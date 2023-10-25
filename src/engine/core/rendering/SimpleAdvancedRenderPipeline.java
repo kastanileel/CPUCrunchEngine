@@ -283,6 +283,10 @@ public class SimpleAdvancedRenderPipeline {
                 tri.vertices[1] = RenderMaths.multiplyMatrixVector(tri.vertices[1], viewMatrix);
                 tri.vertices[2] = RenderMaths.multiplyMatrixVector(tri.vertices[2], viewMatrix);
                 tri.meshIndex = trianglesMeshId;
+
+                // set distance between camera and triangle
+                tri.distance = RenderMaths.lengthVector(RenderMaths.substractVectors(tri.vertices[0], camera.position));
+
                 trianglesToRender.add(tri);
             }
         }
