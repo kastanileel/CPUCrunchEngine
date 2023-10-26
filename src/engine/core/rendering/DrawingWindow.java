@@ -134,6 +134,19 @@ public class DrawingWindow extends JPanel {
         ));
     }
 
+    public void drawTriangleOutline(Triangle triangle, Color color, int stroke){
+        graphics.setColor(color);
+
+        // set stroke
+        ((Graphics2D) graphics).setStroke(new BasicStroke(4));
+
+        graphics.drawPolygon( new Polygon(
+                new int[]{(int) triangle.vertices[0].x, (int) triangle.vertices[1].x, (int) triangle.vertices[2].x},
+                new int[]{(int) triangle.vertices[0].y, (int) triangle.vertices[1].y, (int) triangle.vertices[2].y},
+                3
+        ));
+    }
+
 
 
     /***
@@ -183,7 +196,7 @@ public class DrawingWindow extends JPanel {
     public void drawTriangleImproved(Triangle triangle, Triangle textureTriangle, BufferedImage texture) {
 
         System.out.println("drawTriangleImproved");
-        int maxAccuracy = 64;
+        int maxAccuracy = 32;
         int accuracy = maxAccuracy;
 
         // calculate distance from camera to triangle (midpoint of triangle)
@@ -241,6 +254,11 @@ public class DrawingWindow extends JPanel {
                 g2d.fillRect(x-1  ,y-1, xInkrement + 1, yInkrement + 1);
             }
         }
+
+
+        int thickness = (int) (accuracy/10.0f);
+       // if(distance < 10)
+            //drawTriangleOutline(triangle,new Color(102, 84, 61, 255), 1);
     }
 
 

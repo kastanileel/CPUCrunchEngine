@@ -75,7 +75,7 @@ public class GameContainer {
             manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock128.png");
             manager.transform[id].pos = new Vector3(5.0f, -0.5f, 5.0f);
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+            manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
             manager.rendering[id].name = "rock";
         }
 
@@ -140,7 +140,8 @@ public class GameContainer {
             float deltaTime = (System.nanoTime() / 1000000 - lastTime) / 1000.0f;
             lastTime = System.nanoTime() / 1000000;
             movementSystem.update(manager, deltaTime);
-            rasterizer.update(manager, deltaTime);
+            rasterizer.
+                    update(manager, deltaTime);
             cameraMovement.update(manager, deltaTime);
             velocity.update(manager, deltaTime);
 
