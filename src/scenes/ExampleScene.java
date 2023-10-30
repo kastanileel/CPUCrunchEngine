@@ -18,12 +18,12 @@ public class ExampleScene extends Scene {
         // for loop to create floor*/
 
         try {
-       for(int width = 0; width < 30; width ++){
-            for(int length = 0; length < 30; length ++){
+       for(int width = 0; width < 1; width ++){
+            for(int length = 0; length < 1; length ++){
                 int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
                 if(id > -1){
 
-                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
+                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj", Color.blue);
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
 
                     manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
@@ -34,7 +34,7 @@ public class ExampleScene extends Scene {
             }
         }
 
-        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+       int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if(id > -1){
                 manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock128.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;

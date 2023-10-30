@@ -1,6 +1,7 @@
 package src.engine.core.rendering;
 
 
+import src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.inputsystem.MMouseListener;
 import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.RenderMaths;
@@ -202,8 +203,6 @@ public class SimpleAdvancedRenderPipeline {
 
             trianglesMeshId = meshId;
         }
-
-        List<Triangle> triangles = new ArrayList<>();
         Camera camera = Camera.getInstance();
 
         // The model matrix is used to transform the object coordinates into world coordinates.
@@ -261,30 +260,22 @@ public class SimpleAdvancedRenderPipeline {
 
                 tri.brightness = dp;
 
-                if(tri.color == null){
-                    tri.color = Color.pink;
+                if(tri.renderType != GameComponents.Rendering.RenderType.Textured && tri.renderType != GameComponents.Rendering.RenderType.TexturedAndOutline) {
+                    tri.color = Color.getHSBColor(0.0f, 0.0f, Float.min(1.0f, Float.max(dp, 0.2f)));
+                    float[] color = Color.RGBtoHSB(tri.color.getRed(), tri.color.getGreen(), tri.color.getBlue(), null);
+
+                    // apply lighting
+                    color[2] = Float.min(1.0f, Float.max(dp, 0.2f));
+                    tri.color = Color.getHSBColor(color[0], color[1], color[2]);
+
+                    // calculate distance to light source
+                    float distanceToLight = RenderMaths.lengthVector(RenderMaths.substractVectors(tri.vertices[0], camera.position));
+                    // apply distance to light source
+                    color[2] = Float.min(1.0f, Float.max(dp, 0.2f) * (1.0f - distanceToLight / 100.0f));
+                    tri.color = Color.getHSBColor(color[0], color[1], color[2]);
+
                 }
-
-                float[] color = Color.RGBtoHSB(tri.color.getRed(), tri.color.getGreen(), tri.color.getBlue(), null);
-
-                // apply lighting
-                color[2] = Float.min(1.0f, Float.max(dp, 0.2f));
-                tri.color = Color.getHSBColor(color[0], color[1], color[2]);
-
-                // calculate distance to light source
-                float distanceToLight = RenderMaths.lengthVector(RenderMaths.substractVectors(tri.vertices[0], camera.position));
-                // apply distance to light source
-                color[2] = Float.min(1.0f, Float.max(dp, 0.2f) * (1.0f - distanceToLight / 100.0f));
-                tri.color = Color.getHSBColor(color[0], color[1], color[2]);
-
-
-
-
-
-
-
-                //tri.color = Color.getHSBColor((float) (0.45f + sin(i)*0.25), 1.0f, Float.min(0.99f, Float.max(dp, 0.2f)));
-
+                
                 // apply view matrix
                 tri.vertices[0] = RenderMaths.multiplyMatrixVector(tri.vertices[0], viewMatrix);
                 tri.vertices[1] = RenderMaths.multiplyMatrixVector(tri.vertices[1], viewMatrix);
@@ -292,7 +283,8 @@ public class SimpleAdvancedRenderPipeline {
                 tri.meshIndex = trianglesMeshId;
 
                 // set distance between camera and triangle
-                tri.distance = RenderMaths.lengthVector(RenderMaths.substractVectors(tri.vertices[0], camera.position));
+                Vector3 midPoint = RenderMaths.multiplyVector(RenderMaths.addVectors(tri.vertices[0], RenderMaths.addVectors(tri.vertices[1], tri.vertices[2])), 1.0f / 3.0f);
+                tri.distance = RenderMaths.lengthVector(RenderMaths.substractVectors(midPoint, camera.position));
 
                 trianglesToRender.add(tri);
             }
