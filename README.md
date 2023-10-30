@@ -12,7 +12,7 @@ A java game engine without utilizing the gpu.
 - Multithread RenderPipeline
 - Introduce Physics and Collision
 - Fix Camera-Upwards/Downwards rotatoin
-
+***
 # Documentation
 ## Getting Started 
 1. Clone the repository
@@ -160,5 +160,93 @@ The System for the mouse offers four different methods to receive input from the
 - **isRightButtonPressed()**: Returns the state of the right mouse button
 - **isLeftButtonPressed()**: Returns the state of the left mouse button
 
-## Systems and Components
-## Timer
+## 6. Systems and Components: Add new behaviour to objects
+The fundamental architecture of the game engine is based on the **Entity-Component-System** pattern.
+
+The big advantage of this pattern is that the behaviour of an object is not defined by its class but by the **Components**
+therefore a complexer hierarchy of classes is prevented.
+> Usually objects are composed of components and not based of any class
+
+Let's say you want to continuously rotate an object. 
+
+### 6.1 Create and assign a new Component
+The first step is to create a new **Component** in the **"GameComponents.java"** file. The Component must be assigned to 
+each object that should be rotated.
+> ```java
+> public static class RotationMarker {
+>    // basically an empty class because the behaviour is defined in the System
+>    // and the Component is only used to mark the object
+> }
+
+After programming the Component, you need to apply it to the object when it is created. (See 2.2. Object creation)
+
+### 6.2 Create a new System
+The next step is to create a new **System** in the **"GameSystems.java"** file. 
+
+A System is responsible for the behaviour of objects that have a certain Component. In this case the System is responsible
+for the rotation of objects that have the **RotationMarker** Component.
+
+Create a new class that derives from the **System** class in the **"GameSystems.java"** file.
+> ```java
+> public static class RotationSystem extends System { ... }
+
+Afterwards, you need to override the **update()** method. The update method is called every frame and is used to update the
+**Component-Values** of the objects.
+> ```java
+> @Override
+> public void update(EntityManager manager, float deltaTime){
+>    // Specify which Components the System needs to work
+>    int requiredComponents = GameComponents.TRANSFORM | GameComponents.ROTATION_MARKER;
+>    
+>    // iterate over all objects that have the required Components
+>     for (int i = 0; i < manager.size; i++) { 
+>        if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+>           // Update the Component-Values
+>           manager.transform[i].rot.y += 0.01f * deltaTime;
+>        }
+>    }
+> }
+
+## 7. Timer/ Delay (Design Pattern)
+There is a certain way to implement a delay in the game engine:
+
+Let's say we want to rotate an object for 5 seconds and then stop for 3 seconds.
+
+We start by modifying the **RotationMarker Component** from 6.1. and adding a "timer" variable and a "state" variable to it.
+> ```java
+> public static class RotationMarker {
+>    public float timer = 0.0f;
+>    public int state = 0; // state = 0 -> rotating, state = 1 -> stopped
+> }
+
+Afterwards, we modify the **RotationSystem** from 6.2. and add implement the delay logic.
+> ```java
+> ...
+> if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+> // check if the timer is <= 0.0f (=> we must change the state)
+>    if(manager.rotationMarker[i].timer <= 0.0f) {
+>    
+>       // check which state we are in and change the state and the timer accordingly
+>       if(manager.rotationMarker[i].state == 0) {
+>          manager.rotationMarker[i].state = 1;
+>          // stop rotating for 3 seconds
+>          manager.rotationMarker[i].timer = 3.0f;
+>      } else {
+>         manager.rotationMarker[i].state = 0;
+>         // rotate for 5 seconds
+>         manager.rotationMarker[i].timer = 5.0f;
+>      }
+>    }
+>    else {
+>       // update the timer and rotate the object if the state is 0
+>       manager.rotationMarker[i].timer -= deltaTime;
+>       if(manager.rotationMarker[i].state == 0) {
+>          manager.transform[i].rot.y += 0.01f * deltaTime;
+>       }
+>    }
+> }
+> ...
+ 
+**In Essence:** 
+- The timer is used to determine when the state should be changed
+- The timer is updated every frame with the deltaTime (time since last frame)
