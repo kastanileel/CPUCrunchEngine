@@ -1,5 +1,7 @@
 package src.engine.core.matutils;
 
+import src.engine.core.gamemanagement.GameComponents;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -46,7 +48,13 @@ public class Mesh {
             }
             j+= 1;
         }
+        for(Triangle t: triangles){
+            t.renderType = GameComponents.Rendering.RenderType.OneColor;
+        }
+
         this.triangles = triangles.toArray(new Triangle[0]);
+
+
     }
 
   /*  public Mesh(String path, Color c) throws IOException {
@@ -106,8 +114,15 @@ public class Mesh {
                 }
             }
         }
+
+        for(Triangle t: triangles){
+            t.renderType = GameComponents.Rendering.RenderType.Textured;
+        }
+
         this.textureTriangles = textureTriangles.toArray(new Triangle[0]);
         this.triangles = triangles.toArray(new Triangle[0]);
+
+
     }
 
 
@@ -175,6 +190,10 @@ public class Mesh {
                 }
             }
         }
+        for(Triangle t: triangles){
+            t.renderType = GameComponents.Rendering.RenderType.Textured;
+        }
+
         this.triangles = triangles.toArray(new Triangle[0]);
     }
 
@@ -283,12 +302,14 @@ public class Mesh {
         }
 
         // iterate over triangles
+
         for(Triangle t: triangles){
-            t.ide = 1;
+            t.renderType = GameComponents.Rendering.RenderType.Textured;
         }
 
-
         this.triangles = triangles.toArray(new Triangle[0]);
+
+
     }
 
 

@@ -18,12 +18,13 @@ public class ExampleScene extends Scene {
         // for loop to create floor*/
 
         try {
-        for(int width = 0; width < 30; width ++){
+       for(int width = 0; width < 30; width ++){
             for(int length = 0; length < 30; length ++){
                 int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
                 if(id > -1){
 
-                        manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
+                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
 
                     manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
                     manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -33,19 +34,17 @@ public class ExampleScene extends Scene {
             }
         }
 
-        for(int width = 0; width < 2; width ++){
-            for(int length = 0; length < 30; length ++){
-                int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-                if(id > -1){
-                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/planeTex.obj", "./src/objects/rock/rock8.png");
-                    manager.transform[id].pos = new Vector3(15.0f, 0.0f + width, -15.0f + length);
-                    manager.transform[id].rot = new Vector3(3.1415f/2.0f, 0.0f, 3.1415f/2.0f);
-                    manager.transform[id].scale = new Vector3(0.25f, 0.25f, 0.25f);
-
-                }
-            }
-        }
         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock128.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
+                manager.transform[id].pos = new Vector3(0.0f, -0.5f, 5.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+
+            }
+
+       /* int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
             manager.rendering[id].mesh = new Mesh("./src/objects/rock/fn49.obj", Color.red);
             manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0);
@@ -63,26 +62,32 @@ public class ExampleScene extends Scene {
 
         }
 
+    for(int width = 0; width < 2; width ++){
+                for(int length = 0; length < 30; length ++){
+                    int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+                    if(id > -1){
+                        manager.rendering[id].mesh = new Mesh("./src/objects/rock/planeTex.obj", "./src/objects/rock/rock8.png");
+                        manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
+                        manager.transform[id].pos = new Vector3(15.0f, 0.0f + width, -15.0f + length);
+                        manager.transform[id].rot = new Vector3(3.1415f/2.0f, 0.0f, 3.1415f/2.0f);
+                        manager.transform[id].scale = new Vector3(0.25f, 0.25f, 0.25f);
+
+                    }
+                }
+            }
 
 
         // create wall
-        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-        if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock128.png");
-            manager.transform[id].pos = new Vector3(0.0f, -0.5f, 10.0f);
-            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
 
-        }
 
         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
             manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock8.png", true);
-            manager.transform[id].pos = new Vector3(8.0f, -0.5f, 5.0f);
+            manager.transform[id].pos = new Vector3(0.0f, -0.5f, 9.0f);
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
             manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
-        }
+        }*/
 
         } catch (IOException e) {
             throw new RuntimeException(e);

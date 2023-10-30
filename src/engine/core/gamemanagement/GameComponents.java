@@ -30,7 +30,7 @@ public class GameComponents {
         }
         public Mesh mesh;
 
-        RenderType renderType;
+        public RenderType renderType;
 
 
     }

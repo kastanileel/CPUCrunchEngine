@@ -144,7 +144,7 @@ public class SimpleAdvancedRenderPipeline {
 
             // Copy appearance info to new triangle
 
-            Triangle out_tri1 = new Triangle();
+            Triangle out_tri1 = in_tri.clone();
             // The inside point is valid, so keep that...
             out_tri1.vertices[0] = inside_points[0];
 
@@ -164,8 +164,8 @@ public class SimpleAdvancedRenderPipeline {
         // the clipped triangle becomes a "quad". Fortunately, we can
         // represent a quad with two new triangles
 
-        Triangle out_tri1 = new Triangle();
-        Triangle out_tri2 = new Triangle();
+        Triangle out_tri1 = in_tri.clone();
+        Triangle out_tri2 = in_tri.clone();
         // Copy appearance info to new triangles
 
 
@@ -400,15 +400,19 @@ public class SimpleAdvancedRenderPipeline {
             }
 
             for (Triangle triangle : clippedTriangs) {
-                if(triangle.meshIndex != -1 && triangle.ide == -1 ){
-                    mesh = meshesToRender.get(triangle.meshIndex);
-                  //  System.out.println("textureIndex: " + triangle.textureIndex);
-                  drawingWindow.drawTriangleImproved(triangle,mesh.textureTriangles[triangle.textureIndex], mesh.texture);}
-                  //  drawingWindow.drawTriangle(triangle);}
-                else{
-                    drawingWindow.drawTriangle(triangle);
+                // switch between different render types
+                switch (triangle.renderType){
+                    case OneColor -> drawingWindow.drawTriangle(triangle);
+                    case OutlineOnly -> drawingWindow.drawTriangleOutline(triangle);
+                    case Textured -> {
+                        mesh =  meshesToRender.get(triangle.meshIndex);
+                        drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                    }
+                    case TexturedAndOutline -> {
+                        mesh =  meshesToRender.get(triangle.meshIndex);
+                        drawingWindow.drawTriangleImprovedOutline(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                    }
                 }
-                  //drawingWindow.drawTriangle(triangle);
 
             }
         }
