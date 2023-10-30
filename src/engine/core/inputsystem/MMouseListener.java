@@ -26,7 +26,6 @@ public class MMouseListener extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("Mouse pressed");
         if(e.getButton() == MouseEvent.BUTTON1) {
             leftButtonPressed = true;
         } else if(e.getButton() == MouseEvent.BUTTON3) {

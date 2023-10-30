@@ -200,13 +200,11 @@ public class DrawingWindow extends JPanel {
 
     public void drawTriangleImproved(Triangle triangle, Triangle textureTriangle, BufferedImage texture) {
 
-        System.out.println("drawTriangleImproved");
         int accuracy = maxAccuracy;
 
         // calculate distance from camera to triangle (midpoint of triangle)
         float distance = triangle.distance;
 
-        System.out.println(distance);
 
         // the bigger the distance the less accurate the triangle is drawn
         accuracy = (int) (accuracy/(distance/10.0f));
@@ -277,13 +275,10 @@ public class DrawingWindow extends JPanel {
 
     public void drawTriangleImprovedOutline(Triangle triangle, Triangle textureTriangle, BufferedImage texture) {
 
-        System.out.println("drawTriangleImproved");
         int accuracy = maxAccuracy;
 
         // calculate distance from camera to triangle (midpoint of triangle)
         float distance = triangle.distance;
-
-        System.out.println(distance);
 
         // the bigger the distance the less accurate the triangle is drawn
         accuracy = (int) (accuracy/(distance/10.0f));

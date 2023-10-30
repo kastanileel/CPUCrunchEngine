@@ -60,7 +60,6 @@ public class Mesh {
                 texturePoint.add(new Vector3(Float.parseFloat(tokens[1]), Float.parseFloat(tokens[2]), 0));
             }
             else if (tokens[0].equals("f")) {
-                System.out.println(Arrays.toString(tokens));
                 // if polygon is a triangle
                 if(tokens.length == 4) {
                     triangles.add(new Triangle(vertices.get(Integer.parseInt(tokens[1].split("/")[0]) - 1), vertices.get(Integer.parseInt(tokens[2].split("/")[0]) - 1), vertices.get(Integer.parseInt(tokens[3].split("/")[0]) - 1)));

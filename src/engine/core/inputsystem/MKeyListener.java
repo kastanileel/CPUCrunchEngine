@@ -22,7 +22,6 @@ public class MKeyListener extends KeyAdapter {
 
     @Override
     public void keyPressed(KeyEvent event) {
-        System.out.println(event.getKeyCode());
         keyList[event.getKeyChar()] = true;
     }
 
