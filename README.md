@@ -34,6 +34,8 @@ To access the set properties in your code, you can call the **Singleton** 'Confi
 > int width = Configurator.getInstance().getIntProperty("screen_width");
 
 ## 2. Object creation
+
+### 2.1. Scene preparation
 First of all the game needs a **Scene**. A scene is a container for a certain amount of Objects. Usually, a game has 
 multiple scenes to structure the game and limit the amout of objects that are rendered at the same time.
 Start by creating a new Class that derives from the **Scene** class.
@@ -52,6 +54,7 @@ method is used to create the objects that are part of the scene.
 >   // Create objects here
 > }
 
+### 2.2. Object creation
 In order to display "something" at a certain position, you need to create an object with the Components **Transform and 
 Rendering** through an **EntityManager**. Usually each scene has its own EntityManager, assigned in the parent class.
 > Example of loading a simple .obj file:
@@ -73,6 +76,31 @@ Rendering** through an **EntityManager**. Usually each scene has its own EntityM
 > ```
 > **Important**: While requesting an ID from the EntityManager, you need to specify out of which **Components** the object is 
 > composed
+
+### 2.3. Add the Scene to the Game
+After creating the Scene and adding the objects to it, you need to add the Scene to the **GameContainer**. The GameContainer
+is the main class of the game and is responsible for the **game loop and calling the update methods of the Systems**.
+
+These are the steps to add the Scene to the GameContainer and therefore to the game:
+1. Create a new instance of the Scene in the GameContainer-Construcor
+2. Put the scene into the **HashMap scenes** in the GameContainer
+> ```java
+> public GameContainer() {
+>   ...
+>   // Create a new instance of the Scene
+>   Scene testScene = new TestScene();
+> 
+>   // Put the scene into the HashMap
+>   scenes.put(testScene.getName(), testScene);
+>   ...
+> }
+
+3. In order to **activate the scene**, you must set the static variable **currentSceneName** of the GameContainer to the name
+of the scene you want to activate.
+> ```java
+> GameContainer.currentSceneName = "TestScene";
+ 
+
 
 ## 3. Rendering
 The rendering is handled by the **RenderPipeline**. The RenderPipeline is a **Singleton** but usually you don't need to
