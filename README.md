@@ -7,11 +7,10 @@ A java game engine without utilizing the gpu.
 
 # ToDo:
 - Improve Obj Parser
-- Fix FPS bug when near a texture
-- Optimize RenderPipeline
+- ~~Fix FPS bug when near a texture~~
+- ~~Optimize RenderPipeline~~
 - Multithread RenderPipeline
 - Introduce Physics and Collision
-- Fix Camera-Upwards/Downwards rotatoin
 ***
 # Documentation
 ## Getting Started 
