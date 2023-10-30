@@ -34,10 +34,10 @@ public class SimpleAdvancedRenderPipeline {
     private DrawingWindow drawingWindow;
     private Frame frame;
 
-    private SimpleAdvancedRenderPipeline(int width, int height){
+    private SimpleAdvancedRenderPipeline(int width, int height, int textureMaxAccuracy, int textureMinAccuracy){
         this.width = width;
         this.height = height;
-        frame = new Frame((int) width, (int) height);
+        frame = new Frame((int) width, (int) height, textureMaxAccuracy, textureMinAccuracy);
         frame.setVisible(true);
         drawingWindow = frame.getPanel();
 
@@ -51,9 +51,9 @@ public class SimpleAdvancedRenderPipeline {
         this.meshesToRender = new ArrayList<>();
     }
 
-    public static SimpleAdvancedRenderPipeline getInstance(int width, int height){
+    public static SimpleAdvancedRenderPipeline getInstance(int width, int height, int textureMaxAccuracy, int textureMinAccuracy){
         if(instance == null)
-            instance = new SimpleAdvancedRenderPipeline(width, height);
+            instance = new SimpleAdvancedRenderPipeline(width, height, textureMaxAccuracy, textureMinAccuracy);
         return instance;
     }
 

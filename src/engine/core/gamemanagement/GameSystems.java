@@ -1,5 +1,6 @@
 package src.engine.core.gamemanagement;
 
+import src.engine.configuration.Configurator;
 import src.engine.core.inputsystem.MKeyListener;
 import src.engine.core.inputsystem.MMouseListener;
 import src.engine.core.matutils.Mesh;
@@ -7,144 +8,15 @@ import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
-import src.engine.core.rendering.SimpleRenderPipeline.RenderPipMultiThreaded;
-import src.engine.core.rendering.SimpleRenderpipeline;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class GameSystems {
 
-    public static Vector3 position = new Vector3(0.0f, 0.0f, 0.0f);
+    public static class Velocity extends GameSystem{
 
-    public static class Movement {
-        public void update(EntityManager manager, float deltaTime) throws IOException {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER;
-            for (int i = 0; i < manager.size; i++) {
-                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-
-                    float speed = 15f;
-                    // manager.pos[i].x += manager.vel[i].velx;
-                    //  manager.transform[i].pos.z += 0.11f;
-                    //  manager.transform[i].rot.x += 0.1f;
-                    // manager.transform[i].rot.y += 0.31f;
-                    // manager.transform[i].rot.z += 0.01f;
-                    if(manager.rendering[i].name == "a" ||  manager.rendering[i].name == "environment" | manager.rendering[i].name== "rock"|(manager.rendering[i].name == "bullet" && manager.velocity[i].lifetime > .5f)){
-
-
-
-                    if(MKeyListener.getInstance().getKeyList()['w']){
-
-                        // angle based on camera rotation
-                        float angle = Camera.getInstance().rotation.y;
-                        float x = (float) Math.sin(angle);
-                        float z = (float) -Math.cos(angle);
-                        manager.transform[i].pos.x += x * deltaTime * speed;
-                        manager.transform[i].pos.z += z * deltaTime * speed;
-                       // manager.transform[i].pos.x += 0.01f;
-
-                    }
-                    if(MKeyListener.getInstance().getKeyList()['a']){
-
-                        float angle = Camera.getInstance().rotation.y;
-                        float x = (float) Math.sin(angle);
-                        float z = (float) -Math.cos(angle);
-                        manager.transform[i].pos.x += z * deltaTime * speed/2;
-                        manager.transform[i].pos.z -= x * deltaTime * speed/2;
-                        //manager.transform[i].pos.z += 0.01f;
-
-                    }
-                    if(MKeyListener.getInstance().getKeyList()['s']){
-                        float angle = Camera.getInstance().rotation.y;
-                        float x = (float) Math.sin(angle);
-                        float z = (float) -Math.cos(angle);
-                        manager.transform[i].pos.x -= x * deltaTime* speed/2;
-                        manager.transform[i].pos.z -= z * deltaTime* speed/2;
-
-                    }
-                    if(MKeyListener.getInstance().getKeyList()['d']){
-
-                        float angle = Camera.getInstance().rotation.y;
-                        float x = (float) Math.sin(angle);
-                        float z = (float) -Math.cos(angle);
-                        manager.transform[i].pos.x -= z * deltaTime* speed;
-                        manager.transform[i].pos.z += x * deltaTime* speed;
-
-
-                    }
-                    }
-
-                    if(manager.rendering[i].name == "rock") {
-                        //manager.transform[i].rot.x += deltaTime;
-                        manager.transform[i].rot.y +=  deltaTime;
-                      //  manager.transform[i].rot.z += deltaTime;
-                    }
-
-                    if(manager.rendering[i].name == "a"){
-                       // manager.transform[i].rot.x += deltaTime;
-                      //  manager.transform[i].rot.y += deltaTime;
-                       // manager.transform[i].rot.z += deltaTime;
-                    }
-                    if(manager.rendering[i].name == "pistol"){
-
-                        float angle = Camera.getInstance().rotation.y;
-                        float x = (float) Math.sin(angle);
-                        float z = (float) -Math.cos(angle);
-
-                        manager.transform[i].pos.x = Camera.getInstance().position.x;
-                        manager.transform[i].pos.y = Camera.getInstance().position.y - 0.5f;
-                        manager.transform[i].pos.z = Camera.getInstance().position.z;
-                        manager.transform[i].rot.x = Camera.getInstance().rotation.x;
-                        manager.transform[i].rot.y = Camera.getInstance().rotation.y; //- 3.3f*(float) Math.PI/2;
-                        manager.transform[i].rot.z = Camera.getInstance().rotation.z;
-
-                        manager.transform[i].pos.x -=  1.5f * x;
-                        manager.transform[i].pos.z -=  1.5f * z;
-
-                        // offset to the right
-                        manager.transform[i].pos.x +=  0.3f * z;
-                        manager.transform[i].pos.z -=  0.3f * x;
-                    }
-
-                    if(MMouseListener.getInstance().isLeftButtonPressed()){
-
-
-
-                        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.VELOCITY);
-                        if(id > -1){
-                            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock8.png");
-                            manager.transform[id].pos = new Vector3(0.0f, -0.1f, 0);
-                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                            manager.transform[id].scale = new Vector3(.05f,.05f,.05f);
-                            manager.rendering[id].name = "bullet";
-
-                            float angle = Camera.getInstance().rotation.y;
-                            float x = (float) -Math.sin(angle);
-                            float z = (float) Math.cos(angle);
-                            manager.velocity[id].velocity = new Vector3(x, -Camera.getInstance().rotation.x, z);
-
-                            manager.velocity[id].lifetime = 2.0f;
-                            manager.velocity[id].speed = 18.0f;
-                        }
-
-                    }
-
-                   // System.out.println("Position: " + manager.transform[i].pos.x + " " + manager.transform[i].pos.y + " " + manager.transform[i].pos.z);
-                   // System.out.println("Rotation: " + manager.transform[i].rot.x + " " + manager.transform[i].rot.y + " " + manager.transform[i].rot.z);
-                 //   System.out.println("Scale: " + manager.transform[i].scale.x + " " + manager.transform[i].scale.y + " " + manager.transform[i].scale.z);
-                   // System.out.println("///////");
-
-
-
-                    //Camera.getInstance().rotation.y += 0.001f;
-                }
-            }
-        }
-    }
-
-
-
-    public static class Velocity{
+        @Override
         public void update(EntityManager manager, float deltaTime){
             int required_GameComponents = GameComponents.TRANSFORM | GameComponents.VELOCITY;
             for (int i = 0; i < manager.size; i++) {
@@ -152,27 +24,28 @@ public class GameSystems {
                     manager.transform[i].pos.x += manager.velocity[i].velocity.x  * deltaTime * manager.velocity[i].speed;
                     manager.transform[i].pos.y += manager.velocity[i].velocity.y  * deltaTime * manager.velocity[i].speed;
                     manager.transform[i].pos.z += manager.velocity[i].velocity.z  * deltaTime * manager.velocity[i].speed;
-                    manager.velocity[i].lifetime -= deltaTime;
-
-                    if(manager.velocity[i].lifetime < 0.0f){
-                        manager.flag[i] = 0;
-                    }
                 }
             }
         }
     }
 
-    // int req_comp = GameComponents.BulletBehaviour;
 
-    public static class Rasterizer {
 
+    public static class Renderer extends GameSystem{
+
+        int width = Integer.parseInt(Configurator.getInstance().get("windowWidth"));
+        int height = Integer.parseInt(Configurator.getInstance().get("windowHeight"));
+
+        int textureMaxAccuracy = Integer.parseInt(Configurator.getInstance().get("textureMaxAccuracy"));
+        int textureMinAccuracy = Integer.parseInt(Configurator.getInstance().get("textureMinAccuracy"));
         long lastTime = System.nanoTime() / 1000000000;
         int counter = 0;
 
+        @Override
         public void update(EntityManager manager, float deltaTime) throws InterruptedException {
 
 
-            SimpleAdvancedRenderPipeline renderPip = SimpleAdvancedRenderPipeline.getInstance(960, 540);
+            SimpleAdvancedRenderPipeline renderPip = SimpleAdvancedRenderPipeline.getInstance(width, height, textureMaxAccuracy, textureMinAccuracy);
 
             if ((System.nanoTime() / 1000000000) - lastTime >= 1) {
                 renderPip.setTitle("FPS:" + counter);
@@ -201,55 +74,7 @@ public class GameSystems {
 
     }
 
-    public static class CameraMovement {
 
-        public void update(EntityManager entityManager, float deltaTime) {
-
-            Camera cam = Camera.getInstance();
-
-            // Horizontal camera rotation (y-axis) based on horizontal mouse movement
-             //cam.rotation.y = (float) Math.PI/2;
-
-
-
-
-            // Vertical camera rotation (x-axis) based on vertical mouse movement
-            cam.rotation.y += MMouseListener.getInstance().getMouseX() * 0.01f;
-
-
-            // angle sin cos
-            float angle = cam.rotation.y;
-            float x = (float) Math.sin(angle);
-            float z = (float) -Math.cos(angle);
-            System.out.println(x > z);
-
-            float mouseY = MMouseListener.getInstance().getMouseY();
-
-            if(x>z){
-
-                cam.rotation.x -= z * mouseY * 0.001f;
-                cam.rotation.x += x * mouseY * 0.001f;
-            }
-            else {
-                cam.rotation.x += z * mouseY * 0.001f;
-                cam.rotation.x -= x * mouseY * 0.001f;
-            }
-
-
-
-
-            // Clamp the vertical rotation to a range if you don't want it to flip over
-            if (cam.rotation.x > 0.1f)
-                cam.rotation.x = 0.1f;
-            if (cam.rotation.x < -0.1f)
-                cam.rotation.x = -0.1f;
-
-            if(cam.rotation.z > 0.1f)
-                cam.rotation.z = 0.1f;
-            if(cam.rotation.z < -0.1f)
-                cam.rotation.z = -0.1f;
-        }
-    }
 
 
 }

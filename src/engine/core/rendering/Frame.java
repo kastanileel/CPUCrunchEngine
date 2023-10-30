@@ -9,11 +9,11 @@ import javax.swing.*;
 public class Frame extends JFrame
 {
     private DrawingWindow panel = null;
-    public Frame(int width, int height)
+    public Frame(int width, int height, int textureMaxAccuracy, int textureMinAccuracy)
     {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(width, height);
-        panel = new DrawingWindow(width, height);
+        panel = new DrawingWindow(width, height, textureMaxAccuracy, textureMinAccuracy);
         this.setContentPane(panel);
     }
 

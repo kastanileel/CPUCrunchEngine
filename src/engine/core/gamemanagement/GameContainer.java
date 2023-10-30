@@ -5,160 +5,65 @@ import src.engine.core.inputsystem.MKeyListener;
 import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
-import src.engine.core.rendering.SimpleRenderpipeline;
+import src.scenes.ExampleScene;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class GameContainer {
-
-
 
     public static void main(String[] args) throws IOException, InterruptedException {
         new GameContainer();
     }
 
     EntityManager manager;
-    GameSystems.Movement movementSystem;
-    GameSystems.Rasterizer rasterizer;
-    GameSystems.CameraMovement cameraMovement;
-
+    GameSystems.Renderer rasterizer;
     GameSystems.Velocity velocity;
 
+    HashMap<String, Scene> scenes;
+    static String currentSceneName = "";
+
+
     GameContainer() throws IOException, InterruptedException {
+        scenes = new HashMap<>();
         manager = new EntityManager(2000);
-        movementSystem = new GameSystems.Movement();
-        rasterizer = new GameSystems.Rasterizer();
-        cameraMovement = new GameSystems.CameraMovement();
+
+        rasterizer = new GameSystems.Renderer();
         velocity = new GameSystems.Velocity();
 
-       // Camera.getInstance().rotation.x = (float) 0.8407718;
-        //Camera.getInstance().rotation.y = -(float) Math.PI/2;
 
+       Scene example = new ExampleScene(1000, "example");
+       scenes.put(example.getName(), example);
 
-        // for loop to create floor*/
-        for(int width = 0; width < 30; width ++){
-            for(int length = 0; length < 30; length ++){
-               int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-                if(id > -1){
-                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
-                    manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
-                    manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                    manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
-                    manager.rendering[id].name = "environment";
-                }
-            }
-        }
-
-        for(int width = 0; width < 2; width ++){
-            for(int length = 0; length < 30; length ++){
-                int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-                if(id > -1){
-                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/planeTex.obj", "./src/objects/rock/rock8.png");
-                    manager.transform[id].pos = new Vector3(15.0f, 0.0f + width, -15.0f + length);
-                    manager.transform[id].rot = new Vector3(3.1415f/2.0f, 0.0f, 3.1415f/2.0f);
-                    manager.transform[id].scale = new Vector3(0.25f, 0.25f, 0.25f);
-                    manager.rendering[id].name = "a";
-                }
-            }
-        }
-        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-        if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/fn49.obj", Color.red);
-            manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0);
-            manager.transform[id].rot = new Vector3(0.0f, 90.0f, 9.0f);
-            manager.transform[id].scale = new Vector3(.1f,.1f,.1f);
-            manager.rendering[id].name = "pistol";
-        }
-
-        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-        if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
-            manager.transform[id].pos = new Vector3(5.0f, 0.0f, 0);
-            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(1.f,1.f,1.f);
-            manager.rendering[id].name = "rock";
-        }
-
-
-
-       // create wall
-        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-        if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock128.png");
-            manager.transform[id].pos = new Vector3(5.0f, -0.5f, 5.0f);
-            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
-            manager.rendering[id].name = "rock";
-        }
-
-        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-        if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock8.png", true);
-            manager.transform[id].pos = new Vector3(8.0f, -0.5f, 5.0f);
-            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
-            manager.rendering[id].name = "rock";
-        }
-       /*  id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-        if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
-            manager.transform[id].pos = new Vector3(0, -1.0f, -15);
-            manager.transform[id].rot = new Vector3(90.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(30.0f, 3.0f, 3.0f);
-            manager.rendering[id].name = "room";
-        }
-
-        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-        if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
-            manager.transform[id].pos = new Vector3(15, -1.0f, 0);
-            manager.transform[id].rot = new Vector3(0, 0.0f, 90.0f);
-            manager.transform[id].scale = new Vector3(3.0f, 3.0f, 30.0f);
-            manager.rendering[id].name = "room";
-        }
-
-        id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-        if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj");
-            manager.transform[id].pos = new Vector3(-15, -1.0f, 0);
-            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 270.0f);
-            manager.transform[id].scale = new Vector3(3.0f, 3.0f, 30.0f);
-            manager.rendering[id].name = "room";
-        }
-
-
-        id = manager.createEntity(GameComponents.TRANSFORM );
-        if(id > -1){
-            //manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock8.png");
-            manager.transform[id].pos = new Vector3(0.0f, -1.0f, 10.0f);
-            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
-        //    manager.rendering[id].name = "rock";
-        }
-    */
-
-
-
+        currentSceneName = "example";
 
         startGameLoop();
     }
 
     void startGameLoop() throws InterruptedException, IOException {
 
+        String activeSceneName = "";
+
         long lastTime = System.nanoTime() / 1000000;
-        int counter = 0;
+
 
         while(true) {
-            float deltaTime = (System.nanoTime() / 1000000 - lastTime) / 1000.0f;
+            float deltaTime = ((float) System.nanoTime() / 1000000 - lastTime) / 1000.0f;
             lastTime = System.nanoTime() / 1000000;
-            movementSystem.update(manager, deltaTime);
-            rasterizer.
-                    update(manager, deltaTime);
-            cameraMovement.update(manager, deltaTime);
+
+            if(!currentSceneName.equals(activeSceneName)){
+                Scene activeScene = scenes.get(currentSceneName);
+
+                activeScene.createScene();
+                manager = activeScene.getEntityManager();
+
+                activeSceneName = currentSceneName;
+            }
+
+            rasterizer.update(manager, deltaTime);
             velocity.update(manager, deltaTime);
 
-          //counter++;
 
         }
 

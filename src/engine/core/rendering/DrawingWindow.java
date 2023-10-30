@@ -22,9 +22,11 @@ public class DrawingWindow extends JPanel {
     private Graphics graphics;
 
     int debugOffset = 0;
+    public int maxAccuracy;
+    public int minAccuracy;
 
 
-    public DrawingWindow(int width, int height){
+    public DrawingWindow(int width, int height, int textureMaxAccuracy, int textureMinAccuracy){
 
         this.setSize(width,height);
         imageBuffer = graphicsConf.createCompatibleImage(
@@ -35,6 +37,9 @@ public class DrawingWindow extends JPanel {
         ((Graphics2D) graphics).setRenderingHint(
                 RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_OFF);
+
+        this.maxAccuracy = textureMaxAccuracy;
+        this.minAccuracy = textureMinAccuracy;
 
     }
 
@@ -196,7 +201,6 @@ public class DrawingWindow extends JPanel {
     public void drawTriangleImproved(Triangle triangle, Triangle textureTriangle, BufferedImage texture) {
 
         System.out.println("drawTriangleImproved");
-        int maxAccuracy = 128;
         int accuracy = maxAccuracy;
 
         // calculate distance from camera to triangle (midpoint of triangle)
@@ -207,7 +211,7 @@ public class DrawingWindow extends JPanel {
         // the bigger the distance the less accurate the triangle is drawn
         accuracy = (int) (accuracy/(distance/10.0f));
         // accuracy must be at least 1
-        accuracy = Math.max(16, accuracy);
+        accuracy = Math.max(minAccuracy, accuracy);
         accuracy = Math.min(maxAccuracy, accuracy);
        
         Graphics2D g2d = (Graphics2D) graphics;
