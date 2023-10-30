@@ -1,6 +1,7 @@
 package src.engine.core.rendering;
 
 
+import src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.inputsystem.MMouseListener;
 import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.RenderMaths;
@@ -34,10 +35,10 @@ public class SimpleAdvancedRenderPipeline {
     private DrawingWindow drawingWindow;
     private Frame frame;
 
-    private SimpleAdvancedRenderPipeline(int width, int height){
+    private SimpleAdvancedRenderPipeline(int width, int height, int textureMaxAccuracy, int textureMinAccuracy){
         this.width = width;
         this.height = height;
-        frame = new Frame((int) width, (int) height);
+        frame = new Frame((int) width, (int) height, textureMaxAccuracy, textureMinAccuracy);
         frame.setVisible(true);
         drawingWindow = frame.getPanel();
 
@@ -51,9 +52,9 @@ public class SimpleAdvancedRenderPipeline {
         this.meshesToRender = new ArrayList<>();
     }
 
-    public static SimpleAdvancedRenderPipeline getInstance(int width, int height){
+    public static SimpleAdvancedRenderPipeline getInstance(int width, int height, int textureMaxAccuracy, int textureMinAccuracy){
         if(instance == null)
-            instance = new SimpleAdvancedRenderPipeline(width, height);
+            instance = new SimpleAdvancedRenderPipeline(width, height, textureMaxAccuracy, textureMinAccuracy);
         return instance;
     }
 
@@ -144,7 +145,7 @@ public class SimpleAdvancedRenderPipeline {
 
             // Copy appearance info to new triangle
 
-            Triangle out_tri1 = new Triangle();
+            Triangle out_tri1 = in_tri.clone();
             // The inside point is valid, so keep that...
             out_tri1.vertices[0] = inside_points[0];
 
@@ -164,8 +165,8 @@ public class SimpleAdvancedRenderPipeline {
         // the clipped triangle becomes a "quad". Fortunately, we can
         // represent a quad with two new triangles
 
-        Triangle out_tri1 = new Triangle();
-        Triangle out_tri2 = new Triangle();
+        Triangle out_tri1 = in_tri.clone();
+        Triangle out_tri2 = in_tri.clone();
         // Copy appearance info to new triangles
 
 
@@ -202,8 +203,6 @@ public class SimpleAdvancedRenderPipeline {
 
             trianglesMeshId = meshId;
         }
-
-        List<Triangle> triangles = new ArrayList<>();
         Camera camera = Camera.getInstance();
 
         // The model matrix is used to transform the object coordinates into world coordinates.
@@ -261,30 +260,22 @@ public class SimpleAdvancedRenderPipeline {
 
                 tri.brightness = dp;
 
-                if(tri.color == null){
-                    tri.color = Color.pink;
+                if(tri.renderType != GameComponents.Rendering.RenderType.Textured && tri.renderType != GameComponents.Rendering.RenderType.TexturedAndOutline) {
+                    tri.color = Color.getHSBColor(0.0f, 0.0f, Float.min(1.0f, Float.max(dp, 0.2f)));
+                    float[] color = Color.RGBtoHSB(tri.color.getRed(), tri.color.getGreen(), tri.color.getBlue(), null);
+
+                    // apply lighting
+                    color[2] = Float.min(1.0f, Float.max(dp, 0.2f));
+                    tri.color = Color.getHSBColor(color[0], color[1], color[2]);
+
+                    // calculate distance to light source
+                    float distanceToLight = RenderMaths.lengthVector(RenderMaths.substractVectors(tri.vertices[0], camera.position));
+                    // apply distance to light source
+                    color[2] = Float.min(1.0f, Float.max(dp, 0.2f) * (1.0f - distanceToLight / 100.0f));
+                    tri.color = Color.getHSBColor(color[0], color[1], color[2]);
+
                 }
-
-                float[] color = Color.RGBtoHSB(tri.color.getRed(), tri.color.getGreen(), tri.color.getBlue(), null);
-
-                // apply lighting
-                color[2] = Float.min(1.0f, Float.max(dp, 0.2f));
-                tri.color = Color.getHSBColor(color[0], color[1], color[2]);
-
-                // calculate distance to light source
-                float distanceToLight = RenderMaths.lengthVector(RenderMaths.substractVectors(tri.vertices[0], camera.position));
-                // apply distance to light source
-                color[2] = Float.min(1.0f, Float.max(dp, 0.2f) * (1.0f - distanceToLight / 100.0f));
-                tri.color = Color.getHSBColor(color[0], color[1], color[2]);
-
-
-
-
-
-
-
-                //tri.color = Color.getHSBColor((float) (0.45f + sin(i)*0.25), 1.0f, Float.min(0.99f, Float.max(dp, 0.2f)));
-
+                
                 // apply view matrix
                 tri.vertices[0] = RenderMaths.multiplyMatrixVector(tri.vertices[0], viewMatrix);
                 tri.vertices[1] = RenderMaths.multiplyMatrixVector(tri.vertices[1], viewMatrix);
@@ -292,7 +283,8 @@ public class SimpleAdvancedRenderPipeline {
                 tri.meshIndex = trianglesMeshId;
 
                 // set distance between camera and triangle
-                tri.distance = RenderMaths.lengthVector(RenderMaths.substractVectors(tri.vertices[0], camera.position));
+                Vector3 midPoint = RenderMaths.multiplyVector(RenderMaths.addVectors(tri.vertices[0], RenderMaths.addVectors(tri.vertices[1], tri.vertices[2])), 1.0f / 3.0f);
+                tri.distance = RenderMaths.lengthVector(RenderMaths.substractVectors(midPoint, camera.position));
 
                 trianglesToRender.add(tri);
             }
@@ -400,15 +392,19 @@ public class SimpleAdvancedRenderPipeline {
             }
 
             for (Triangle triangle : clippedTriangs) {
-                if(triangle.meshIndex != -1 && triangle.ide == -1 ){
-                    mesh = meshesToRender.get(triangle.meshIndex);
-                  //  System.out.println("textureIndex: " + triangle.textureIndex);
-                  drawingWindow.drawTriangleImproved(triangle,mesh.textureTriangles[triangle.textureIndex], mesh.texture);}
-                  //  drawingWindow.drawTriangle(triangle);}
-                else{
-                    drawingWindow.drawTriangle(triangle);
+                // switch between different render types
+                switch (triangle.renderType){
+                    case OneColor -> drawingWindow.drawTriangle(triangle);
+                    case OutlineOnly -> drawingWindow.drawTriangleOutline(triangle);
+                    case Textured -> {
+                        mesh =  meshesToRender.get(triangle.meshIndex);
+                        drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                    }
+                    case TexturedAndOutline -> {
+                        mesh =  meshesToRender.get(triangle.meshIndex);
+                        drawingWindow.drawTriangleImprovedOutline(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                    }
                 }
-                  //drawingWindow.drawTriangle(triangle);
 
             }
         }

@@ -1,5 +1,7 @@
 package src.engine.core.matutils;
 
+import src.engine.core.gamemanagement.GameComponents;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,39 +17,6 @@ public class Mesh {
     public Triangle[] textureTriangles;
     public BufferedImage texture;
 
-
-    public Mesh(String path) throws IOException {
-        // Read a obj file and create a mesh from it
-        BufferedReader reader = new BufferedReader (new FileReader(path));
-        LinkedList<Vector3> vertices = new LinkedList<Vector3>();
-        LinkedList<Triangle> triangles = new LinkedList<Triangle>();
-        String line;
-        int j = 0;
-        while ((line = reader.readLine()) != null) {
-            String[] tokens = line.split(" ");
-            if(tokens.length == 1)
-                continue;
-            if(tokens[1].contains("//")){
-                for(int i = 0; i < tokens.length; i++){
-                    //if contains //
-                    if(tokens[i].contains("//")){
-                        // remove everything starting from //
-                        System.out.println(tokens[i]);
-                        tokens[i] = tokens[i].substring(0, tokens[i].indexOf("/"));
-                        System.out.println(tokens[i]);
-                    }
-                }
-            }
-            if (tokens[0].equals("v")) {
-                vertices.add(new Vector3(Float.parseFloat(tokens[1]), Float.parseFloat(tokens[2]), Float.parseFloat(tokens[3])));
-            } else if (tokens[0].equals("f")) {
-                System.out.println(j);
-                triangles.add(new Triangle(vertices.get(Integer.parseInt(tokens[1]) - 1), vertices.get(Integer.parseInt(tokens[2]) - 1), vertices.get(Integer.parseInt(tokens[3]) - 1)));
-            }
-            j+= 1;
-        }
-        this.triangles = triangles.toArray(new Triangle[0]);
-    }
 
   /*  public Mesh(String path, Color c) throws IOException {
         // Read a obj file and create a mesh from it
@@ -106,8 +75,15 @@ public class Mesh {
                 }
             }
         }
+
+        for(Triangle t: triangles){
+            t.renderType = GameComponents.Rendering.RenderType.Textured;
+        }
+
         this.textureTriangles = textureTriangles.toArray(new Triangle[0]);
         this.triangles = triangles.toArray(new Triangle[0]);
+
+
     }
 
 
@@ -168,13 +144,14 @@ public class Mesh {
                         triangles.get(triangles.size() - 2).normal = normals.get(Integer.parseInt(tokens[1].split("//")[1]) - 1);
                         triangles.getLast().normal = normals.get(Integer.parseInt(tokens[1].split("//")[1]) - 1);
                     }
-
-                    // set color
-                    triangles.get(triangles.size() - 2).color = objColor;
-                    triangles.getLast().color = objColor;
                 }
             }
         }
+        for(Triangle t: triangles){
+            t.color = objColor;
+            t.renderType = GameComponents.Rendering.RenderType.Textured;
+        }
+
         this.triangles = triangles.toArray(new Triangle[0]);
     }
 
@@ -283,12 +260,14 @@ public class Mesh {
         }
 
         // iterate over triangles
+
         for(Triangle t: triangles){
-            t.ide = 1;
+            t.renderType = GameComponents.Rendering.RenderType.Textured;
         }
 
-
         this.triangles = triangles.toArray(new Triangle[0]);
+
+
     }
 
 
