@@ -197,7 +197,7 @@ Because of this, we need to add the **ROTATION_MARKER** Component to the Bitmask
 
 > In the above example the bitmask would be 1101 (binary) (TRANSFORM = 1, RENDER = 10, ROTATION_MARKER = 1000)
 
-### 6.2. Create a new System
+### 6.3. Create a new System
 The next step is to create a new **System** in the **"GameSystems.java"** file. 
 
 A System is responsible for the behaviour of objects that have a certain Component. In this case the System is responsible
