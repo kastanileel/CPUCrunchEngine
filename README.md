@@ -163,12 +163,12 @@ The System for the mouse offers four different methods to receive input from the
 The fundamental architecture of the game engine is based on the **Entity-Component-System** pattern.
 
 The big advantage of this pattern is that the behaviour of an object is not defined by its class but by the **Components**
-therefore a complexer hierarchy of classes is prevented.
-> Usually objects are composed of components and not based of any class
+therefore an overcomplicated hierarchy of classes is prevented.
+> => Objects are composed out of components and not based on any class
 
 Let's say you want to continuously rotate an object. 
 
-### 6.1 Create and assign a new Component
+### 6.1. Create and assign a new Component
 The first step is to create a new **Component** in the **"GameComponents.java"** file. The Component must be assigned to 
 each object that should be rotated.
 > ```java
@@ -178,8 +178,26 @@ each object that should be rotated.
 > }
 
 After programming the Component, you need to apply it to the object when it is created. (See 2.2. Object creation)
+> ```java
+> // Request a new ID from the EntityManager for the new object
+> int id = entityManager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.ROTATION_MARKER);
 
-### 6.2 Create a new System
+### 6.2. Create a Bitmask for the Component
+As you can see, the Entity Manger resives a **Bitmask** as a parameter. The Bitmask is used to specify which Components the
+object is composed of.
+
+Because of this, we need to add the **ROTATION_MARKER** Component to the Bitmask in the "GameComponents.java" file.
+> ```java
+> public final static int
+>
+>    TRANSFORM = 1,
+>    RENDER = 1 << 1,
+>    VELOCITY = 1 << 3;
+>    ROTATION_MARKER = 1 << 4;
+
+> In the above example the bitmask would be 1101 (binary) (TRANSFORM = 1, RENDER = 10, ROTATION_MARKER = 1000)
+
+### 6.2. Create a new System
 The next step is to create a new **System** in the **"GameSystems.java"** file. 
 
 A System is responsible for the behaviour of objects that have a certain Component. In this case the System is responsible
