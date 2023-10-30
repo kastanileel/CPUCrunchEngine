@@ -1,4 +1,4 @@
-package src.engine.core.inputsystem;
+package src.engine.core.inputtools;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

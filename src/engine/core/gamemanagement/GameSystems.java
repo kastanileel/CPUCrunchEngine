@@ -1,16 +1,7 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.configuration.Configurator;
-import src.engine.core.inputsystem.MKeyListener;
-import src.engine.core.inputsystem.MMouseListener;
-import src.engine.core.matutils.Mesh;
-import src.engine.core.matutils.RenderMaths;
-import src.engine.core.matutils.Vector3;
-import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
-
-import java.io.IOException;
-import java.util.Objects;
 
 public class GameSystems {
 

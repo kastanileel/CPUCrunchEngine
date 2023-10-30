@@ -1,7 +1,5 @@
 package src.engine.core.gamemanagement;
 
-import src.engine.core.inputsystem.MKeyListener;
-
 public class EntityManager {
 
     public int flag[];

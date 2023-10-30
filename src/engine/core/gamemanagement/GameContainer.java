@@ -1,13 +1,8 @@
 package src.engine.core.gamemanagement;
 
 
-import src.engine.core.inputsystem.MKeyListener;
-import src.engine.core.matutils.Mesh;
-import src.engine.core.matutils.Vector3;
-import src.engine.core.rendering.Camera;
 import src.scenes.ExampleScene;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
 

@@ -99,8 +99,6 @@ These are the steps to add the Scene to the GameContainer and therefore to the g
 of the scene you want to activate.
 > ```java
 > GameContainer.currentSceneName = "TestScene";
- 
-
 
 ## 3. Rendering
 The rendering is handled by the **RenderPipeline**. The RenderPipeline is a **Singleton** but usually you don't need to
@@ -127,7 +125,40 @@ the way it is displayed. Currently the following rendering types are supported:
 - **Textured**: The Object is displayed with a texture (specified in the Mesh-Constructor Call)
 - **TexturedAndOutline**: The Object is displayed with and an additional outline (specified in the Mesh-Constructor Call)
 
-## Camera
-## Input
+## 4. Camera
+The camera is as well implemented as a **Singleton**. You can access it by calling the **getInstance()** method of the 
+**Camera** class. The Scene is rendered from the perspective of the camera. In order to move the camera, you can call get
+the Instance and modify the **position** and the **rotation** vectors directly.
+> ```java
+> // modify the position directly
+> Camera.getInstance().position = new Vector3(0.0f, 0.0f, 0.0f);
+> 
+> // store the instance in a variable and modify the rotation
+> Camera camera = Camera.getInstance();
+> camera.rotation.y = 3.14159f;
+## 5. Input (InputTools)
+The InputTools are a collection of **Singletons** that are used to query the input of the user.Currently there are two Tools
+implemented: One for **Keyboard** and one for **Mouse** input.
+
+### 5.1. Keyboard (MKeyListener)
+The System is as easy as it gets: Get the instance and look up the key you want to query in an array of booleans. The index
+of the key is the char value of the key.
+> ```java
+> // Get the instance
+> MKeyListener keyboard = MKeyListener.getInstance();
+> 
+> // Check if the 'A' key is pressed
+> if(keyboard.keyList['A']) {
+>    // Do something
+> }
+
+
+### 5.2. Mouse (MMouseListener)
+The System for the mouse offers four different methods to receive input from the mouse:
+- **getMouseX()**: Returns the change in position of the mouse since the last call in the x-axis
+- **getMouseY()**: Returns the change in position of the mouse since the last call in the y-axis
+- **isRightButtonPressed()**: Returns the state of the right mouse button
+- **isLeftButtonPressed()**: Returns the state of the left mouse button
+
 ## Systems and Components
 ## Timer

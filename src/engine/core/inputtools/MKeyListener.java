@@ -1,4 +1,4 @@
-package src.engine.core.inputsystem;
+package src.engine.core.inputtools;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -13,9 +13,6 @@ public class MKeyListener extends KeyAdapter {
         return instance;
     }
 
-    public boolean[] getKeyList() {
-        return keyList;
-    }
     private MKeyListener(){
         keyList = new boolean[128];
     }
