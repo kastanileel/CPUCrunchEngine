@@ -77,7 +77,7 @@ public class GameContainer {
             manager.transform[id].pos = new Vector3(5.0f, 0.0f, 0);
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
             manager.transform[id].scale = new Vector3(1.f,1.f,1.f);
-            manager.rendering[id].name = "environment";
+            manager.rendering[id].name = "rock";
         }
 
 
