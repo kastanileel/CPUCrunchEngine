@@ -26,7 +26,7 @@ public class GameContainer {
     GameSystems.Velocity velocity;
 
     GameContainer() throws IOException, InterruptedException {
-        manager = new EntityManager(1000);
+        manager = new EntityManager(2000);
         movementSystem = new GameSystems.Movement();
         rasterizer = new GameSystems.Rasterizer();
         cameraMovement = new GameSystems.CameraMovement();
@@ -49,21 +49,34 @@ public class GameContainer {
                 }
             }
         }
+
+        for(int width = 0; width < 2; width ++){
+            for(int length = 0; length < 30; length ++){
+                int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+                if(id > -1){
+                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/planeTex.obj", "./src/objects/rock/rock8.png");
+                    manager.transform[id].pos = new Vector3(15.0f, 0.0f + width, -15.0f + length);
+                    manager.transform[id].rot = new Vector3(3.1415f/2.0f, 0.0f, 3.1415f/2.0f);
+                    manager.transform[id].scale = new Vector3(0.25f, 0.25f, 0.25f);
+                    manager.rendering[id].name = "a";
+                }
+            }
+        }
         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.red);
+            manager.rendering[id].mesh = new Mesh("./src/objects/rock/fn49.obj", Color.red);
             manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0);
-            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+            manager.transform[id].rot = new Vector3(0.0f, 90.0f, 9.0f);
             manager.transform[id].scale = new Vector3(.1f,.1f,.1f);
             manager.rendering[id].name = "pistol";
         }
 
         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/teapot/teapot.obj", Color.red);
+            manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
             manager.transform[id].pos = new Vector3(5.0f, 0.0f, 0);
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-            manager.transform[id].scale = new Vector3(.2f,.2f,.2f);
+            manager.transform[id].scale = new Vector3(1.f,1.f,1.f);
             manager.rendering[id].name = "environment";
         }
 
