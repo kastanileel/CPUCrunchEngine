@@ -225,7 +225,7 @@ public class GameSystems {
 
             float mouseY = MMouseListener.getInstance().getMouseY();
 
-            if(x>z){
+           /* if(x>z){
 
                 cam.rotation.x -= z * mouseY * 0.001f;
                 cam.rotation.x += x * mouseY * 0.001f;
@@ -233,7 +233,10 @@ public class GameSystems {
             else {
                 cam.rotation.x += z * mouseY * 0.001f;
                 cam.rotation.x -= x * mouseY * 0.001f;
-            }
+            }*/
+
+            cam.rotation.x += mouseY * deltaTime * 0.1fs;
+
 
 
 
