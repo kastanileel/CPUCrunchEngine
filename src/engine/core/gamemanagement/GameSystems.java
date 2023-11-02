@@ -235,7 +235,7 @@ public class GameSystems {
                 cam.rotation.x -= x * mouseY * 0.001f;
             }*/
 
-            cam.rotation.x += mouseY * deltaTime * 0.1fs;
+            cam.rotation.x += mouseY * deltaTime * 0.1f;
 
 
 
