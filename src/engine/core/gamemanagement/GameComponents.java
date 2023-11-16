@@ -23,8 +23,9 @@ public class GameComponents {
             OneColor,
             Textured,
             TexturedAndOutline,
-            OneColorAndOutline,
-            OneColorDerivedFromTexture
+            Emissive,
+            //OneColorAndOutline,
+            //OneColorDerivedFromTexture,
 
         }
         public Mesh mesh;

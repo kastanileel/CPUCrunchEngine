@@ -33,6 +33,16 @@ public class SimpleAdvancedRenderPipeline {
     private DrawingWindow drawingWindow;
     private Frame frame;
 
+    private boolean finishedStepTwo;
+
+    public synchronized void setFinishedStepTwo(boolean finished) {
+        this.finishedStepTwo = finished;
+    }
+
+    public synchronized boolean isFinishedStepTwo() {
+        return finishedStepTwo;
+    }
+
     private SimpleAdvancedRenderPipeline(int width, int height, int textureMaxAccuracy, int textureMinAccuracy){
         this.width = width;
         this.height = height;
@@ -254,25 +264,7 @@ public class SimpleAdvancedRenderPipeline {
                 Vector3 lightDirection = new Vector3(0.0f, -1.0f, 1.0f);
                 lightDirection = RenderMaths.normalizeVector(lightDirection);
 
-                float dp = RenderMaths.dotProduct(normal, lightDirection);
-
-                tri.brightness = dp;
-
-                if(tri.renderType != GameComponents.Rendering.RenderType.Textured && tri.renderType != GameComponents.Rendering.RenderType.TexturedAndOutline) {
-                    tri.color = Color.getHSBColor(0.0f, 0.0f, Float.min(1.0f, Float.max(dp, 0.2f)));
-                    float[] color = Color.RGBtoHSB(tri.color.getRed(), tri.color.getGreen(), tri.color.getBlue(), null);
-
-                    // apply lighting
-                    color[2] = Float.min(1.0f, Float.max(dp, 0.2f));
-                    tri.color = Color.getHSBColor(color[0], color[1], color[2]);
-
-                    // calculate distance to light source
-                    float distanceToLight = RenderMaths.lengthVector(RenderMaths.substractVectors(tri.vertices[0], camera.position));
-                    // apply distance to light source
-                    color[2] = Float.min(1.0f, Float.max(dp, 0.2f) * (1.0f - distanceToLight / 100.0f));
-                    tri.color = Color.getHSBColor(color[0], color[1], color[2]);
-
-                }
+                tri.brightness = RenderMaths.dotProduct(normal, lightDirection);
                 
                 // apply view matrix
                 tri.vertices[0] = RenderMaths.multiplyMatrixVector(tri.vertices[0], viewMatrix);
@@ -401,6 +393,9 @@ public class SimpleAdvancedRenderPipeline {
                     case TexturedAndOutline -> {
                         mesh =  meshesToRender.get(triangle.meshIndex);
                         drawingWindow.drawTriangleImprovedOutline(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                    }
+                    case Emissive -> {
+                        drawingWindow.drawTriangleNoLighting(triangle);
                     }
                 }
 

@@ -45,6 +45,7 @@ public class GameContainer {
 
         while(true) {
             float deltaTime = ((float) System.nanoTime() / 1000000 - lastTime) / 1000.0f;
+
             lastTime = System.nanoTime() / 1000000;
 
             if(!currentSceneName.equals(activeSceneName)){
@@ -54,6 +55,9 @@ public class GameContainer {
                 manager = activeScene.getEntityManager();
 
                 activeSceneName = currentSceneName;
+
+                rasterizer.start(manager);
+                velocity.start(manager);
             }
 
             rasterizer.update(manager, deltaTime);

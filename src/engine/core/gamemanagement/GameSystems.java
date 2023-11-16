@@ -3,9 +3,17 @@ package src.engine.core.gamemanagement;
 import src.engine.configuration.Configurator;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class GameSystems {
 
     public static class Velocity extends GameSystem{
+
+        @Override
+        public void start(EntityManager manager){
+
+        }
 
         @Override
         public void update(EntityManager manager, float deltaTime){
@@ -24,6 +32,8 @@ public class GameSystems {
 
     public static class Renderer extends GameSystem{
 
+        ExecutorService executor = Executors.newFixedThreadPool(2); // N is the number of threads
+
         int width = Integer.parseInt(Configurator.getInstance().get("windowWidth"));
         int height = Integer.parseInt(Configurator.getInstance().get("windowHeight"));
 
@@ -31,6 +41,21 @@ public class GameSystems {
         int textureMinAccuracy = Integer.parseInt(Configurator.getInstance().get("textureMinAccuracy"));
         long lastTime = System.nanoTime() / 1000000000;
         int counter = 0;
+
+
+        @Override
+        public void start(EntityManager manager) throws InterruptedException{
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER;
+
+            for(int i = 0; i < manager.size; i++){
+                if((manager.flag[i] & required_GameComponents) == required_GameComponents){
+                    // iterate over mesh and set render type on each triangle
+                    for (int j = 0; j<manager.rendering[i].mesh.triangles.length; j ++){
+                        manager.rendering[i].mesh.triangles[j].renderType = manager.rendering[i].renderType;
+                    }
+                }
+            }
+        }
 
         @Override
         public void update(EntityManager manager, float deltaTime) throws InterruptedException {
@@ -56,6 +81,7 @@ public class GameSystems {
                 }
             }
 
+            // run this in a second thread
             renderPip.stepTwo();
 
 
