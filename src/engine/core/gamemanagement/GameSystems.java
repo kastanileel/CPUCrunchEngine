@@ -29,6 +29,43 @@ public class GameSystems {
     }
 
 
+    public static class CollisionSystem extends GameSystem{
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+            //Iterate over the collision components and compute the collisions
+            //First, flush the information list
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.COLLIDER;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    manager.collisionList.get(i).flush();
+                    //Collide spheres with spheres and spheres with box colliders
+                    if(manager.collider[i].colliderType== GameComponents.Collider.ColliderType.BOX)
+                }
+            }
+
+        }
+    }
+
+    public static class RigidbodySystem extends GameSystem{
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+
+        }
+    }
+
+
 
     public static class Renderer extends GameSystem{
 

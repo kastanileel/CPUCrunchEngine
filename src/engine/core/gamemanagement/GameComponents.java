@@ -9,7 +9,9 @@ public class GameComponents {
 
             TRANSFORM = 1,
             RENDER = 1 << 1,
-            VELOCITY = 1 << 3;
+            VELOCITY = 1 << 2,
+            COLLIDER = 1 << 3;
+
 
     public static class Transform {
         public Vector3 pos;
@@ -38,6 +40,17 @@ public class GameComponents {
     public static class Velocity{
         Vector3 velocity;
         float speed = 1.0f;
+    }
+
+    public static  class Collider{
+        public static enum ColliderType{
+            BOX,
+            SPHERE
+        }
+
+        public ColliderType colliderType;
+        public Vector3 center;
+        public Vector3 colliderSize;
     }
 
 }

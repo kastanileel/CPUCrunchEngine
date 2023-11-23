@@ -1,5 +1,10 @@
 package src.engine.core.gamemanagement;
 
+import src.engine.core.dataContainers.CollisionInformation;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+
 public class EntityManager {
 
     public int flag[];
@@ -7,7 +12,11 @@ public class EntityManager {
     public GameComponents.Transform transform[];
     public GameComponents.Rendering rendering[];
     public GameComponents.Velocity velocity[];
+
+    public GameComponents.Collider collider[];
     public final int size;
+
+    public HashMap<Integer, CollisionInformation> collisionList = new HashMap<>();
 
     public EntityManager(int size) {
         this.size = size;
@@ -15,6 +24,7 @@ public class EntityManager {
         transform = new GameComponents.Transform[size];
         rendering = new GameComponents.Rendering[size];
         velocity = new GameComponents.Velocity[size];
+
         flag = new int[size];
 
     }
@@ -26,6 +36,10 @@ public class EntityManager {
                 if ((flag & GameComponents.TRANSFORM) > 0) transform[i] = new GameComponents.Transform();
                 if ((flag & GameComponents.RENDER) > 0) rendering[i] = new GameComponents.Rendering();
                 if ((flag & GameComponents.VELOCITY) > 0) velocity[i] = new GameComponents.Velocity();
+                if((flag & GameComponents.COLLIDER)>0) {
+                    collider[i] = new GameComponents.Collider();
+                    collisionList.put(i,new CollisionInformation());
+                }
                 return i;
             }
         }
