@@ -16,6 +16,8 @@ public class GameContainer {
     GameSystems.Renderer rasterizer;
     GameSystems.Velocity velocity;
 
+    GameSystems.CollisionSystem collisionSystem;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
@@ -26,6 +28,7 @@ public class GameContainer {
 
         rasterizer = new GameSystems.Renderer();
         velocity = new GameSystems.Velocity();
+        collisionSystem = new GameSystems.CollisionSystem();
 
 
        Scene example = new ExampleScene(1000, "example");
@@ -58,10 +61,12 @@ public class GameContainer {
 
                 rasterizer.start(manager);
                 velocity.start(manager);
+                collisionSystem.start(manager);
             }
 
             rasterizer.update(manager, deltaTime);
             velocity.update(manager, deltaTime);
+            collisionSystem.update(manager, deltaTime);
 
 
         }

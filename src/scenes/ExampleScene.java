@@ -3,6 +3,7 @@ package src.scenes;
 import src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.gamemanagement.Scene;
 import src.engine.core.matutils.Mesh;
+import src.engine.core.matutils.Quaternion;
 import src.engine.core.matutils.Vector3;
 
 import java.awt.*;
@@ -41,13 +42,17 @@ public class ExampleScene extends Scene {
            manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
        }*/
 
-       int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+       int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER  |GameComponents.COLLIDER);
             if(id > -1){
                 manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.blue);//"./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = new Vector3(1.0f, -0.5f, 15.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].center = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 
             }
 

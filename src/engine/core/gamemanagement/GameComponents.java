@@ -1,6 +1,7 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.core.matutils.Mesh;
+import src.engine.core.matutils.Quaternion;
 import src.engine.core.matutils.Vector3;
 
 public class GameComponents {
@@ -51,6 +52,8 @@ public class GameComponents {
         public ColliderType colliderType;
         public Vector3 center;
         public Vector3 colliderSize;
+
+        public Quaternion colliderRotation;
     }
 
 }

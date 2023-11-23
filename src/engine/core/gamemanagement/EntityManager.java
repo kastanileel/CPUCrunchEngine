@@ -3,7 +3,6 @@ package src.engine.core.gamemanagement;
 import src.engine.core.dataContainers.CollisionInformation;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class EntityManager {
 
@@ -24,6 +23,7 @@ public class EntityManager {
         transform = new GameComponents.Transform[size];
         rendering = new GameComponents.Rendering[size];
         velocity = new GameComponents.Velocity[size];
+        collider = new GameComponents.Collider[size];
 
         flag = new int[size];
 

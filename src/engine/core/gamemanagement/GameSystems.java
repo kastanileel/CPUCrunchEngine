@@ -1,10 +1,17 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.configuration.Configurator;
+import src.engine.core.dataContainers.BoundingBox;
+import src.engine.core.dataContainers.CollisionInformation;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static src.engine.core.matutils.Collision.checkCollision;
+import static src.engine.core.matutils.Collision.createBoundingBox;
 
 public class GameSystems {
 
@@ -32,22 +39,38 @@ public class GameSystems {
     public static class CollisionSystem extends GameSystem{
 
         @Override
-        public void start(EntityManager manager) throws Exception {
+        public void start(EntityManager manager){
 
         }
 
         @Override
-        public void update(EntityManager manager, float deltaTime) throws Exception {
+        public void update(EntityManager manager, float deltaTime){
             //Iterate over the collision components and compute the collisions
             //First, flush the information list
+            BoundingBox[] boundingBoxes = new BoundingBox[manager.size];
+
             int required_GameComponents = GameComponents.TRANSFORM | GameComponents.COLLIDER;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     manager.collisionList.get(i).flush();
-                    //Collide spheres with spheres and spheres with box colliders
-                    if(manager.collider[i].colliderType== GameComponents.Collider.ColliderType.BOX)
+                    BoundingBox bBox = createBoundingBox(manager.collider[i], manager.collider[i].colliderRotation);
+                    boundingBoxes[i] = bBox;
+                    System.out.println(bBox.min + " "+ bBox.max);
                 }
             }
+
+            List<CollisionInformation.EntityPair> collisionPairs = new ArrayList<>();
+
+            for (int i = 0; i < manager.size; i++) {
+                for (int j = i + 1; j < manager.size; j++) {
+                    if(boundingBoxes[i] == null || boundingBoxes[j] == null) continue;
+                    if (checkCollision(boundingBoxes[i],boundingBoxes[j])){
+                        collisionPairs.add(new CollisionInformation.EntityPair(i, j));
+                    }
+                }
+            }
+
+
 
         }
     }
