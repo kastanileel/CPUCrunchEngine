@@ -262,7 +262,8 @@ public class SimpleAdvancedRenderPipeline {
                 tri.brightness = dp;
 
                 if(tri.color == null){
-                    tri.color = Color.pink;
+                    // assign color based on position and dp
+                    tri.color = Color.getHSBColor((float) (0.45f + sin(i)*0.25), 1.0f, Float.min(0.99f, Float.max(dp, 0.2f)));
                 }
 
                 float[] color = Color.RGBtoHSB(tri.color.getRed(), tri.color.getGreen(), tri.color.getBlue(), null);

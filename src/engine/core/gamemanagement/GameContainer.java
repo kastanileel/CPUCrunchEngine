@@ -64,16 +64,16 @@ public class GameContainer {
         }
         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/rock/fn49.obj", Color.red);
+            manager.rendering[id].mesh = new Mesh("./src/objects/teapot/teapot.obj", Color.red);
             manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0);
-            manager.transform[id].rot = new Vector3(0.0f, 90.0f, 9.0f);
-            manager.transform[id].scale = new Vector3(.1f,.1f,.1f);
+            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 9.0f);
+            manager.transform[id].scale = new Vector3(.15f,.15f,.15f);
             manager.rendering[id].name = "pistol";
         }
 
         id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
-            manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
+            manager.rendering[id].mesh = new Mesh("./src/objects/teapot/teapot.obj", Color.BLUE);
             manager.transform[id].pos = new Vector3(5.0f, 0.0f, 0);
             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
             manager.transform[id].scale = new Vector3(1.f,1.f,1.f);

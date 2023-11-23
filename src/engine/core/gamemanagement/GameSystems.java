@@ -10,6 +10,7 @@ import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 import src.engine.core.rendering.SimpleRenderPipeline.RenderPipMultiThreaded;
 import src.engine.core.rendering.SimpleRenderpipeline;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -95,7 +96,7 @@ public class GameSystems {
                         manager.transform[i].pos.y = Camera.getInstance().position.y - 0.5f;
                         manager.transform[i].pos.z = Camera.getInstance().position.z;
                         manager.transform[i].rot.x = Camera.getInstance().rotation.x;
-                        manager.transform[i].rot.y = Camera.getInstance().rotation.y; //- 3.3f*(float) Math.PI/2;
+                        manager.transform[i].rot.y = Camera.getInstance().rotation.y - 3.3f*(float) Math.PI/2;
                         manager.transform[i].rot.z = Camera.getInstance().rotation.z;
 
                         manager.transform[i].pos.x -=  1.5f * x;
@@ -112,7 +113,7 @@ public class GameSystems {
 
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.VELOCITY);
                         if(id > -1){
-                            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock8.png");
+                            manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.BLACK);
                             manager.transform[id].pos = new Vector3(0.0f, -0.1f, 0);
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.transform[id].scale = new Vector3(.05f,.05f,.05f);
