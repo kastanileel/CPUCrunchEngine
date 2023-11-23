@@ -99,7 +99,7 @@ public class ExampleScene extends Scene {
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
-                manager.playerMovement[id].mouseSpeed = 0.1f;
+                manager.playerMovement[id].mouseSpeed = 0.05f;
             }
 
 

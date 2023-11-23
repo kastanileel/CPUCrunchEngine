@@ -123,13 +123,8 @@ public class GameSystems {
             // Clamp the vertical rotation to a range if you don't want it to flip over
             if (cam.rotation.x > 0.1f)
                 cam.rotation.x = 0.1f;
-            if (cam.rotation.x < -0.1f)
-                cam.rotation.x = -0.1f;
-
-            if(cam.rotation.z > 0.1f)
-                cam.rotation.z = 0.1f;
-            if(cam.rotation.z < -0.1f)
-                cam.rotation.z = -0.1f;
+            if (cam.rotation.x < -0.2f)
+                cam.rotation.x = -0.2f;
 
 
 
