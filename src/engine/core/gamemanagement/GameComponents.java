@@ -9,7 +9,8 @@ public class GameComponents {
 
             TRANSFORM = 1,
             RENDER = 1 << 1,
-            VELOCITY = 1 << 3;
+            VELOCITY = 1 << 3,
+            PLAYERMOVEMENT = 1 << 4;
 
     public static class Transform {
         public Vector3 pos;
@@ -38,6 +39,10 @@ public class GameComponents {
     public static class Velocity{
         Vector3 velocity;
         float speed = 1.0f;
+    }
+
+    public static class PlayerMovement{
+        public float mouseSpeed = 0.1f;
     }
 
 }
