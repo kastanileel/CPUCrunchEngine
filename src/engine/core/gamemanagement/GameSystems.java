@@ -3,6 +3,7 @@ package src.engine.core.gamemanagement;
 import src.engine.configuration.Configurator;
 import src.engine.core.dataContainers.BoundingBox;
 import src.engine.core.dataContainers.CollisionInformation;
+import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
 import java.util.ArrayList;
@@ -10,8 +11,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static src.engine.core.matutils.Collision.checkCollision;
-import static src.engine.core.matutils.Collision.createBoundingBox;
+import static src.engine.core.matutils.Collision.*;
 
 public class GameSystems {
 
@@ -40,7 +40,13 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager){
-
+            //Fill the collision list
+            manager.collisionList.clear();
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & GameComponents.COLLIDER) == GameComponents.COLLIDER) {
+                    manager.collisionList.put(i,new CollisionInformation());
+                }
+            }
         }
 
         @Override
@@ -53,9 +59,10 @@ public class GameSystems {
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     manager.collisionList.get(i).flush();
+
                     BoundingBox bBox = createBoundingBox(manager.collider[i], manager.collider[i].colliderRotation);
                     boundingBoxes[i] = bBox;
-                    System.out.println(bBox.min.x + " "+ bBox.min.y + " "+ bBox.min.z + " | "+ bBox.max.x+" "+ bBox.max.y+" "+ bBox.max.z);
+                    //System.out.println(bBox.min.x + " "+ bBox.min.y + " "+ bBox.min.z + " | "+ bBox.max.x+" "+ bBox.max.y+" "+ bBox.max.z);
                 }
             }
 
@@ -63,14 +70,42 @@ public class GameSystems {
 
             for (int i = 0; i < manager.size; i++) {
                 for (int j = i + 1; j < manager.size; j++) {
-                    if (!(boundingBoxes[i] == null || boundingBoxes[j] == null) && checkCollision(boundingBoxes[i],boundingBoxes[j]) ){
+                    if (!(boundingBoxes[i] == null || boundingBoxes[j] == null) && checkCollision(boundingBoxes[i],boundingBoxes[j])
+                            && (manager.collider[i].colliderType == GameComponents.Collider.ColliderType.BOX && manager.collider[j].colliderType == GameComponents.Collider.ColliderType.SPHERE
+                            || manager.collider[i].colliderType == GameComponents.Collider.ColliderType.SPHERE && manager.collider[j].colliderType == GameComponents.Collider.ColliderType.BOX
+                            || manager.collider[i].colliderType == GameComponents.Collider.ColliderType.SPHERE && manager.collider[j].colliderType == GameComponents.Collider.ColliderType.SPHERE
+
+                    )){
                         collisionPairs.add(new CollisionInformation.EntityPair(i, j));
-                        System.out.println("Collision between: " + collisionPairs.get(0).getFirst() +"    " +collisionPairs.get(0).getSecond());
+                        //System.out.println("Collision between: " + collisionPairs.get(0).getFirst() +"    " +collisionPairs.get(0).getSecond());
                     }
                 }
             }
-
             //Now that we have the candidates, we can process the precise collisions.
+            for (CollisionInformation.EntityPair pair : collisionPairs) {
+                GameComponents.Collider colliderA = manager.collider[pair.getFirst()];
+                GameComponents.Collider colliderB = manager.collider[pair.getSecond()];
+
+                boolean isCollision = false;
+                Vector3 hitPosition = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+
+                if (colliderA.colliderType == GameComponents.Collider.ColliderType.SPHERE && colliderB.colliderType == GameComponents.Collider.ColliderType.SPHERE) {
+                    // Sphere-Sphere collision check
+                    isCollision = checkSphereSphereCollision(colliderA, colliderB, hitPosition);
+                } else if (colliderA.colliderType == GameComponents.Collider.ColliderType.BOX && colliderB.colliderType == GameComponents.Collider.ColliderType.SPHERE) {
+                    // Box-Sphere collision check
+                    isCollision = checkBoxSphereCollision(colliderA, colliderB, hitPosition);
+                } else if (colliderA.colliderType == GameComponents.Collider.ColliderType.SPHERE && colliderB.colliderType == GameComponents.Collider.ColliderType.BOX) {
+                    // Sphere-Box collision check (order reversed)
+                    isCollision = checkBoxSphereCollision(colliderB, colliderA, hitPosition);
+                }
+                if(isCollision){
+                    System.out.println("Collision between: " + pair.getFirst() +"    " +pair.getSecond());
+                    System.out.println("Hit position: " + hitPosition.x + " " + hitPosition.y + " " + hitPosition.z);
+                    manager.collisionList.get(pair.getFirst()).collisionEvents.add(new CollisionInformation.CollisionEvent(hitPosition, pair));
+                    manager.collisionList.get(pair.getSecond()).collisionEvents.add(new CollisionInformation.CollisionEvent(hitPosition, pair));
+                }
+            }
 
 
 

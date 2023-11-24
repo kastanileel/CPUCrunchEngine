@@ -18,6 +18,11 @@ public class CollisionInformation {
         public Vector3 position;
         public EntityPair entityIDs;
 
+        public CollisionEvent(Vector3 position, EntityPair entityIDs) {
+            this.position = position;
+            this.entityIDs = entityIDs;
+        }
+
     }
 
     public static class EntityPair {

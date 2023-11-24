@@ -14,14 +14,11 @@ public class Collision {
 
         switch (collider.colliderType) {
             case BOX:
-                // Get rotated box corners based on the collider's center and size
                 Vector3[] corners = getRotatedBoxCorners(collider.center, collider.colliderSize, rotation);
-                // Calculate the min and max of the bounding box from the rotated corners
                 min = calculateMin(corners);
                 max = calculateMax(corners);
                 break;
             case SPHERE:
-                // Calculate bounding box for a sphere
                 float maxExtent = Math.max(collider.colliderSize.x, Math.max(collider.colliderSize.y, collider.colliderSize.z)) / 2;
                 Vector3 size = new Vector3(maxExtent, maxExtent, maxExtent);
                 min = collider.center.subtract(size);
@@ -35,22 +32,52 @@ public class Collision {
     }
 
 
-    
+
+    public static boolean checkSphereSphereCollision(GameComponents.Collider sphereA, GameComponents.Collider sphereB, Vector3 hitPosition) {
+        float distanceSquared = sphereA.center.distanceSquared(sphereB.center);
+        float radiusSum = sphereA.colliderSize.x / 2 + sphereB.colliderSize.x / 2;
+        boolean isCollision = distanceSquared <= radiusSum * radiusSum || isSphereInsideSphere(sphereA, sphereB);
+        if (isCollision) {
+            Vector3 direction = sphereB.center.subtract(sphereA.center).normalize();
+            hitPosition.x = sphereA.center.x + direction.x * sphereA.colliderSize.x / 2;
+            hitPosition.y = sphereA.center.y + direction.y * sphereA.colliderSize.x / 2;
+            hitPosition.z = sphereA.center.z + direction.z * sphereA.colliderSize.x / 2;
+        }
+        return isCollision;
+    }
+
+    public static boolean checkBoxSphereCollision(GameComponents.Collider box, GameComponents.Collider sphere, Vector3 hitPosition) {
+        Vector3 closestPoint = findClosestPointOnOBB(sphere.center, box);
+        float distanceSquared = closestPoint.distanceSquared(sphere.center);
+        float radiusSquared = (sphere.colliderSize.x) * (sphere.colliderSize.x);
+        boolean isCollision = distanceSquared <= radiusSquared || isSphereInsideBox(sphere, box);
+        if (isCollision) {
+            hitPosition.x = closestPoint.x;
+            hitPosition.y = closestPoint.y;
+            hitPosition.z = closestPoint.z;
+        }
+        return isCollision;
+    }
+
+    public static boolean isSphereInsideSphere(GameComponents.Collider sphereA, GameComponents.Collider sphereB) {
+        float distance = sphereA.center.distance(sphereB.center);
+        float radiusDifference = Math.abs(sphereA.colliderSize.x / 2 - sphereB.colliderSize.x / 2);
+        return distance + Math.min(sphereA.colliderSize.x, sphereB.colliderSize.x) / 2 <= Math.max(sphereA.colliderSize.x, sphereB.colliderSize.x) / 2;
+    }
+
+    public static boolean isSphereInsideBox(GameComponents.Collider sphere, GameComponents.Collider box) {
+        Vector3[] corners = getRotatedBoxCorners(box.center,box.colliderSize,box.colliderRotation);
+        for (Vector3 corner : corners) {
+            if (corner.distance(sphere.center) < sphere.colliderSize.x / 2) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
-
-    public static BoundingBox createOrientedBoundingBox(Vector3 center, Vector3 size, Quaternion rotation) {
-        // Convert the quaternion to a rotation matrix
-        Matrix3 rotationMatrix = quaternionToRotationMatrix(rotation);
-
-        // Half size for calculations
+    public static Vector3[] getRotatedBoxCorners(Vector3 center, Vector3 size, Quaternion rotation) {
         Vector3 halfSize = size.divide(2);
-
-        // Initialize min and max vectors
-        Vector3 min = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
-        Vector3 max = new Vector3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
-
-        // Calculate the rotated corners of the OBB
         Vector3[] corners = new Vector3[]{
                 new Vector3(-halfSize.x, -halfSize.y, -halfSize.z),
                 new Vector3(halfSize.x, -halfSize.y, -halfSize.z),
@@ -62,39 +89,11 @@ public class Collision {
                 new Vector3(halfSize.x, halfSize.y, halfSize.z)
         };
 
-        // Transform each corner and update the min and max values
-        for (Vector3 corner : corners) {
-            Vector3 rotatedCorner = rotationMatrix.multiply(corner).add(center);
-
-            min.x = Math.min(min.x, rotatedCorner.x);
-            min.y = Math.min(min.y, rotatedCorner.y);
-            min.z = Math.min(min.z, rotatedCorner.z);
-
-            max.x = Math.max(max.x, rotatedCorner.x);
-            max.y = Math.max(max.y, rotatedCorner.y);
-            max.z = Math.max(max.z, rotatedCorner.z);
-        }
-
-        return new BoundingBox(min, max);
-    }
-
-    public static Vector3[] getRotatedBoxCorners(Vector3 center, Vector3 size, Quaternion rotation) {
-        Vector3 halfSize = size.divide(2);
-        Vector3[] corners = new Vector3[]{
-                center.add(new Vector3(-halfSize.x, -halfSize.y, -halfSize.z)),
-                center.add(new Vector3(halfSize.x, -halfSize.y, -halfSize.z)),
-                center.add(new Vector3(-halfSize.x, halfSize.y, -halfSize.z)),
-                center.add(new Vector3(halfSize.x, halfSize.y, -halfSize.z)),
-                center.add(new Vector3(-halfSize.x, -halfSize.y, halfSize.z)),
-                center.add(new Vector3(halfSize.x, -halfSize.y, halfSize.z)),
-                center.add(new Vector3(-halfSize.x, halfSize.y, halfSize.z)),
-                center.add(new Vector3(halfSize.x, halfSize.y, halfSize.z))
-        };
-
         Matrix3 rotationMatrix = quaternionToRotationMatrix(rotation);
 
         return Arrays.stream(corners)
                 .map(rotationMatrix::multiply)
+                .map(rotatedCorner -> rotatedCorner.add(center))
                 .toArray(Vector3[]::new);
     }
 
@@ -122,20 +121,16 @@ public class Collision {
     }
 
 
-    // Method to find the closest point on the OBB to a given point
     public static Vector3 findClosestPointOnOBB(Vector3 point, GameComponents.Collider boxCollider) {
-        // Transform point to box's local space
         Vector3 localPoint = new Vector3(point.x,point.y,point.z);
         localPoint.subtract(boxCollider.center);
         localPoint = rotateByQuaternionInverse(localPoint, boxCollider.colliderRotation);
 
-        // Clamp to box extents
         Vector3 extents = new Vector3(boxCollider.colliderSize.x / 2, boxCollider.colliderSize.y / 2, boxCollider.colliderSize.z / 2);
         Vector3 closest = new Vector3(Math.max(-extents.x, Math.min(extents.x, localPoint.x)),
                 Math.max(-extents.y, Math.min(extents.y, localPoint.y)),
                 Math.max(-extents.z, Math.min(extents.z, localPoint.z)));
 
-        // Transform the closest point back to world space
         closest = rotateByQuaternion(closest, boxCollider.colliderRotation);
         closest.add(boxCollider.center);
 

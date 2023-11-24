@@ -48,10 +48,10 @@ public class ExampleScene extends Scene {
                 manager.transform[id].pos = new Vector3(1.0f, -0.5f, 15.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                 manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderSize = new Vector3(20.0f, 20.0f, 20.0f);
-                Quaternion rot =  new Quaternion(1.0f, 0.0f, 1.2f, 0.0f);
+                manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                Quaternion rot =  new Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
                 rot.normalize();
                 manager.collider[id].colliderRotation =rot;
             }
@@ -66,7 +66,7 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderSize = new Vector3(20.0f, 20.0f, 20.0f);
-                Quaternion rot =  new Quaternion(1.0f, 0.0f, 1.2f, 0.0f);
+                Quaternion rot =  new Quaternion(1.0f, 0.0f, 0.7f, 0.0f);
                 rot.normalize();
                 manager.collider[id].colliderRotation =rot;
 
