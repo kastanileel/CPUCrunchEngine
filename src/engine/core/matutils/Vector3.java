@@ -29,5 +29,14 @@ public class Vector3 {
         return new Vector3(x / other, y / other, z / other);
     }
 
+
+    public float length() {
+        return (float) Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public static float dot(Vector3 u, Vector3 v) {
+        return u.x * v.x + u.y * v.y + u.z * v.z;
+    }
+
 }
 

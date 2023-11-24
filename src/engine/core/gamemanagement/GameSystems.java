@@ -55,7 +55,7 @@ public class GameSystems {
                     manager.collisionList.get(i).flush();
                     BoundingBox bBox = createBoundingBox(manager.collider[i], manager.collider[i].colliderRotation);
                     boundingBoxes[i] = bBox;
-                    System.out.println(bBox.min + " "+ bBox.max);
+                    System.out.println(bBox.min.x + " "+ bBox.min.y + " "+ bBox.min.z + " | "+ bBox.max.x+" "+ bBox.max.y+" "+ bBox.max.z);
                 }
             }
 
@@ -63,12 +63,15 @@ public class GameSystems {
 
             for (int i = 0; i < manager.size; i++) {
                 for (int j = i + 1; j < manager.size; j++) {
-                    if(boundingBoxes[i] == null || boundingBoxes[j] == null) continue;
-                    if (checkCollision(boundingBoxes[i],boundingBoxes[j])){
+                    if (!(boundingBoxes[i] == null || boundingBoxes[j] == null) && checkCollision(boundingBoxes[i],boundingBoxes[j]) ){
                         collisionPairs.add(new CollisionInformation.EntityPair(i, j));
+                        System.out.println("Collision between: " + collisionPairs.get(0).getFirst() +"    " +collisionPairs.get(0).getSecond());
                     }
                 }
             }
+
+            //Now that we have the candidates, we can process the precise collisions.
+
 
 
 
