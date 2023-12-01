@@ -1,7 +1,12 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.configuration.Configurator;
+import src.engine.core.inputtools.MKeyListener;
+import src.engine.core.inputtools.MMouseListener;
+import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
+
+import java.awt.event.KeyEvent;
 
 public class GameSystems {
 
@@ -65,7 +70,35 @@ public class GameSystems {
 
     }
 
+    public static class CameraController extends GameSystem{
+        MKeyListener keyListener = MKeyListener.getInstance();
 
+        @Override
+        public void update(EntityManager manager, float deltaTime) {
+            int required_GameComponents = GameComponents.CAMERA;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    if (keyListener.isKeyPressed(KeyEvent.VK_W)) {
+                        manager.camera[i].position.z -= 0.1f;
+                        System.out.println(manager.camera[i].position.z);
+                    }
+                    if (keyListener.isKeyPressed(KeyEvent.VK_S)) {
+                        manager.camera[i].position.z += 0.1f;
+                        System.out.println(manager.camera[i].position.z);
+                    }
+                    if (keyListener.isKeyPressed(KeyEvent.VK_A)) {
+                        manager.camera[i].position.x -= 0.1f;
+                        System.out.println(manager.camera[i].position.x);
+                    }
+                    if (keyListener.isKeyPressed(KeyEvent.VK_D)) {
+                        manager.camera[i].position.x += 0.1f;
+                        System.out.println(manager.camera[i].position.x);
+                    }
+                }
+            }
 
+        }
+
+        }
 
 }

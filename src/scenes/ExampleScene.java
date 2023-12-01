@@ -42,7 +42,16 @@ public class ExampleScene extends Scene {
 
             }
 
-       /* int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+       int id2 = manager.createEntity(GameComponents.TRANSFORM | GameComponents.CAMERA);
+            if(id2 > -1){
+                manager.transform[id2].pos = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id2].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id2].scale = new Vector3(1.0f, 1.0f, 1.0f);
+                manager.camera[id2].position = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.camera[id2].rotation = new Vector3(0.0f, 0.0f, 0.0f);
+            }
+
+        /*int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
         if(id > -1){
             manager.rendering[id].mesh = new Mesh("./src/objects/rock/fn49.obj", Color.red);
             manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0);

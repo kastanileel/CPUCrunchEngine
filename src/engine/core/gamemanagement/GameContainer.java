@@ -15,6 +15,7 @@ public class GameContainer {
     EntityManager manager;
     GameSystems.Renderer rasterizer;
     GameSystems.Velocity velocity;
+    GameSystems.CameraController cameraController;
 
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
@@ -26,6 +27,8 @@ public class GameContainer {
 
         rasterizer = new GameSystems.Renderer();
         velocity = new GameSystems.Velocity();
+        cameraController = new GameSystems.CameraController();
+
 
 
        Scene example = new ExampleScene(1000, "example");
@@ -58,6 +61,7 @@ public class GameContainer {
 
             rasterizer.update(manager, deltaTime);
             velocity.update(manager, deltaTime);
+            cameraController.update(manager, deltaTime);
 
 
         }

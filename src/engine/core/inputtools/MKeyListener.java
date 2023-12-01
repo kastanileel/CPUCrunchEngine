@@ -6,7 +6,7 @@ import java.awt.event.KeyEvent;
 public class MKeyListener extends KeyAdapter {
 
     private static MKeyListener instance;
-    private static boolean[] keyList;
+    private boolean[] keyList;
 
     public static MKeyListener getInstance(){
         if (instance == null) instance = new MKeyListener();
@@ -25,5 +25,9 @@ public class MKeyListener extends KeyAdapter {
     @Override
     public void keyReleased(KeyEvent event){
         keyList[event.getKeyChar()] = false;
+    }
+
+    public boolean isKeyPressed(int key){
+        return keyList[key];
     }
 }
