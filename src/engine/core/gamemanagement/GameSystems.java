@@ -142,16 +142,16 @@ public class GameSystems {
             float right = 0.0f;
 
             if (keyListener.isKeyPressed('W') || keyListener.isKeyPressed('w') ) {
-                forward = moveSpeed * deltaTime;
+                forward = moveSpeed;
             }
             if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
-                forward = -moveSpeed * deltaTime;
+                forward = -moveSpeed/ 3.0f;
             }
             if (keyListener.isKeyPressed('A') || keyListener.isKeyPressed('a') ) {
-                right = moveSpeed * deltaTime;
+                right = moveSpeed/2.0f;
             }
             if (keyListener.isKeyPressed('D') || keyListener.isKeyPressed('d') ) {
-                right = -moveSpeed * deltaTime;
+                right = -moveSpeed/2.0f;
             }
 
             // calculate the forward vector
