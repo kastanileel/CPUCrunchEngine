@@ -1,5 +1,6 @@
 package src.engine.core.inputtools;
 
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -29,5 +30,9 @@ public class MKeyListener extends KeyAdapter {
 
     public boolean isKeyPressed(int key){
         return keyList[key];
+    }
+
+    public void attachToFrame(Frame frame){
+        frame.addKeyListener(this);
     }
 }

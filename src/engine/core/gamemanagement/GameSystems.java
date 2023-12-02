@@ -136,20 +136,23 @@ public class GameSystems {
         }
            
         public void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
-            if (keyListener.isKeyPressed(KeyEvent.VK_W)) {
-                manager.transform[id].pos.z -= 0.1f * deltaTime;
+
+            float moveSpeed = manager.playerMovement[id].moveSpeed;
+
+            if (keyListener.isKeyPressed('W') || keyListener.isKeyPressed('w') ) {
+                manager.transform[id].pos.z -= moveSpeed * deltaTime;
                 System.out.println(manager.transform[id].pos.z);
             }
-            if (keyListener.isKeyPressed(KeyEvent.VK_S)) {
-                manager.transform[id].pos.z += 0.1f * deltaTime;
+            if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
+                manager.transform[id].pos.z += moveSpeed * deltaTime;
                 System.out.println(manager.transform[id].pos.z);
             }
-            if (keyListener.isKeyPressed(KeyEvent.VK_A)) {
-                manager.transform[id].pos.x -= 0.1f * deltaTime;
+            if (keyListener.isKeyPressed('A') || keyListener.isKeyPressed('a') ) {
+                manager.transform[id].pos.x -= moveSpeed * deltaTime;
                 System.out.println(manager.transform[id].pos.x);
             }
-            if (keyListener.isKeyPressed(KeyEvent.VK_D)) {
-                manager.transform[id].pos.x += 0.1f * deltaTime;
+            if (keyListener.isKeyPressed('D') || keyListener.isKeyPressed('d') ) {
+                manager.transform[id].pos.x += moveSpeed * deltaTime;
                 System.out.println(manager.transform[id].pos.x);
             }
 
