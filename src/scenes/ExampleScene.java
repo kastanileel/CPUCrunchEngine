@@ -93,14 +93,16 @@ public class ExampleScene extends Scene {
 
             }
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PLAYERMOVEMENT);
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.VELOCITY);
             if (id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.red);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.playerMovement[id].mouseSpeed = 0.05f;
+                manager.playerMovement[id].moveSpeed = 30.0f;
+                manager.playerMovement[id].cameraOffset = new Vector3(0, 0, 0);
+                manager.velocity[id].speed = 3.0f;
+                manager.velocity[id].velocity = new Vector3(0, 0, 0);
             }
 
 

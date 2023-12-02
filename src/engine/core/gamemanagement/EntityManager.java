@@ -4,10 +4,10 @@ public class EntityManager {
 
     public int flag[];
 
-    public GameComponents.Transform transform[];
-    public GameComponents.Rendering rendering[];
-    public GameComponents.Velocity velocity[];
-    public GameComponents.PlayerMovement playerMovement[];
+    public GameComponents.Transform[] transform;
+    public GameComponents.Rendering[] rendering;
+    public GameComponents.Velocity[] velocity;
+    public GameComponents.PlayerMovement[] playerMovement;
 
     public final int size;
 

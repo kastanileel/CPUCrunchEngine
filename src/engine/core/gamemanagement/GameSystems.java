@@ -107,7 +107,7 @@ public class GameSystems {
 
         @Override
         public void update(EntityManager manager, float deltaTime) {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT;
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.VELOCITY;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     doCameraRotation(manager, i, deltaTime);
@@ -138,30 +138,33 @@ public class GameSystems {
         public void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
 
             float moveSpeed = manager.playerMovement[id].moveSpeed;
+            float forward = 0.0f;
+            float right = 0.0f;
 
             if (keyListener.isKeyPressed('W') || keyListener.isKeyPressed('w') ) {
-                manager.transform[id].pos.z += moveSpeed * deltaTime;
-                System.out.println(manager.transform[id].pos.z);
+                forward = moveSpeed * deltaTime;
             }
             if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
-                manager.transform[id].pos.z -= moveSpeed * deltaTime;
-                System.out.println(manager.transform[id].pos.z);
+                forward = -moveSpeed * deltaTime;
             }
             if (keyListener.isKeyPressed('A') || keyListener.isKeyPressed('a') ) {
-                manager.transform[id].pos.x += moveSpeed * deltaTime;
-                System.out.println(manager.transform[id].pos.x);
+                right = moveSpeed * deltaTime;
             }
             if (keyListener.isKeyPressed('D') || keyListener.isKeyPressed('d') ) {
-                manager.transform[id].pos.x -= moveSpeed * deltaTime;
-                System.out.println(manager.transform[id].pos.x);
+                right = -moveSpeed * deltaTime;
             }
 
-            // set camera position to player position
+            // calculate the forward vector
             Camera cam = Camera.getInstance();
-            cam.position = manager.transform[id].pos;
+            float cosY = (float) Math.cos(Math.toRadians(cam.rotation.y));
+            float sinY = (float) Math.sin(Math.toRadians(cam.rotation.y));
 
-            // offset camera position
-            cam.position = RenderMaths.addVectors(cam.position, manager.playerMovement[id].cameraOffset);
+            // apply movement to velocity, important when beeing rotated 0 degrees we move along the z axis
+            manager.velocity[id].velocity.x = (forward * sinY) + (right * cosY);
+            manager.velocity[id].velocity.z = (forward * cosY) - (right * sinY);
+
+            // set and offset camera position
+            cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
         }
     }
 }
