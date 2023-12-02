@@ -4,11 +4,11 @@ public class EntityManager {
 
     public int flag[];
 
-    public GameComponents.Transform transform[];
-    public GameComponents.Rendering rendering[];
-    public GameComponents.Velocity velocity[];
+    public GameComponents.Transform[] transform;
+    public GameComponents.Rendering[] rendering;
+    public GameComponents.Velocity[] velocity;
+    public GameComponents.PlayerMovement[] playerMovement;
 
-    public GameComponents.PlayerMovement playerMovement[];
     public final int size;
 
     public EntityManager(int size) {
@@ -18,6 +18,7 @@ public class EntityManager {
         rendering = new GameComponents.Rendering[size];
         velocity = new GameComponents.Velocity[size];
         playerMovement = new GameComponents.PlayerMovement[size];
+
         flag = new int[size];
 
     }
@@ -30,6 +31,7 @@ public class EntityManager {
                 if ((flag & GameComponents.RENDER) > 0) rendering[i] = new GameComponents.Rendering();
                 if ((flag & GameComponents.VELOCITY) > 0) velocity[i] = new GameComponents.Velocity();
                 if ((flag & GameComponents.PLAYERMOVEMENT) > 0) playerMovement[i] = new GameComponents.PlayerMovement();
+
                 return i;
             }
         }

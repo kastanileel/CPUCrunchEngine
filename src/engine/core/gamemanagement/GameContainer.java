@@ -47,9 +47,11 @@ public class GameContainer {
 
 
         while(true) {
-            float deltaTime = ((float) System.nanoTime() / 1000000 - lastTime) / 1000.0f;
+            long currentSystemTime = System.nanoTime();
+            float deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
-            lastTime = System.nanoTime() / 1000000;
+
+            lastTime = currentSystemTime;
 
             if(!currentSceneName.equals(activeSceneName)){
                 Scene activeScene = scenes.get(currentSceneName);

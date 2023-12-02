@@ -51,6 +51,7 @@ public class SimpleAdvancedRenderPipeline {
         drawingWindow = frame.getPanel();
 
         MMouseListener.getInstance().attachToFrame(frame);
+        MKeyListener.getInstance().attachToFrame(frame);
 
         this.trianglesToRender = new LinkedList<>();
         this.meshesToRender = new ArrayList<>();
@@ -418,7 +419,4 @@ public class SimpleAdvancedRenderPipeline {
         drawingWindow.redraw();
     }
 
-    public void addKeyListener(MKeyListener mKeyListener) {
-        frame.addKeyListener(mKeyListener);
-    }
 }
