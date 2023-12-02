@@ -11,7 +11,7 @@ public class Camera {
     public Vector3 rotation;
 
     private Camera() {
-        position = new Vector3(0.0f, 0, 0.0f);
+        position = new Vector3(0.0f, 3, 0.0f);
         rotation = new Vector3(0.0f, 0.0f, 0);
     }
 
@@ -23,11 +23,11 @@ public class Camera {
 
     public float[][] getViewMatrix() {
         float[][] m = RenderMaths.makeRotationMatrix(rotation.x, rotation.y, rotation.z);
-        m[0][3] = position.x;
-        m[1][3] = position.y;
-        m[2][3] = position.z;
-        m = RenderMaths.inverseMatrix(m);
 
+        m = RenderMaths.inverseMatrix(m);
+        m[0][3] = -position.x;
+        m[1][3] = -position.y;
+        m[2][3] = -position.z;
         return m;
     }
 }

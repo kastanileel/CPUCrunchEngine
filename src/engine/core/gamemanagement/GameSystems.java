@@ -140,19 +140,19 @@ public class GameSystems {
             float moveSpeed = manager.playerMovement[id].moveSpeed;
 
             if (keyListener.isKeyPressed('W') || keyListener.isKeyPressed('w') ) {
-                manager.transform[id].pos.z -= moveSpeed * deltaTime;
-                System.out.println(manager.transform[id].pos.z);
-            }
-            if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
                 manager.transform[id].pos.z += moveSpeed * deltaTime;
                 System.out.println(manager.transform[id].pos.z);
             }
+            if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
+                manager.transform[id].pos.z -= moveSpeed * deltaTime;
+                System.out.println(manager.transform[id].pos.z);
+            }
             if (keyListener.isKeyPressed('A') || keyListener.isKeyPressed('a') ) {
-                manager.transform[id].pos.x -= moveSpeed * deltaTime;
+                manager.transform[id].pos.x += moveSpeed * deltaTime;
                 System.out.println(manager.transform[id].pos.x);
             }
             if (keyListener.isKeyPressed('D') || keyListener.isKeyPressed('d') ) {
-                manager.transform[id].pos.x += moveSpeed * deltaTime;
+                manager.transform[id].pos.x -= moveSpeed * deltaTime;
                 System.out.println(manager.transform[id].pos.x);
             }
 

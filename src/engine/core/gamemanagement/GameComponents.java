@@ -43,7 +43,7 @@ public class GameComponents {
 
     public static class PlayerMovement{
         public float mouseSpeed = 0.1f;
-        public float moveSpeed = 1.0f;
+        public float moveSpeed = 3.0f;
         public Vector3 cameraOffset = new Vector3(0, 0, 0);
     }
 
