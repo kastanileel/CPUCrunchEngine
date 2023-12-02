@@ -3,6 +3,7 @@ package src.engine.core.gamemanagement;
 import src.engine.configuration.Configurator;
 import src.engine.core.inputtools.MKeyListener;
 import src.engine.core.inputtools.MMouseListener;
+import src.engine.core.matutils.RenderMaths;
 import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
@@ -135,24 +136,29 @@ public class GameSystems {
         }
            
         public void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
-            if ((manager.flag[id] & required_GameComponents) == required_GameComponents) {
-                if (keyListener.isKeyPressed(KeyEvent.VK_W)) {
-                    manager.camera[id].position.z -= 0.1f * deltaTime;
-                    System.out.println(manager.camera[id].position.z);
-                }
-                if (keyListener.isKeyPressed(KeyEvent.VK_S)) {
-                    manager.camera[id].position.z += 0.1f * deltaTime;
-                    System.out.println(manager.camera[id].position.z);
-                }
-                if (keyListener.isKeyPressed(KeyEvent.VK_A)) {
-                    manager.camera[id].position.x -= 0.1f * deltaTime;
-                    System.out.println(manager.camera[id].position.x);
-                }
-                if (keyListener.isKeyPressed(KeyEvent.VK_D)) {
-                    manager.camera[id].position.x += 0.1f * deltaTime;
-                    System.out.println(manager.camera[id].position.x);
-                }
+            if (keyListener.isKeyPressed(KeyEvent.VK_W)) {
+                manager.transform[id].pos.z -= 0.1f * deltaTime;
+                System.out.println(manager.transform[id].pos.z);
             }
+            if (keyListener.isKeyPressed(KeyEvent.VK_S)) {
+                manager.transform[id].pos.z += 0.1f * deltaTime;
+                System.out.println(manager.transform[id].pos.z);
+            }
+            if (keyListener.isKeyPressed(KeyEvent.VK_A)) {
+                manager.transform[id].pos.x -= 0.1f * deltaTime;
+                System.out.println(manager.transform[id].pos.x);
+            }
+            if (keyListener.isKeyPressed(KeyEvent.VK_D)) {
+                manager.transform[id].pos.x += 0.1f * deltaTime;
+                System.out.println(manager.transform[id].pos.x);
+            }
+
+            // set camera position to player position
+            Camera cam = Camera.getInstance();
+            cam.position = manager.transform[id].pos;
+
+            // offset camera position
+            cam.position = RenderMaths.addVectors(cam.position, manager.playerMovement[id].cameraOffset);
         }
     }
 }
