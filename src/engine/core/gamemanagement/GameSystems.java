@@ -1,6 +1,8 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.configuration.Configurator;
+import src.engine.core.inputtools.MMouseListener;
+import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
 import java.util.concurrent.ExecutorService;
@@ -89,6 +91,63 @@ public class GameSystems {
 
         }
 
+    }
+
+    public static class PlayerMovement extends GameSystem{
+
+        @Override
+        public void start(EntityManager manager) {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) {
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    doCameraMovement(manager, i, deltaTime);
+                }
+            }
+
+        }
+
+        private void doCameraMovement(EntityManager manager, int id, float deltaTime){
+
+
+            Camera cam = Camera.getInstance();
+            cam.rotation.y += MMouseListener.getInstance().getMouseDeltaX() * manager.playerMovement[id].mouseSpeed * deltaTime;
+
+            float mouseY = MMouseListener.getInstance().getMouseDeltaY();
+            cam.rotation.x += mouseY * deltaTime * manager.playerMovement[id].mouseSpeed;
+
+            // Clamp the vertical rotation to a range if you don't want it to flip over
+            if (cam.rotation.x > 0.1f)
+                cam.rotation.x = 0.1f;
+            if (cam.rotation.x < -0.2f)
+                cam.rotation.x = -0.2f;
+
+
+
+/*
+            // Vertical camera rotation (x-axis) based on vertical mouse movement
+            cam.rotation.y += MMouseListener.getInstance().getMouseX() * 0.01f;
+
+
+            // angle sin cos
+
+
+           /* if(x>z){
+
+                cam.rotation.x -= z * mouseY * 0.001f;
+                cam.rotation.x += x * mouseY * 0.001f;
+            }
+            else {
+                cam.rotation.x += z * mouseY * 0.001f;
+                cam.rotation.x -= x * mouseY * 0.001f;
+            }*/
+
+
+        }
     }
 
 
