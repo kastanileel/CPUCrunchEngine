@@ -75,10 +75,6 @@ public class Mesh {
             }
         }
 
-        for(Triangle t: triangles){
-            t.renderType = GameComponents.Rendering.RenderType.Textured;
-        }
-
         this.textureTriangles = textureTriangles.toArray(new Triangle[0]);
         this.triangles = triangles.toArray(new Triangle[0]);
 
@@ -132,9 +128,6 @@ public class Mesh {
                     triangles.add(new Triangle(vertices.get(Integer.parseInt(tokens[1].split("//")[0]) - 1), vertices.get(Integer.parseInt(tokens[2].split("//")[0]) - 1), vertices.get(Integer.parseInt(tokens[3].split("//")[0]) - 1)));
                     if(normal)
                         triangles.getLast().normal = normals.get(Integer.parseInt(tokens[1].split("//")[2]) - 1);
-
-                    // set color
-                    triangles.getLast().color = objColor;
                 }
                 if(tokens.length == 5){
                     triangles.add(new Triangle(vertices.get(Integer.parseInt(tokens[1].split("//")[0]) - 1), vertices.get(Integer.parseInt(tokens[2].split("//")[0]) - 1), vertices.get(Integer.parseInt(tokens[3].split("//")[0]) - 1)));
@@ -146,9 +139,10 @@ public class Mesh {
                 }
             }
         }
-        for(Triangle t: triangles){
-            t.color = objColor;
-            t.renderType = GameComponents.Rendering.RenderType.Textured;
+
+        // iterate over triangles
+        for (int i = 0; i < triangles.size(); i++) {
+            triangles.get(i).color = objColor;
         }
 
         this.triangles = triangles.toArray(new Triangle[0]);
@@ -260,9 +254,6 @@ public class Mesh {
 
         // iterate over triangles
 
-        for(Triangle t: triangles){
-            t.renderType = GameComponents.Rendering.RenderType.Textured;
-        }
 
         this.triangles = triangles.toArray(new Triangle[0]);
 

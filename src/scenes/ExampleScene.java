@@ -18,40 +18,94 @@ public class ExampleScene extends Scene {
         // for loop to create floor*/
 
         try {
-       for(int width = 0; width < 1; width ++){
-            for(int length = 0; length < 1; length ++){
-                int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-                if(id > -1){
-                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj", Color.blue);
-                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                    manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
-                    manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                    manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+            for(int width = 0; width < 30; width ++){
+                for(int length = 0; length < 30; length ++){
+                    int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+                    if(id > -1){
+                        manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj", Color.blue);
+                        manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                        manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
+                        manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                        manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
+                    }
                 }
             }
-        }
+
+       /*int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+       if(id > -1){
+           manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.red);
+           manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+           manager.transform[id].pos = new Vector3(0.0f, 5.0f, 15.0f);
+           manager.transform[id].rot = new Vector3(0.0f, 3.1415f, 0.0f);
+           manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+       }*/
 
        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if(id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock128.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                manager.transform[id].pos = new Vector3(0.0f, -0.5f, 5.0f);
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.blue);//"./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(1.0f, -0.5f, 15.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
 
             }
 
-       int id2 = manager.createEntity(GameComponents.TRANSFORM | GameComponents.CAMERA);
-            if(id2 > -1){
-                manager.transform[id2].pos = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id2].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id2].scale = new Vector3(1.0f, 1.0f, 1.0f);
-                manager.camera[id2].position = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.camera[id2].rotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/tri.obj", Color.red);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Emissive;
+                manager.transform[id].pos = new Vector3(1.0f, 0.0f, 9.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+
             }
 
-        /*int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
+                manager.transform[id].pos = new Vector3(-2.0f, -0.5f, 15.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+
+            }
+
+
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.blue);//"./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(1.0f, -0.5f, 15.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.CYAN);//"./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OutlineOnly;
+                manager.transform[id].pos = new Vector3(-0.5f, 0.5f, 15.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PLAYERMOVEMENT);
+            if (id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.red);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+                manager.playerMovement[id].mouseSpeed = 0.05f;
+            }
+
+
+       /* int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+
         if(id > -1){
             manager.rendering[id].mesh = new Mesh("./src/objects/rock/fn49.obj", Color.red);
             manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0);

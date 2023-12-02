@@ -10,7 +10,7 @@ public class GameComponents {
             TRANSFORM = 1,
             RENDER = 1 << 1,
             VELOCITY = 1 << 3,
-            CAMERA = 1 << 4;
+            PLAYERMOVEMENT = 1 << 4;
 
     public static class Transform {
         public Vector3 pos;
@@ -24,8 +24,9 @@ public class GameComponents {
             OneColor,
             Textured,
             TexturedAndOutline,
-            OneColorAndOutline,
-            OneColorDerivedFromTexture
+            Emissive,
+            //OneColorAndOutline,
+            //OneColorDerivedFromTexture,
 
         }
         public Mesh mesh;
@@ -40,8 +41,8 @@ public class GameComponents {
         float speed = 1.0f;
     }
 
-    public static class Camera{
-        public Vector3 position;
-        public Vector3 rotation;
+    public static class PlayerMovement{
+        public float mouseSpeed = 0.1f;
     }
+
 }
