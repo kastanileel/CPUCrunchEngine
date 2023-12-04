@@ -1,6 +1,7 @@
 package src.engine.core.gamemanagement;
 
 
+import src.engine.core.inputtools.MMouseListener;
 import src.scenes.ExampleScene;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class GameContainer {
     EntityManager manager;
     GameSystems.Renderer rasterizer;
     GameSystems.Velocity velocity;
+    GameSystems.PlayerMovement playerMovement;
 
     GameSystems.CollisionSystem collisionSystem;
 
@@ -28,7 +30,11 @@ public class GameContainer {
 
         rasterizer = new GameSystems.Renderer();
         velocity = new GameSystems.Velocity();
+<<<<<<< HEAD
         collisionSystem = new GameSystems.CollisionSystem();
+=======
+        playerMovement = new GameSystems.PlayerMovement();
+>>>>>>> main
 
 
        Scene example = new ExampleScene(1000, "example");
@@ -47,9 +53,11 @@ public class GameContainer {
 
 
         while(true) {
-            float deltaTime = ((float) System.nanoTime() / 1000000 - lastTime) / 1000.0f;
+            long currentSystemTime = System.nanoTime();
+            float deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
-            lastTime = System.nanoTime() / 1000000;
+
+            lastTime = currentSystemTime;
 
             if(!currentSceneName.equals(activeSceneName)){
                 Scene activeScene = scenes.get(currentSceneName);
@@ -67,7 +75,10 @@ public class GameContainer {
             rasterizer.update(manager, deltaTime);
             velocity.update(manager, deltaTime);
             collisionSystem.update(manager, deltaTime);
+            playerMovement.update(manager, deltaTime);
 
+
+            MMouseListener.getInstance().update();
 
         }
 

@@ -75,8 +75,7 @@ public class DrawingWindow extends JPanel {
      * This method clears the image buffer before every render cycle.
      */
     public void clear() {
-        Color transparent = new Color(0, 0, 0, 0);
-        graphics.setColor(transparent);
+        graphics.setColor(Color.black);
         graphics.fillRect(0, 0, getWidth(), getHeight());
     }
 

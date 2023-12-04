@@ -8,11 +8,12 @@ public class EntityManager {
 
     public int flag[];
 
-    public GameComponents.Transform transform[];
-    public GameComponents.Rendering rendering[];
-    public GameComponents.Velocity velocity[];
-
+    public GameComponents.Transform[] transform;
+    public GameComponents.Rendering[] rendering;
+    public GameComponents.Velocity[] velocity;
+    public GameComponents.PlayerMovement[] playerMovement;
     public GameComponents.Collider collider[];
+
     public final int size;
 
     public HashMap<Integer, CollisionInformation> collisionList = new HashMap<>();
@@ -24,6 +25,7 @@ public class EntityManager {
         rendering = new GameComponents.Rendering[size];
         velocity = new GameComponents.Velocity[size];
         collider = new GameComponents.Collider[size];
+        playerMovement = new GameComponents.PlayerMovement[size];
 
         flag = new int[size];
 
@@ -40,6 +42,8 @@ public class EntityManager {
                     collider[i] = new GameComponents.Collider();
                     collisionList.put(i,new CollisionInformation());
                 }
+                if ((flag & GameComponents.PLAYERMOVEMENT) > 0) playerMovement[i] = new GameComponents.PlayerMovement();
+
                 return i;
             }
         }
