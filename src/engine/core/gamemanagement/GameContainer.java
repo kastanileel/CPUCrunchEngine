@@ -30,11 +30,9 @@ public class GameContainer {
 
         rasterizer = new GameSystems.Renderer();
         velocity = new GameSystems.Velocity();
-<<<<<<< HEAD
         collisionSystem = new GameSystems.CollisionSystem();
-=======
         playerMovement = new GameSystems.PlayerMovement();
->>>>>>> main
+
 
 
        Scene example = new ExampleScene(1000, "example");
