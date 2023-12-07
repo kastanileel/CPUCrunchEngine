@@ -93,7 +93,7 @@ public class ExampleScene extends Scene {
 
             }
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.VELOCITY);
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT  | GameComponents.PHYSICSBODY);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -101,8 +101,8 @@ public class ExampleScene extends Scene {
                 manager.playerMovement[id].mouseSpeed = 0.05f;
                 manager.playerMovement[id].moveSpeed = 3.0f;
                 manager.playerMovement[id].cameraOffset = new Vector3(0, 0, 0);
-                manager.velocity[id].speed = 3.0f;
-                manager.velocity[id].velocity = new Vector3(0, 0, 0);
+                manager.physicsBody[id].speed = 3.0f;
+                manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
             }
 
 

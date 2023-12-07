@@ -6,8 +6,8 @@ public class EntityManager {
 
     public GameComponents.Transform[] transform;
     public GameComponents.Rendering[] rendering;
-    public GameComponents.Velocity[] velocity;
     public GameComponents.PlayerMovement[] playerMovement;
+    public GameComponents.PhysicsBody[] physicsBody;
 
     public final int size;
 
@@ -16,8 +16,8 @@ public class EntityManager {
 
         transform = new GameComponents.Transform[size];
         rendering = new GameComponents.Rendering[size];
-        velocity = new GameComponents.Velocity[size];
         playerMovement = new GameComponents.PlayerMovement[size];
+        physicsBody = new GameComponents.PhysicsBody[size];
 
         flag = new int[size];
 
@@ -29,8 +29,8 @@ public class EntityManager {
                 this.flag[i] = flag;
                 if ((flag & GameComponents.TRANSFORM) > 0) transform[i] = new GameComponents.Transform();
                 if ((flag & GameComponents.RENDER) > 0) rendering[i] = new GameComponents.Rendering();
-                if ((flag & GameComponents.VELOCITY) > 0) velocity[i] = new GameComponents.Velocity();
                 if ((flag & GameComponents.PLAYERMOVEMENT) > 0) playerMovement[i] = new GameComponents.PlayerMovement();
+                if ((flag & GameComponents.PHYSICSBODY) > 0) physicsBody[i] = new GameComponents.PhysicsBody();
 
                 return i;
             }
