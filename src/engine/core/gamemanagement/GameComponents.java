@@ -40,7 +40,6 @@ public class GameComponents {
 
     public static class PhysicsBody{
         public Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
-        public Vector3 maxVelocity = new Vector3(2.5f, 3.0f, 5.0f);
         public float speed = 1.0f;
         public Vector3 force = new Vector3(0.0f, 0.0f, 0.0f);
         public Vector3 acceleration = new Vector3(0.0f, 0.0f, 0.0f);
