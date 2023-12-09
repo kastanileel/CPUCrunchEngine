@@ -13,29 +13,7 @@ import java.util.concurrent.Executors;
 
 
 public class GameSystems {
-
-    public static class Velocity extends GameSystem{
-
-        @Override
-        public void start(EntityManager manager){
-
-        }
-
-        @Override
-        public void update(EntityManager manager, float deltaTime){
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.VELOCITY;
-            for (int i = 0; i < manager.size; i++) {
-                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    manager.transform[i].pos.x += manager.velocity[i].velocity.x  * deltaTime * manager.velocity[i].speed;
-                    manager.transform[i].pos.y += manager.velocity[i].velocity.y  * deltaTime * manager.velocity[i].speed;
-                    manager.transform[i].pos.z += manager.velocity[i].velocity.z  * deltaTime * manager.velocity[i].speed;
-                }
-            }
-        }
-    }
-
-
-
+    
     public static class Renderer extends GameSystem{
 
         ExecutorService executor = Executors.newFixedThreadPool(2); // N is the number of threads
@@ -99,6 +77,8 @@ public class GameSystems {
 
     public static class PlayerMovement extends GameSystem{
         MKeyListener keyListener = MKeyListener.getInstance();
+        float jumpTime = 0.0f;
+        float maxJumpTime = 0.5f;
 
         @Override
         public void start(EntityManager manager) {
@@ -107,7 +87,7 @@ public class GameSystems {
 
         @Override
         public void update(EntityManager manager, float deltaTime) {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.VELOCITY;
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     doCameraRotation(manager, i, deltaTime);
@@ -145,13 +125,13 @@ public class GameSystems {
                 forward = moveSpeed;
             }
             if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
-                forward = -moveSpeed/ 3.0f;
+                forward = -moveSpeed/2.0f;
             }
             if (keyListener.isKeyPressed('A') || keyListener.isKeyPressed('a') ) {
-                right = moveSpeed/2.0f;
+                right = moveSpeed/1.7f;
             }
             if (keyListener.isKeyPressed('D') || keyListener.isKeyPressed('d') ) {
-                right = -moveSpeed/2.0f;
+                right = -moveSpeed/1.7f;
             }
 
             // calculate the forward vector
@@ -160,11 +140,100 @@ public class GameSystems {
             float sinY = (float) Math.sin(Math.toRadians(cam.rotation.y));
 
             // apply movement to velocity, important when beeing rotated 0 degrees we move along the z axis
-            manager.velocity[id].velocity.x = (forward * sinY) + (right * cosY);
-            manager.velocity[id].velocity.z = (forward * cosY) - (right * sinY);
+           // manager.physicsBody[id].velocity.x = (forward * sinY) + (right * cosY);
+            //manager.physicsBody[id].velocity.z = (forward * cosY) - (right * sinY);
+           // System.out.println("forward: " + forward + " right: " + right);
+
+            manager.physicsBody[id].force.x = ((forward * sinY) + (right * cosY)) * manager.physicsBody[id].mass * moveSpeed;
+            manager.physicsBody[id].force.z = ((forward * cosY) - (right * sinY)) * manager.physicsBody[id].mass * moveSpeed;
+
+           // System.out.println("force x: " + manager.physicsBody[id].force.x + " force z: " + manager.physicsBody[id].force.z);
+
+            // check if space is pressed
+            if(keyListener.isKeyPressed(' ')){
+                if(jumpTime < maxJumpTime){
+                    manager.physicsBody[id].force.y = manager.playerMovement[id].jumpIntensity * manager.physicsBody[id].mass;
+                    jumpTime += deltaTime;
+                    //manager.physicsBody[id].velocity.y = 0.0f;
+                }
+            }
+            else{
+                jumpTime = 0.0f;
+            }
 
             // set and offset camera position
-            cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
+           cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
+        }
+    }
+
+    public static class PyhsicsHandler extends GameSystem{
+        @Override
+        public void start(EntityManager manager) {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) {
+
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PHYSICSBODY;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+
+                    // apply gravity -> change force
+                    // Apply gravity -> change force
+                    if(manager.transform[i].pos.y > 0.0f){
+                        manager.physicsBody[i].force.y -= 9.81f * manager.physicsBody[i].mass;
+                    }
+                       // manager.physicsBody[i].force.y -= 9.81f * manager.physicsBody[i].mass;
+                    else {
+
+
+                        // check if upwars force is applied
+                        if(manager.physicsBody[i].force.y <= 0.0f){
+                            manager.physicsBody[i].force.y = 0.0f;
+                            manager.transform[i].pos.y = 0.0f;
+                        }
+
+                    }
+
+                    // apply force -> change acceleration
+                    manager.physicsBody[i].acceleration.x = manager.physicsBody[i].force.x / manager.physicsBody[i].mass;
+                    manager.physicsBody[i].acceleration.y = manager.physicsBody[i].force.y / manager.physicsBody[i].mass;
+                    manager.physicsBody[i].acceleration.z = manager.physicsBody[i].force.z / manager.physicsBody[i].mass;
+
+                    System.out.println("acceleration x: " + manager.physicsBody[i].acceleration.x + " acceleration z: " + manager.physicsBody[i].acceleration.z);
+
+                    // apply acceleration -> change velocity
+                    manager.physicsBody[i].velocity.x += manager.physicsBody[i].acceleration.x * deltaTime;
+                    manager.physicsBody[i].velocity.y += manager.physicsBody[i].acceleration.y * deltaTime;
+                    manager.physicsBody[i].velocity.z += manager.physicsBody[i].acceleration.z * deltaTime;
+
+                    System.out.println("velocity x: " + manager.physicsBody[i].velocity.x  + " velocity z: " + manager.physicsBody[i].velocity.z);
+                    // max velocity
+                    if (manager.physicsBody[i].velocity.x > manager.physicsBody[i].maxVelocity.x) manager.physicsBody[i].velocity.x = manager.physicsBody[i].maxVelocity.x;
+                    if (manager.physicsBody[i].velocity.y > manager.physicsBody[i].maxVelocity.y) manager.physicsBody[i].velocity.y = manager.physicsBody[i].maxVelocity.y;
+                    if (manager.physicsBody[i].velocity.z > manager.physicsBody[i].maxVelocity.z) manager.physicsBody[i].velocity.z = manager.physicsBody[i].maxVelocity.z;
+
+
+                    // apply velocity -> change position
+                    manager.transform[i].pos.x += manager.physicsBody[i].velocity.x * deltaTime;
+                    manager.transform[i].pos.y += manager.physicsBody[i].velocity.y * deltaTime;
+                    manager.transform[i].pos.z += manager.physicsBody[i].velocity.z * deltaTime;
+
+                    // reset force
+                    manager.physicsBody[i].force.x = 0.0f;
+                    manager.physicsBody[i].force.y = 0.0f;
+                    manager.physicsBody[i].force.z = 0.0f;
+
+                    // apply friction
+                    manager.physicsBody[i].velocity.x *= 0.95f;
+                    manager.physicsBody[i].velocity.y *= 0.95f;
+                    manager.physicsBody[i].velocity.z *= 0.95f;
+
+
+                }
+            }
+
         }
     }
 }

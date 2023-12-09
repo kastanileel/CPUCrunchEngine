@@ -15,7 +15,7 @@ public class GameContainer {
 
     EntityManager manager;
     GameSystems.Renderer rasterizer;
-    GameSystems.Velocity velocity;
+    GameSystems.PyhsicsHandler physicsHandler;
     GameSystems.PlayerMovement playerMovement;
 
     HashMap<String, Scene> scenes;
@@ -27,7 +27,7 @@ public class GameContainer {
         manager = new EntityManager(2000);
 
         rasterizer = new GameSystems.Renderer();
-        velocity = new GameSystems.Velocity();
+        physicsHandler = new GameSystems.PyhsicsHandler();
         playerMovement = new GameSystems.PlayerMovement();
 
 
@@ -62,11 +62,11 @@ public class GameContainer {
                 activeSceneName = currentSceneName;
 
                 rasterizer.start(manager);
-                velocity.start(manager);
+                physicsHandler.start(manager);
             }
 
             rasterizer.update(manager, deltaTime);
-            velocity.update(manager, deltaTime);
+            physicsHandler.update(manager, deltaTime);
             playerMovement.update(manager, deltaTime);
 
             MMouseListener.getInstance().update();
