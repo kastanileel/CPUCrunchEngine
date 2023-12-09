@@ -40,7 +40,7 @@ public class GameComponents {
 
     public static class PhysicsBody{
         public Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
-        public Vector3 maxVelocity = new Vector3(1.0f, 1.0f, 1.0f);
+        public Vector3 maxVelocity = new Vector3(2.5f, 3.0f, 5.0f);
         public float speed = 1.0f;
         public Vector3 force = new Vector3(0.0f, 0.0f, 0.0f);
         public Vector3 acceleration = new Vector3(0.0f, 0.0f, 0.0f);
@@ -51,7 +51,9 @@ public class GameComponents {
 
     public static class PlayerMovement{
         public float mouseSpeed = 0.03f;
-        public float moveSpeed = 1.0f;
+        public float moveSpeed = 4.0f;
+
+        public float jumpIntensity = 20.0f;
         public Vector3 cameraOffset = new Vector3(0, 0, 0);
     }
 
