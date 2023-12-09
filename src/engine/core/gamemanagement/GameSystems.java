@@ -13,29 +13,7 @@ import java.util.concurrent.Executors;
 
 
 public class GameSystems {
-
-  /*  public static class Velocity extends GameSystem{
-
-        @Override
-        public void start(EntityManager manager){
-
-        }
-
-        @Override
-        public void update(EntityManager manager, float deltaTime){
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PHYSICSBODY;
-            for (int i = 0; i < manager.size; i++) {
-                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    manager.transform[i].pos.x += manager.physicsBody[i].velocity.x  * deltaTime * manager.physicsBody[i].speed;
-                    manager.transform[i].pos.y += manager.physicsBody[i].velocity.y  * deltaTime * manager.physicsBody[i].speed;
-                    manager.transform[i].pos.z += manager.physicsBody[i].velocity.z  * deltaTime * manager.physicsBody[i].speed;
-                }
-            }
-        }
-    }*/
-
-
-
+    
     public static class Renderer extends GameSystem{
 
         ExecutorService executor = Executors.newFixedThreadPool(2); // N is the number of threads
