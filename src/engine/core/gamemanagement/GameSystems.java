@@ -3,10 +3,13 @@ package src.engine.core.gamemanagement;
 import src.engine.configuration.Configurator;
 import src.engine.core.inputtools.MKeyListener;
 import src.engine.core.inputtools.MMouseListener;
+import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.RenderMaths;
+import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,14 +64,12 @@ public class GameSystems {
 
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    renderPip.renderObject(manager.rendering[i].mesh, manager.transform[i].pos, manager.transform[i].rot, manager.transform[i].scale);
+                    renderPip.renderObject(manager.rendering[i].mesh, RenderMaths.addVectors(manager.transform[i].pos, manager.rendering[i].modelPosition) , RenderMaths.addVectors(manager.transform[i].rot, manager.rendering[i].modelRotation), manager.transform[i].scale);
                 }
             }
 
             // run this in a second thread
             renderPip.stepTwo();
-
-
             renderPip.draw();
 
         }
@@ -83,6 +84,9 @@ public class GameSystems {
         float dashTime = 0.0f;
         float maxDashTime = 0.5f;
 
+        float shootingCooldown = 0.0f;
+        float maxShootingCooldown = 0.3f;
+
         @Override
         public void start(EntityManager manager) {
 
@@ -95,6 +99,7 @@ public class GameSystems {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     doCameraRotation(manager, i, deltaTime);
                     doPlayerMovement(manager, i, deltaTime);
+                    doShooting(manager, i, deltaTime);
 
                 }
             }
@@ -116,9 +121,17 @@ public class GameSystems {
             if (cam.rotation.x < -0.2f)
                 cam.rotation.x = -0.2f;
 
+            float yRot = cam.rotation.y;
+            Vector3 vec = manager.rendering[id].modelTranslation;
+
+            // rotate the model offset with the camera
+            manager.rendering[id].modelPosition = RenderMaths.rotateVectorY(vec, yRot);
+
+            manager.transform[id].rot.y = yRot;
+
         }
            
-        public void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
+        private void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
 
             float moveSpeed = manager.playerMovement[id].moveSpeed;
             float forward = 0.0f;
@@ -149,11 +162,11 @@ public class GameSystems {
             }
             // calculate the forward vector
             Camera cam = Camera.getInstance();
-            float cosY = (float) Math.cos(Math.toRadians(cam.rotation.y));
-            float sinY = (float) Math.sin(Math.toRadians(cam.rotation.y));
+            float cosY = (float) Math.cos(cam.rotation.y);
+            float sinY = (float) Math.sin(cam.rotation.y);
 
-            manager.physicsBody[id].force.x = ((forward * sinY) + (right * cosY)) * manager.physicsBody[id].mass * moveSpeed;
-            manager.physicsBody[id].force.z = ((forward * cosY) - (right * sinY)) * manager.physicsBody[id].mass * moveSpeed;
+            manager.physicsBody[id].force.z = (forward * cosY + right * sinY) * moveSpeed * manager.physicsBody[id].mass;
+            manager.physicsBody[id].force.x = (-sinY * forward + right* cosY) * moveSpeed * manager.physicsBody[id].mass;
 
 
             if(keyListener.isKeyPressed(' ')){
@@ -167,7 +180,44 @@ public class GameSystems {
             }
 
             // set and offset camera position
-           cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
+            cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
+        }
+
+        private void doShooting(EntityManager manager, int id, float deltaTime){
+            shootingCooldown -= deltaTime;
+
+            if(MMouseListener.getInstance().isLeftButtonPressed()){
+                if(shootingCooldown <= 0.0f){
+                    shootingCooldown = maxShootingCooldown;
+                    int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET);
+                    if(bulletId > -1){
+
+                        Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
+                        direction = RenderMaths.rotateVectorX(direction, Camera.getInstance().rotation.x);
+                        direction = RenderMaths.rotateVectorZ(direction, Camera.getInstance().rotation.z);
+
+
+                        try {
+                            manager.transform[bulletId].pos = manager.transform[id].pos.clone();
+                            manager.transform[bulletId].rot = manager.transform[id].rot.clone();
+                            manager.transform[bulletId].scale = new Vector3(0.1f, 0.1f, 0.1f);
+                            manager.physicsBody[bulletId].mass = 0.1f;
+                            manager.bullet[bulletId].direction = direction;
+                            manager.rendering[bulletId].mesh = new Mesh("./src/objects/guns/bullets/bullet.obj", Color.RED);
+                            manager.rendering[bulletId].renderType = GameComponents.Rendering.RenderType.OneColor;
+                            manager.rendering[bulletId].modelRotation = new Vector3(0.0f, 3.1415f/2.0f, 0.0f);
+                            manager.physicsBody[bulletId].speed = 250.0f;
+                            manager.bullet[bulletId].lifeTime = 5.0f;
+                            manager.bullet[bulletId].damage = 1;
+
+                        }
+                        catch (Exception e){
+                            System.out.println("Error creating bullet");
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -229,5 +279,44 @@ public class GameSystems {
             }
 
         }
+    }
+
+
+    public static class BulletSystem extends GameSystem{
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+
+                    // substract deltaTime from the bullet lifetime
+                    manager.bullet[i].lifeTime -= deltaTime;
+
+                    // check if the bullet is still alive
+                    if(manager.bullet[i].lifeTime <= 0.0f){
+                        manager.flag[i] = 0;
+                        continue;
+                    }
+
+                    // add force to the bullet
+                    manager.physicsBody[i].force.x = manager.bullet[i].direction.x * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
+                    manager.physicsBody[i].force.y = manager.bullet[i].direction.y * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
+                    manager.physicsBody[i].force.z = manager.bullet[i].direction.z * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
+
+                    // interpolate bullet position and follow position fully within the first 0.5 seconds of lifetime
+
+                }
+            }
+
+        }
+
+
     }
 }

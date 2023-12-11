@@ -8,7 +8,7 @@ public class EntityManager {
     public GameComponents.Rendering[] rendering;
     public GameComponents.PlayerMovement[] playerMovement;
     public GameComponents.PhysicsBody[] physicsBody;
-
+    public GameComponents.Bullet[] bullet;
     public final int size;
 
     public EntityManager(int size) {
@@ -18,6 +18,7 @@ public class EntityManager {
         rendering = new GameComponents.Rendering[size];
         playerMovement = new GameComponents.PlayerMovement[size];
         physicsBody = new GameComponents.PhysicsBody[size];
+        bullet = new GameComponents.Bullet[size];
 
         flag = new int[size];
 
@@ -31,6 +32,7 @@ public class EntityManager {
                 if ((flag & GameComponents.RENDER) > 0) rendering[i] = new GameComponents.Rendering();
                 if ((flag & GameComponents.PLAYERMOVEMENT) > 0) playerMovement[i] = new GameComponents.PlayerMovement();
                 if ((flag & GameComponents.PHYSICSBODY) > 0) physicsBody[i] = new GameComponents.PhysicsBody();
+                if ((flag & GameComponents.BULLET) > 0) bullet[i] = new GameComponents.Bullet();
 
                 return i;
             }

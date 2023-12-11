@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class GameContainer {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws Exception {
         new GameContainer();
     }
 
@@ -17,18 +17,21 @@ public class GameContainer {
     GameSystems.Renderer rasterizer;
     GameSystems.PyhsicsHandler physicsHandler;
     GameSystems.PlayerMovement playerMovement;
+    GameSystems.BulletSystem bulletSystem;
 
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
 
-    GameContainer() throws IOException, InterruptedException {
+    GameContainer() throws Exception {
         scenes = new HashMap<>();
         manager = new EntityManager(2000);
 
         rasterizer = new GameSystems.Renderer();
         physicsHandler = new GameSystems.PyhsicsHandler();
         playerMovement = new GameSystems.PlayerMovement();
+
+        bulletSystem = new GameSystems.BulletSystem();
 
 
        Scene example = new ExampleScene(1000, "example");
@@ -39,7 +42,7 @@ public class GameContainer {
         startGameLoop();
     }
 
-    void startGameLoop() throws InterruptedException, IOException {
+    void startGameLoop() throws Exception {
 
         String activeSceneName = "";
 
@@ -68,6 +71,7 @@ public class GameContainer {
             rasterizer.update(manager, deltaTime);
             physicsHandler.update(manager, deltaTime);
             playerMovement.update(manager, deltaTime);
+            bulletSystem.update(manager, deltaTime);
 
             MMouseListener.getInstance().update();
 
