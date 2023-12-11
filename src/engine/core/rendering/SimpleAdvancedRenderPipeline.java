@@ -372,35 +372,40 @@ public class SimpleAdvancedRenderPipeline {
                     // Clipping may yield a variable number of triangles, so
                     // add these new ones to the back of the queue for subsequent
                     // clipping against next planes
-                    for (int w = 0; w < nTrisToAdd; w++)
+                    for (int w = 0; w < nTrisToAdd; w++) {
                         clippedTriangs.add(clipped[w]);
+                    }
                 }
                 nNewTriangles = clippedTriangs.size();
             }
 
             for (Triangle triangle : clippedTriangs) {
                 // switch between different render types
-                switch (triangle.renderType){
-                    case OneColor -> drawingWindow.drawTriangle(triangle);
-                    case OutlineOnly -> drawingWindow.drawTriangleOutline(triangle);
-                    case Textured -> {
-                        try{
-                            mesh =  meshesToRender.get(triangle.meshIndex);
-                            drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
-                        }
-                        catch (Exception e){
+                try {
+                    switch (triangle.renderType) {
+                        case OneColor -> drawingWindow.drawTriangle(triangle);
+                        case OutlineOnly -> drawingWindow.drawTriangleOutline(triangle);
+                        case Textured -> {
+                            try {
+                                mesh = meshesToRender.get(triangle.meshIndex);
+                                drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                            } catch (Exception e) {
 
-                            triangle.color = Color.RED;
-                             drawingWindow.drawTriangle(triangle);
+                                triangle.color = Color.RED;
+                                drawingWindow.drawTriangle(triangle);
+                            }
+                        }
+                        case TexturedAndOutline -> {
+                            mesh = meshesToRender.get(triangle.meshIndex);
+                            drawingWindow.drawTriangleImprovedOutline(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                        }
+                        case Emissive -> {
+                            drawingWindow.drawTriangleNoLighting(triangle);
                         }
                     }
-                    case TexturedAndOutline -> {
-                        mesh =  meshesToRender.get(triangle.meshIndex);
-                        drawingWindow.drawTriangleImprovedOutline(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
-                    }
-                    case Emissive -> {
-                        drawingWindow.drawTriangleNoLighting(triangle);
-                    }
+                }
+                catch (Exception e){
+                    drawingWindow.drawTriangle(triangle);
                 }
 
             }

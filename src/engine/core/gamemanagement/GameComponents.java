@@ -11,7 +11,8 @@ public class GameComponents {
             RENDER = 1 << 2,
 
             PHYSICSBODY = 1 << 3,
-            PLAYERMOVEMENT = 1 << 4;
+            PLAYERMOVEMENT = 1 << 4,
+            BULLET = 1 << 5;
 
     public static class Transform {
         public Vector3 pos;
@@ -58,6 +59,15 @@ public class GameComponents {
 
         public float jumpIntensity = 20.0f;
         public Vector3 cameraOffset = new Vector3(0, 0, 0);
+    }
+
+    public static class Bullet{
+        public float speed = 10.0f;
+        public float lifeTime = 5.0f;
+        public int damage = 1;
+
+        public Vector3 direction = new Vector3(0, 0, 0);
+
     }
 
 }

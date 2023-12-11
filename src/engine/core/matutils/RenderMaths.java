@@ -130,6 +130,31 @@ public class RenderMaths {
         return erg;
     }
 
+    public static Vector3 rotateVectorX(Vector3 vec, float angle){
+        Vector3 erg = new Vector3();
+        float cosAngle = (float) Math.cos(angle);
+        float sinAngle = (float) Math.sin(angle);
+
+        erg.x = vec.x;
+        erg.y = vec.y * cosAngle - vec.z * sinAngle;
+        erg.z = vec.y * sinAngle + vec.z * cosAngle;
+
+        return erg;
+    }
+
+    public static Vector3 rotateVectorZ(Vector3 vec, float angle){
+        Vector3 erg = new Vector3();
+        float cosAngle = (float) Math.cos(angle);
+        float sinAngle = (float) Math.sin(angle);
+
+        erg.x = vec.x * cosAngle - vec.y * sinAngle;
+        erg.y = vec.x * sinAngle + vec.y * cosAngle;
+        erg.z = vec.z;
+
+        return erg;
+    }
+
+
     public static float[][] inverseMatrix(float[][] m) {
 
         float[][] matrix = new float[4][4];
