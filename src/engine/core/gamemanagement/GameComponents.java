@@ -34,6 +34,10 @@ public class GameComponents {
 
         public RenderType renderType;
 
+        public Vector3 modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+        public Vector3 modelTranslation = new Vector3(0.0f, 0.0f, 0.0f);
+        public Vector3 modelPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
 
     }
 

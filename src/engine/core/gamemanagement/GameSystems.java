@@ -61,7 +61,7 @@ public class GameSystems {
 
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    renderPip.renderObject(manager.rendering[i].mesh, manager.transform[i].pos, manager.transform[i].rot, manager.transform[i].scale);
+                    renderPip.renderObject(manager.rendering[i].mesh, RenderMaths.addVectors(manager.transform[i].pos, manager.rendering[i].modelTranslation) , manager.transform[i].rot, manager.transform[i].scale);
                 }
             }
 
@@ -149,11 +149,13 @@ public class GameSystems {
             }
             // calculate the forward vector
             Camera cam = Camera.getInstance();
-            float cosY = (float) Math.cos(Math.toRadians(cam.rotation.y));
-            float sinY = (float) Math.sin(Math.toRadians(cam.rotation.y));
+            float cosY = (float) Math.cos(cam.rotation.y);
+            float sinY = (float) Math.sin(cam.rotation.y);
 
-            manager.physicsBody[id].force.x = ((forward * sinY) + (right * cosY)) * manager.physicsBody[id].mass * moveSpeed;
-            manager.physicsBody[id].force.z = ((forward * cosY) - (right * sinY)) * manager.physicsBody[id].mass * moveSpeed;
+            System.out.println("cosY: " + cosY + " sinY: " + sinY);
+
+            manager.physicsBody[id].force.z = (forward * cosY + right * sinY) * moveSpeed * manager.physicsBody[id].mass;
+            manager.physicsBody[id].force.x = (-sinY * forward + right* cosY) * moveSpeed * manager.physicsBody[id].mass;
 
 
             if(keyListener.isKeyPressed(' ')){

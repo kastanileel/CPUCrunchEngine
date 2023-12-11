@@ -234,7 +234,7 @@ public class SimpleAdvancedRenderPipeline {
         // => basically taking a picture, the triangles are now only in 2D coordinates)
         float fNear = .1f;
         float fFar = 1000.0f;
-        float fFov = 90.0f;
+        float fFov = 120.0f;
         projectionMatrix = RenderMaths.projectionMatrix(fFov, fNear, fFar, height / width);
 
         for (int i = 0; i < mesh.triangles.length; i++) {
@@ -384,8 +384,14 @@ public class SimpleAdvancedRenderPipeline {
                     case OneColor -> drawingWindow.drawTriangle(triangle);
                     case OutlineOnly -> drawingWindow.drawTriangleOutline(triangle);
                     case Textured -> {
-                        mesh =  meshesToRender.get(triangle.meshIndex);
-                        drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                        try{
+                            mesh =  meshesToRender.get(triangle.meshIndex);
+                            drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
+                        }
+                        catch (Exception e){
+                            triangle.color = Color.RED;
+                             drawingWindow.drawTriangle(triangle);
+                        }
                     }
                     case TexturedAndOutline -> {
                         mesh =  meshesToRender.get(triangle.meshIndex);
