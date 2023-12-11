@@ -10,6 +10,18 @@ public class Quaternion {
         this.z = z;
     }
 
+    // Constructor using Euler angles
+    public Quaternion(float xAngle, float yAngle, float zAngle) {
+        float alpha = xAngle / 2;
+        float beta = yAngle / 2;
+        float gamma = zAngle / 2;
+
+        this.w = (float)(Math.cos(alpha) * Math.cos(beta) * Math.cos(gamma) + Math.sin(alpha) * Math.sin(beta) * Math.sin(gamma));
+        this.x = (float)(Math.sin(alpha) * Math.cos(beta) * Math.cos(gamma) - Math.cos(alpha) * Math.sin(beta) * Math.sin(gamma));
+        this.y = (float)(Math.cos(alpha) * Math.sin(beta) * Math.cos(gamma) + Math.sin(alpha) * Math.cos(beta) * Math.sin(gamma));
+        this.z = (float)(Math.cos(alpha) * Math.cos(beta) * Math.sin(gamma) - Math.sin(alpha) * Math.sin(beta) * Math.cos(gamma));
+    }
+
     // Method to normalize the quaternion
     public void normalize() {
         float magnitude = (float) Math.sqrt(w * w + x * x + y * y + z * z);
@@ -24,15 +36,15 @@ public class Quaternion {
     public static Vector3 rotateByQuaternion(Vector3 v, Quaternion q) {
         Quaternion qv = new Quaternion(0, v.x, v.y, v.z);
         Quaternion qConjugate = getConjugate(q);
-        Quaternion rotated = Quaternion.mul(qv, Quaternion.mul(q, qConjugate));
+        Quaternion rotated = Quaternion.mul(Quaternion.mul(q, qv), qConjugate); // Corrected order
         return new Vector3(rotated.x, rotated.y, rotated.z);
     }
 
-
-    // Helper function to rotate a vector by the inverse of a quaternion
     public static Vector3 rotateByQuaternionInverse(Vector3 v, Quaternion q) {
         Quaternion qConjugate = getConjugate(q);
-        return rotateByQuaternion(v, qConjugate);
+        Quaternion qv = new Quaternion(0, v.x, v.y, v.z);
+        Quaternion rotated = Quaternion.mul(Quaternion.mul(qConjugate, qv), q); // Corrected order for inverse
+        return new Vector3(rotated.x, rotated.y, rotated.z);
     }
 
     // Helper function to get the conjugate of a quaternion
