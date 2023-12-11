@@ -1,14 +1,13 @@
 package src.engine.core.rendering;
 
 
-import src.engine.core.gamemanagement.GameComponents;
-import src.engine.core.inputtools.MMouseListener;
+import src.engine.core.tools.MMouseListener;
 import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
 
 
-import src.engine.core.inputtools.MKeyListener;
+import src.engine.core.tools.MKeyListener;
 import src.engine.core.matutils.Vector3;
 
 import java.awt.*;

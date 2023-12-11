@@ -1,4 +1,4 @@
-package src.engine.core.inputtools;
+package src.engine.core.tools;
 
 import src.engine.configuration.Configurator;
 

@@ -1,10 +1,10 @@
 package src.engine.core.gamemanagement;
 
 
-import src.engine.core.inputtools.MMouseListener;
+import src.engine.core.tools.MMouseListener;
+import src.engine.core.tools.MusicPlayer;
 import src.scenes.ExampleScene;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class GameContainer {
@@ -47,6 +47,8 @@ public class GameContainer {
         String activeSceneName = "";
 
         long lastTime = System.nanoTime() / 1000000;
+
+        MusicPlayer.getInstance().loopMusic("src/sound/music.wav");
 
 
         while(true) {
