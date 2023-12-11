@@ -107,8 +107,8 @@ public class ExampleScene extends Scene {
 
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/gun.obj", "./src/objects/guns/pistol/gun.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                manager.rendering[id].modelTranslation = new Vector3(-0.3f, -.5f, 3.0f);
-                manager.rendering[id].modelRotation = new Vector3(0.0f, -3.1415f/2.0f, 0.0f);
+                manager.rendering[id].modelTranslation = new Vector3(-0.5f, 0.0f, 3.0f);
+                manager.rendering[id].modelRotation = new Vector3(0.0f, -3.8415f/2.0f, 0.0f);
             }
 
 

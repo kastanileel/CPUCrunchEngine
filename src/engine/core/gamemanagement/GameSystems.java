@@ -4,6 +4,7 @@ import src.engine.configuration.Configurator;
 import src.engine.core.inputtools.MKeyListener;
 import src.engine.core.inputtools.MMouseListener;
 import src.engine.core.matutils.RenderMaths;
+import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
@@ -61,14 +62,12 @@ public class GameSystems {
 
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    renderPip.renderObject(manager.rendering[i].mesh, RenderMaths.addVectors(manager.transform[i].pos, manager.rendering[i].modelTranslation) , manager.transform[i].rot, manager.transform[i].scale);
+                    renderPip.renderObject(manager.rendering[i].mesh, RenderMaths.addVectors(manager.transform[i].pos, manager.rendering[i].modelPosition) , RenderMaths.addVectors(manager.transform[i].rot, manager.rendering[i].modelRotation), manager.transform[i].scale);
                 }
             }
 
             // run this in a second thread
             renderPip.stepTwo();
-
-
             renderPip.draw();
 
         }
@@ -116,6 +115,14 @@ public class GameSystems {
             if (cam.rotation.x < -0.2f)
                 cam.rotation.x = -0.2f;
 
+            float yRot = cam.rotation.y;
+            Vector3 vec = manager.rendering[id].modelTranslation;
+
+            // rotate the model offset with the camera
+            manager.rendering[id].modelPosition = RenderMaths.rotateVectorY(vec, yRot);
+
+            manager.transform[id].rot.y = yRot;
+
         }
            
         public void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
@@ -152,8 +159,6 @@ public class GameSystems {
             float cosY = (float) Math.cos(cam.rotation.y);
             float sinY = (float) Math.sin(cam.rotation.y);
 
-            System.out.println("cosY: " + cosY + " sinY: " + sinY);
-
             manager.physicsBody[id].force.z = (forward * cosY + right * sinY) * moveSpeed * manager.physicsBody[id].mass;
             manager.physicsBody[id].force.x = (-sinY * forward + right* cosY) * moveSpeed * manager.physicsBody[id].mass;
 
@@ -169,7 +174,7 @@ public class GameSystems {
             }
 
             // set and offset camera position
-           cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
+            cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
         }
     }
 

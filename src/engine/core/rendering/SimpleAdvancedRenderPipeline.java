@@ -389,6 +389,7 @@ public class SimpleAdvancedRenderPipeline {
                             drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
                         }
                         catch (Exception e){
+
                             triangle.color = Color.RED;
                              drawingWindow.drawTriangle(triangle);
                         }

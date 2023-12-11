@@ -118,6 +118,18 @@ public class RenderMaths {
         return m;
     }
 
+    public static Vector3 rotateVectorY(Vector3 vec, float angle){
+        Vector3 erg = new Vector3();
+        float cosAngle = (float) Math.cos(angle);
+        float sinAngle = (float) Math.sin(angle);
+
+        erg.x = vec.x * cosAngle - vec.z * sinAngle;
+        erg.y = vec.y;
+        erg.z = vec.x * sinAngle + vec.z * cosAngle;
+
+        return erg;
+    }
+
     public static float[][] inverseMatrix(float[][] m) {
 
         float[][] matrix = new float[4][4];
