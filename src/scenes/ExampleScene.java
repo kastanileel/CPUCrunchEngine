@@ -73,11 +73,11 @@ public class ExampleScene extends Scene {
             if(id > -1){
                 manager.rendering[id].mesh = new Mesh("./src/objects/rock/tri.obj", Color.blue);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Emissive;
-                manager.transform[id].pos = new Vector3(-1.0f, 0.0f, 0.0f);
+                manager.transform[id].pos = new Vector3(1.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].center = new Vector3(-1.0f, 0.0f, 0.0f);
+                manager.collider[id].center = new Vector3(1.0f, 0.0f, 0.0f);
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 Quaternion rot =  new Quaternion(0.0f, 0.0f, 0.0f);
                 rot.normalize();
@@ -93,7 +93,6 @@ public class ExampleScene extends Scene {
                 manager.transform[id].pos = new Vector3(-2.0f, -0.5f, 15.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
-
             }
 
 
