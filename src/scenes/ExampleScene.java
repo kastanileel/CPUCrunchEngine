@@ -93,6 +93,18 @@ public class ExampleScene extends Scene {
 
             }
 
+
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.YELLOW);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(-10.0f, -0.7f, 10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.15f, .15f, .15f);
+
+            }
+
+
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER);
             if (id > -1){
@@ -105,10 +117,10 @@ public class ExampleScene extends Scene {
                 manager.physicsBody[id].speed = 3.0f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
 
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/gun.obj", "./src/objects/guns/pistol/gun.png");
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", "./src/objects/guns/pistol/Metal Tex.jpg");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                manager.rendering[id].modelTranslation = new Vector3(-0.5f, 0.0f, 3.0f);
-                manager.rendering[id].modelRotation = new Vector3(0.0f, -3.8415f/2.0f, 0.0f);
+                manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
+                manager.rendering[id].modelRotation = new Vector3(0.0f, /*-3.8415f/2.0f*/ (float)Math.toRadians(170), 0.0f);
             }
 
 
