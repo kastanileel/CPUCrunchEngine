@@ -1,16 +1,16 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.configuration.Configurator;
-import src.engine.core.inputtools.MKeyListener;
-import src.engine.core.inputtools.MMouseListener;
+import src.engine.core.tools.MKeyListener;
+import src.engine.core.tools.MMouseListener;
 import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
+import src.engine.core.tools.MusicPlayer;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -209,6 +209,8 @@ public class GameSystems {
                             manager.physicsBody[bulletId].speed = 250.0f;
                             manager.bullet[bulletId].lifeTime = 5.0f;
                             manager.bullet[bulletId].damage = 1;
+
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Shoot);
 
                         }
                         catch (Exception e){
