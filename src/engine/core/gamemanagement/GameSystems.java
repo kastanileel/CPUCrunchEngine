@@ -260,12 +260,11 @@ public class GameSystems {
                  //   direction.y = -0.5f;
                 // 4. set values for pistol shot
                 //direction = Camera.getInstance().rotation;
-                System.out.println("Direction:" + direction.x + ", " + direction.y + ", " + direction.z);
 
                 try {
                     manager.transform[bulletId].pos =  Camera.getInstance().position;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
-                    manager.transform[bulletId].scale = new Vector3(0.1f, 0.1f, 0.1f);
+                    manager.transform[bulletId].scale = new Vector3(0.05f, 0.05f, 0.05f);
                     manager.physicsBody[bulletId].mass = 0.1f;
                     manager.bullet[bulletId].direction = direction;
                     manager.rendering[bulletId].mesh = new Mesh("./src/objects/guns/bullets/bullet.obj", Color.RED);
@@ -301,7 +300,7 @@ public class GameSystems {
 
                 direction = RenderMaths.normalizeVector(direction);
                 direction.y += 0.01f;
-                direction.x += 0.0035f;
+               // direction.x += 0.0035f;
 
 
                 // if(direction.y < 0.0f)
@@ -312,6 +311,7 @@ public class GameSystems {
 
                 try {
                     manager.transform[bulletId].pos =  Camera.getInstance().position;
+                    manager.transform[bulletId].pos.y += 0.065f;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
                     manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
                     manager.physicsBody[bulletId].mass = 0.1f;
@@ -430,8 +430,6 @@ public class GameSystems {
                     manager.physicsBody[i].force.y = manager.bullet[i].direction.y * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
                     manager.physicsBody[i].force.z = manager.bullet[i].direction.z * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
 
-
-                    System.out.println(manager.transform[i].pos.y);
                     // interpolate bullet position and follow position fully within the first 0.5 seconds of lifetime
 
                 }

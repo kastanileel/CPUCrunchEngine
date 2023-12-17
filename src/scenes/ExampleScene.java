@@ -117,7 +117,7 @@ public class ExampleScene extends Scene {
                 manager.physicsBody[id].speed = 3.0f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
 
-                manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
+                manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
 
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.GRAY);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
