@@ -54,6 +54,15 @@ public class GameComponents {
     }
 
     public static class PlayerMovement{
+
+        public enum WeaponType {
+            PISTOL,
+            MACHINE_GUN,
+            SHOTGUN,
+            SNIPER;
+        }
+
+        public WeaponType weaponType;
         public float mouseSpeed = 0.03f;
         public float moveSpeed = 4.0f;
 

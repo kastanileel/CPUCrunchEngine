@@ -120,7 +120,7 @@ public class ExampleScene extends Scene {
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.GRAY);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
-                manager.rendering[id].modelRotation = new Vector3(0.0f, /*-3.8415f/2.0f*/ (float)Math.toRadians(170), 0.0f);
+                manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
             }
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
@@ -134,6 +134,7 @@ public class ExampleScene extends Scene {
                 manager.playerMovement[id].cameraOffset = new Vector3(0, 0, 0);
                 manager.physicsBody[id].speed = 3.0f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
+                manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
 
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/knife/combatKnife.obj", Color.RED);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
