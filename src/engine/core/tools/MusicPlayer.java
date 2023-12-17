@@ -13,7 +13,8 @@ public class MusicPlayer {
 
     // enum for sound effects
     public enum SoundEffect {
-        Shoot("src/sound/shoot.wav");
+        Shoot("src/sound/shoot.wav"),
+        Explode("src/sound/destroy.wav");
 
 
         private final String path;

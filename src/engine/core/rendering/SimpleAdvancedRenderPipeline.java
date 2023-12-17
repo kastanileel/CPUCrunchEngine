@@ -32,6 +32,8 @@ public class SimpleAdvancedRenderPipeline {
     private DrawingWindow drawingWindow;
     private Frame frame;
 
+    public static float fFov;
+
     private boolean finishedStepTwo;
 
     public synchronized void setFinishedStepTwo(boolean finished) {
@@ -40,6 +42,10 @@ public class SimpleAdvancedRenderPipeline {
 
     public synchronized boolean isFinishedStepTwo() {
         return finishedStepTwo;
+    }
+
+    public void setFov( float fov){
+        this.fFov = fov;
     }
 
     private SimpleAdvancedRenderPipeline(int width, int height, int textureMaxAccuracy, int textureMinAccuracy){
@@ -233,7 +239,7 @@ public class SimpleAdvancedRenderPipeline {
         // => basically taking a picture, the triangles are now only in 2D coordinates)
         float fNear = .1f;
         float fFar = 1000.0f;
-        float fFov = 120.0f;
+
         projectionMatrix = RenderMaths.projectionMatrix(fFov, fNear, fFar, height / width);
 
         for (int i = 0; i < mesh.triangles.length; i++) {

@@ -55,11 +55,11 @@ public class GameComponents {
 
     public static class PlayerMovement{
 
-        public enum WeaponType {
+        public static enum WeaponType {
             PISTOL,
             MACHINE_GUN,
             SHOTGUN,
-            SNIPER;
+            SNIPER,
         }
 
         public WeaponType weaponType;

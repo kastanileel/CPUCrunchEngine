@@ -111,11 +111,13 @@ public class ExampleScene extends Scene {
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
-                manager.playerMovement[id].mouseSpeed = 0.05f;
+                manager.playerMovement[id].mouseSpeed = 0.35f;
                 manager.playerMovement[id].moveSpeed = 6.0f;
                 manager.playerMovement[id].cameraOffset = new Vector3(0, 0, 0);
                 manager.physicsBody[id].speed = 3.0f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
+
+                manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
 
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.GRAY);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
@@ -123,7 +125,7 @@ public class ExampleScene extends Scene {
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
             }
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
+         /*   id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
@@ -139,8 +141,8 @@ public class ExampleScene extends Scene {
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/knife/combatKnife.obj", Color.RED);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.rendering[id].modelTranslation = new Vector3(0.5f, -0.7f, 3.0f);
-                manager.rendering[id].modelRotation = new Vector3(0.0f, /*-3.8415f/2.0f*/ 0.0f, 0.0f);
-            }
+                manager.rendering[id].modelRotation = new Vector3(0.0f, -3.8415f/2.0f , 0.0f);
+            } */
 
 
        /* int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
