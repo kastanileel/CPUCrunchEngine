@@ -10,9 +10,11 @@ public class GameComponents {
 
             TRANSFORM = 1,
             RENDER = 1 << 2,
-            VELOCITY = 1 << 3,
+            PHYSICSBODY = 1 << 3,
             PLAYERMOVEMENT = 1 << 4,
-            COLLIDER = 1 << 5;
+            COLLIDER = 1 << 5,
+            BULLET = 1 << 6;
+
 
     public static class Transform {
         public Vector3 pos;
@@ -35,17 +37,38 @@ public class GameComponents {
 
         public RenderType renderType;
 
+        public Vector3 modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+        public Vector3 modelTranslation = new Vector3(0.0f, 0.0f, 0.0f);
+        public Vector3 modelPosition = new Vector3(0.0f, 0.0f, 0.0f);
+
 
     }
 
-    public static class Velocity{
-        public Vector3 velocity;
+
+    public static class PhysicsBody{
+        public Vector3 velocity = new Vector3(0.0f, 0.0f, 0.0f);
         public float speed = 1.0f;
+        public Vector3 force = new Vector3(0.0f, 0.0f, 0.0f);
+        public Vector3 acceleration = new Vector3(0.0f, 0.0f, 0.0f);
+        public float mass = 1.0f;
+
+
     }
 
     public static class PlayerMovement{
-        public float mouseSpeed = 0.1f;
-        public float moveSpeed = 1.0f;
+
+        public static enum WeaponType {
+            PISTOL,
+            MACHINE_GUN,
+            SHOTGUN,
+            SNIPER,
+        }
+
+        public WeaponType weaponType;
+        public float mouseSpeed = 0.03f;
+        public float moveSpeed = 4.0f;
+
+        public float jumpIntensity = 20.0f;
         public Vector3 cameraOffset = new Vector3(0, 0, 0);
     }
 
@@ -60,6 +83,17 @@ public class GameComponents {
         public Vector3 colliderSize;
 
         public Quaternion colliderRotation;
+    }
+  
+    
+    public static class Bullet{
+        public float speed = 10.0f;
+        public float lifeTime = 5.0f;
+        public int damage = 1;
+
+        public Vector3 direction = new Vector3(0, 0, 0);
+
+
     }
 
 }

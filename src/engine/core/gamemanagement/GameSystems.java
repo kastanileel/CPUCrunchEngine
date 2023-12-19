@@ -2,6 +2,7 @@ package src.engine.core.gamemanagement;
 
 import src.engine.configuration.Configurator;
 
+
 import src.engine.core.dataContainers.BoundingBox;
 import src.engine.core.dataContainers.CollisionInformation;
 import src.engine.core.matutils.Vector3;
@@ -15,36 +16,26 @@ import java.util.concurrent.Executors;
 import static src.engine.core.matutils.Collision.*;
 import src.engine.core.inputtools.MKeyListener;
 import src.engine.core.inputtools.MMouseListener;
+
+import src.engine.core.rendering.DrawingWindow;
+import src.engine.core.tools.MKeyListener;
+import src.engine.core.tools.MMouseListener;
+import src.engine.core.matutils.Mesh;
+
 import src.engine.core.matutils.RenderMaths;
+import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
+import src.engine.core.tools.MusicPlayer;
 
-import java.awt.event.KeyEvent;
+import java.awt.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 public class GameSystems {
 
-    public static class Velocity extends GameSystem{
 
-        @Override
-        public void start(EntityManager manager){
-
-        }
-
-        @Override
-        public void update(EntityManager manager, float deltaTime){
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.VELOCITY;
-            for (int i = 0; i < manager.size; i++) {
-                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    manager.transform[i].pos.x += manager.velocity[i].velocity.x  * deltaTime * manager.velocity[i].speed;
-                    manager.transform[i].pos.y += manager.velocity[i].velocity.y  * deltaTime * manager.velocity[i].speed;
-                    manager.transform[i].pos.z += manager.velocity[i].velocity.z  * deltaTime * manager.velocity[i].speed;
-                }
-            }
-        }
-    }
 
 
     public static class CollisionSystem extends GameSystem{
@@ -138,7 +129,6 @@ public class GameSystems {
     }
 
 
-
     public static class Renderer extends GameSystem{
 
         ExecutorService executor = Executors.newFixedThreadPool(2); // N is the number of threads
@@ -186,14 +176,12 @@ public class GameSystems {
 
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    renderPip.renderObject(manager.rendering[i].mesh, manager.transform[i].pos, manager.transform[i].rot, manager.transform[i].scale);
+                    renderPip.renderObject(manager.rendering[i].mesh, RenderMaths.addVectors(manager.transform[i].pos, manager.rendering[i].modelPosition) , RenderMaths.addVectors(manager.transform[i].rot, manager.rendering[i].modelRotation), manager.transform[i].scale);
                 }
             }
 
             // run this in a second thread
             renderPip.stepTwo();
-
-
             renderPip.draw();
 
         }
@@ -202,6 +190,13 @@ public class GameSystems {
 
     public static class PlayerMovement extends GameSystem{
         MKeyListener keyListener = MKeyListener.getInstance();
+        float jumpTime = 0.0f;
+        float maxJumpTime = 0.5f;
+
+        float dashTime = 0.0f;
+        float maxDashTime = 0.5f;
+
+        float shootingCooldown = 0.0f;
 
         @Override
         public void start(EntityManager manager) {
@@ -210,11 +205,12 @@ public class GameSystems {
 
         @Override
         public void update(EntityManager manager, float deltaTime) {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.VELOCITY;
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     doCameraRotation(manager, i, deltaTime);
                     doPlayerMovement(manager, i, deltaTime);
+                    doShooting(manager, i, deltaTime);
 
                 }
             }
@@ -236,9 +232,17 @@ public class GameSystems {
             if (cam.rotation.x < -0.2f)
                 cam.rotation.x = -0.2f;
 
+            float yRot = cam.rotation.y;
+            Vector3 vec = manager.rendering[id].modelTranslation;
+
+            // rotate the model offset with the camera
+            manager.rendering[id].modelPosition = RenderMaths.rotateVectorY(vec, yRot);
+
+            manager.transform[id].rot.y = yRot;
+
         }
            
-        public void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
+        private void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
 
             float moveSpeed = manager.playerMovement[id].moveSpeed;
             float forward = 0.0f;
@@ -248,26 +252,290 @@ public class GameSystems {
                 forward = moveSpeed;
             }
             if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
-                forward = -moveSpeed/ 3.0f;
+                forward = -moveSpeed/2.0f;
             }
             if (keyListener.isKeyPressed('A') || keyListener.isKeyPressed('a') ) {
-                right = moveSpeed/2.0f;
+                right = moveSpeed/1.7f;
             }
             if (keyListener.isKeyPressed('D') || keyListener.isKeyPressed('d') ) {
-                right = -moveSpeed/2.0f;
+                right = -moveSpeed/1.7f;
             }
 
+            // check if dash is pressed
+            if(keyListener.isKeyPressed('f') || keyListener.isKeyPressed('F')){
+                if(dashTime < maxDashTime){
+                    moveSpeed *= 4.0f;
+                    dashTime += deltaTime;
+                }
+            }
+            else{
+                dashTime = 0.0f;
+            }
             // calculate the forward vector
             Camera cam = Camera.getInstance();
-            float cosY = (float) Math.cos(Math.toRadians(cam.rotation.y));
-            float sinY = (float) Math.sin(Math.toRadians(cam.rotation.y));
+            float cosY = (float) Math.cos(cam.rotation.y);
+            float sinY = (float) Math.sin(cam.rotation.y);
 
-            // apply movement to velocity, important when beeing rotated 0 degrees we move along the z axis
-            manager.velocity[id].velocity.x = (forward * sinY) + (right * cosY);
-            manager.velocity[id].velocity.z = (forward * cosY) - (right * sinY);
+            manager.physicsBody[id].force.z = (forward * cosY + right * sinY) * moveSpeed * manager.physicsBody[id].mass;
+            manager.physicsBody[id].force.x = (-sinY * forward + right* cosY) * moveSpeed * manager.physicsBody[id].mass;
+
+
+            if(keyListener.isKeyPressed(' ')){
+                if(jumpTime < maxJumpTime){
+                    manager.physicsBody[id].force.y = manager.playerMovement[id].jumpIntensity * manager.physicsBody[id].mass;
+                    jumpTime += deltaTime;
+                }
+            }
+            else{
+                jumpTime = 0.0f;
+            }
 
             // set and offset camera position
             cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
         }
+
+        private void doShooting(EntityManager manager, int id, float deltaTime){
+            SimpleAdvancedRenderPipeline.fFov = 120.0f;
+
+            shootingCooldown -= deltaTime;
+
+            switch (manager.playerMovement[id].weaponType){
+                case PISTOL -> {
+                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                        if (shootingCooldown <= 0.0f) {
+                            pistol(manager, id, deltaTime);
+                            return;
+                        }
+                    }
+
+                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                        knife();
+                    }
+                }
+                case MACHINE_GUN -> {
+
+
+                }
+                case SHOTGUN -> {
+
+                }
+                case SNIPER ->{
+                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                        if (shootingCooldown <= 0.0f) {
+                            snipe(manager, id, deltaTime);
+
+                        }
+                    }
+
+                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                        SimpleAdvancedRenderPipeline.fFov = 40.0f;
+                        DrawingWindow.snipe = true;
+                    }
+                    else {
+                        SimpleAdvancedRenderPipeline.fFov = 120.0f;
+                        DrawingWindow.snipe = false;
+                    }
+
+                }
+            }
+
+            shootingCooldown -= deltaTime;
+
+
+        }
+
+        private void pistol(EntityManager manager, int id, float deltaTime){
+            // 1. set cooldown
+            shootingCooldown = 0.5f;
+
+            // 2. create entity in manager
+            int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET);
+            if(bulletId > -1){
+
+                // 3. calculate bullet direction
+                Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
+                RenderMaths.normalizeVector(direction);
+
+                direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
+
+                direction = RenderMaths.normalizeVector(direction);
+                direction.y += 0.01f;
+                direction.x += 0.0035f;
+
+
+               // if(direction.y < 0.0f)
+                 //   direction.y = -0.5f;
+                // 4. set values for pistol shot
+                //direction = Camera.getInstance().rotation;
+
+                try {
+                    manager.transform[bulletId].pos =  Camera.getInstance().position;
+                    manager.transform[bulletId].rot = manager.transform[id].rot.clone();
+                    manager.transform[bulletId].scale = new Vector3(0.05f, 0.05f, 0.05f);
+                    manager.physicsBody[bulletId].mass = 0.1f;
+                    manager.bullet[bulletId].direction = direction;
+                    manager.rendering[bulletId].mesh = new Mesh("./src/objects/guns/bullets/bullet.obj", Color.RED);
+                    manager.rendering[bulletId].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[bulletId].modelRotation = new Vector3(0.0f, 3.1415f/ -2.0f, 0.0f);
+                    manager.physicsBody[bulletId].speed = 250.0f;
+                    manager.bullet[bulletId].lifeTime = 5.0f;
+                    manager.bullet[bulletId].damage = 1;
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Shoot);
+
+                }
+                catch (Exception e){
+                    System.out.println("Error creating bullet");
+                }
+            }
+
+        }
+
+        private void snipe(EntityManager manager, int id, float deltaTime){
+            // 1. set cooldown
+            shootingCooldown = 1.5f;
+
+            // 2. create entity in manager
+            int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET);
+            if(bulletId > -1){
+
+                // 3. calculate bullet direction
+                Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
+                RenderMaths.normalizeVector(direction);
+
+                direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
+
+                direction = RenderMaths.normalizeVector(direction);
+
+
+                try {
+                    manager.transform[bulletId].pos =  Camera.getInstance().position;
+                    manager.transform[bulletId].pos.y += 0.065f;
+                    manager.transform[bulletId].rot = manager.transform[id].rot.clone();
+                    manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
+                    manager.physicsBody[bulletId].mass = 0.1f;
+                    manager.bullet[bulletId].direction = direction;
+                    manager.rendering[bulletId].mesh = new Mesh("./src/objects/guns/bullets/bullet.obj", Color.RED);
+                    manager.rendering[bulletId].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[bulletId].modelRotation = new Vector3(0.0f, 3.1415f/ -2.0f, 0.0f);
+                    manager.physicsBody[bulletId].speed = 450.0f;
+                    manager.bullet[bulletId].lifeTime = 5.0f;
+                    manager.bullet[bulletId].damage = 5;
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Explode);
+
+                }
+                catch (Exception e){
+                    System.out.println("Error creating bullet");
+                }
+            }
+
+        }
+
+        private void knife(){
+
+        }
+
+
+    }
+
+    public static class PyhsicsHandler extends GameSystem{
+        @Override
+        public void start(EntityManager manager) {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) {
+
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PHYSICSBODY;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+
+                    // apply gravity -> change force
+                    // Apply gravity -> change force
+                    if(manager.playerMovement[i] != null) {
+                        if (manager.transform[i].pos.y > 0.0f) {
+                            manager.physicsBody[i].force.y -= 9.81f * manager.physicsBody[i].mass;
+                        } else {
+                            // check if upwars force is applied
+                            if (manager.physicsBody[i].force.y <= 0.0f) {
+                                manager.physicsBody[i].force.y = 0.0f;
+                                manager.transform[i].pos.y = 0.0f;
+                            }
+
+                        }
+                    }
+
+                    // apply force -> change acceleration
+                    manager.physicsBody[i].acceleration.x = manager.physicsBody[i].force.x / manager.physicsBody[i].mass;
+                    manager.physicsBody[i].acceleration.y = manager.physicsBody[i].force.y / manager.physicsBody[i].mass;
+                    manager.physicsBody[i].acceleration.z = manager.physicsBody[i].force.z / manager.physicsBody[i].mass;
+
+                    // apply acceleration -> change velocity
+                    manager.physicsBody[i].velocity.x += manager.physicsBody[i].acceleration.x * deltaTime;
+                    manager.physicsBody[i].velocity.y += manager.physicsBody[i].acceleration.y * deltaTime;
+                    manager.physicsBody[i].velocity.z += manager.physicsBody[i].acceleration.z * deltaTime;
+
+
+                    // apply velocity -> change position
+                    manager.transform[i].pos.x += manager.physicsBody[i].velocity.x * deltaTime;
+                    manager.transform[i].pos.y += manager.physicsBody[i].velocity.y * deltaTime;
+                    manager.transform[i].pos.z += manager.physicsBody[i].velocity.z * deltaTime;
+
+                    // reset force
+                    manager.physicsBody[i].force.x = 0.0f;
+                    manager.physicsBody[i].force.y = 0.0f;
+                    manager.physicsBody[i].force.z = 0.0f;
+
+                    // apply friction
+                    manager.physicsBody[i].velocity.x *= 0.95f;
+                    manager.physicsBody[i].velocity.y *= 0.95f;
+                    manager.physicsBody[i].velocity.z *= 0.95f;
+
+
+                }
+            }
+
+        }
+    }
+
+
+    public static class BulletSystem extends GameSystem{
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+
+                    // substract deltaTime from the bullet lifetime
+                    manager.bullet[i].lifeTime -= deltaTime;
+
+                    // check if the bullet is still alive
+                    if(manager.bullet[i].lifeTime <= 0.0f){
+                        manager.flag[i] = 0;
+                        continue;
+                    }
+
+                    // add force to the bullet
+                    manager.physicsBody[i].force.x = manager.bullet[i].direction.x * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
+                    manager.physicsBody[i].force.y = manager.bullet[i].direction.y * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
+                    manager.physicsBody[i].force.z = manager.bullet[i].direction.z * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
+
+                    // interpolate bullet position and follow position fully within the first 0.5 seconds of lifetime
+
+                }
+            }
+
+        }
+
+
     }
 }

@@ -10,9 +10,10 @@ public class EntityManager {
 
     public GameComponents.Transform[] transform;
     public GameComponents.Rendering[] rendering;
-    public GameComponents.Velocity[] velocity;
     public GameComponents.PlayerMovement[] playerMovement;
     public GameComponents.Collider collider[];
+    public GameComponents.PhysicsBody[] physicsBody;
+    public GameComponents.Bullet[] bullet;
 
     public final int size;
 
@@ -23,9 +24,11 @@ public class EntityManager {
 
         transform = new GameComponents.Transform[size];
         rendering = new GameComponents.Rendering[size];
-        velocity = new GameComponents.Velocity[size];
+
         collider = new GameComponents.Collider[size];
         playerMovement = new GameComponents.PlayerMovement[size];
+        physicsBody = new GameComponents.PhysicsBody[size];
+        bullet = new GameComponents.Bullet[size];
 
         flag = new int[size];
 
@@ -37,12 +40,14 @@ public class EntityManager {
                 this.flag[i] = flag;
                 if ((flag & GameComponents.TRANSFORM) > 0) transform[i] = new GameComponents.Transform();
                 if ((flag & GameComponents.RENDER) > 0) rendering[i] = new GameComponents.Rendering();
-                if ((flag & GameComponents.VELOCITY) > 0) velocity[i] = new GameComponents.Velocity();
                 if((flag & GameComponents.COLLIDER)>0) {
                     collider[i] = new GameComponents.Collider();
                     collisionList.put(i,new CollisionInformation());
                 }
+
                 if ((flag & GameComponents.PLAYERMOVEMENT) > 0) playerMovement[i] = new GameComponents.PlayerMovement();
+                if ((flag & GameComponents.PHYSICSBODY) > 0) physicsBody[i] = new GameComponents.PhysicsBody();
+                if ((flag & GameComponents.BULLET) > 0) bullet[i] = new GameComponents.Bullet();
 
                 return i;
             }

@@ -26,6 +26,8 @@ public class DrawingWindow extends JPanel {
     private BufferedImage imageBuffer;
     private Graphics graphics;
 
+    public static boolean snipe = false;
+
     public int maxAccuracy;
     public int minAccuracy;
 
@@ -58,9 +60,27 @@ public class DrawingWindow extends JPanel {
      */
     public void redraw() {
 
-        //applyPostProcessing();
+
+        // draw ui elements
+        this.applyUI();
 
         this.getGraphics().drawImage(imageBuffer, 0, 0, this);
+    }
+
+    private void applyUI(){
+
+        // draw crosshair
+        graphics.setColor(Color.white);
+        graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
+        graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
+
+
+        if(snipe){
+            graphics.drawLine(0, this.getHeight() / 2, this.getWidth() , this.getHeight() / 2);
+            graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight() );
+
+        }
+
     }
 
     /***
