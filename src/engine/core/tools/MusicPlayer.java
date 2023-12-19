@@ -13,7 +13,8 @@ public class MusicPlayer {
 
     // enum for sound effects
     public enum SoundEffect {
-        Shoot("src/sound/shoot.wav");
+        Shoot("src/sound/shoot.wav"),
+        Explode("src/sound/destroy.wav");
 
 
         private final String path;
@@ -84,8 +85,8 @@ public class MusicPlayer {
     public void loopMusic(String sound) {
         threadPool.execute(() -> {
             Clip clip = loadClip(sound); // Implement loadClip to load and return a Clip
-            soundClips.put(sound, clip);
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
+         //   soundClips.put(sound, clip);
+           // clip.loop(Clip.LOOP_CONTINUOUSLY);
         });
     }
 
