@@ -188,10 +188,6 @@ public class GameSystems {
 
             shootingCooldown -= deltaTime;
 
-
-
-            System.out.println(manager.playerMovement[id].weaponType);
-
             switch (manager.playerMovement[id].weaponType){
                 case PISTOL -> {
                     if(MMouseListener.getInstance().isLeftButtonPressed()){
@@ -299,15 +295,7 @@ public class GameSystems {
                 direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
 
                 direction = RenderMaths.normalizeVector(direction);
-                direction.y += 0.01f;
-               // direction.x += 0.0035f;
 
-
-                // if(direction.y < 0.0f)
-                //   direction.y = -0.5f;
-                // 4. set values for pistol shot
-                //direction = Camera.getInstance().rotation;
-                System.out.println("Direction:" + direction.x + ", " + direction.y + ", " + direction.z);
 
                 try {
                     manager.transform[bulletId].pos =  Camera.getInstance().position;
