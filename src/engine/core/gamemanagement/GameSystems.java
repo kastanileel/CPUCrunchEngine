@@ -14,8 +14,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static src.engine.core.matutils.Collision.*;
-import src.engine.core.inputtools.MKeyListener;
-import src.engine.core.inputtools.MMouseListener;
 
 import src.engine.core.rendering.DrawingWindow;
 import src.engine.core.tools.MKeyListener;
@@ -396,7 +394,7 @@ public class GameSystems {
             shootingCooldown = 1.5f;
 
             // 2. create entity in manager
-            int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET);
+            int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.COLLIDER);
             if(bulletId > -1){
 
                 // 3. calculate bullet direction
@@ -409,7 +407,7 @@ public class GameSystems {
 
 
                 try {
-                    manager.transform[bulletId].pos =  Camera.getInstance().position;
+                    manager.transform[bulletId].pos =  Camera.getInstance().position.clone();
                     manager.transform[bulletId].pos.y += 0.065f;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
                     manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
@@ -421,6 +419,9 @@ public class GameSystems {
                     manager.physicsBody[bulletId].speed = 450.0f;
                     manager.bullet[bulletId].lifeTime = 5.0f;
                     manager.bullet[bulletId].damage = 5;
+                    manager.collider[bulletId].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                    manager.collider[bulletId].center = manager.transform[bulletId].pos;
+                    manager.collider[bulletId].colliderSize = new Vector3(0.2f, 0.2f, 0.2f);
 
                     MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Explode);
 
