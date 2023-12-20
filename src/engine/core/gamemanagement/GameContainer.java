@@ -19,6 +19,8 @@ public class GameContainer {
     GameSystems.PlayerMovement playerMovement;
     GameSystems.BulletSystem bulletSystem;
 
+    GameSystems.CollisionSystem collisionSystem;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
@@ -28,10 +30,13 @@ public class GameContainer {
         manager = new EntityManager(2000);
 
         rasterizer = new GameSystems.Renderer();
+        collisionSystem = new GameSystems.CollisionSystem();
+
         physicsHandler = new GameSystems.PyhsicsHandler();
         playerMovement = new GameSystems.PlayerMovement();
 
         bulletSystem = new GameSystems.BulletSystem();
+
 
 
        Scene example = new ExampleScene(1000, "example");
@@ -67,13 +72,16 @@ public class GameContainer {
                 activeSceneName = currentSceneName;
 
                 rasterizer.start(manager);
-                physicsHandler.start(manager);
+
+                collisionSystem.start(manager);
             }
 
+            collisionSystem.update(manager, deltaTime);
             rasterizer.update(manager, deltaTime);
             physicsHandler.update(manager, deltaTime);
             playerMovement.update(manager, deltaTime);
             bulletSystem.update(manager, deltaTime);
+
 
             MMouseListener.getInstance().update();
 

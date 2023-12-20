@@ -1,6 +1,7 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.core.matutils.Mesh;
+import src.engine.core.matutils.Quaternion;
 import src.engine.core.matutils.Vector3;
 
 public class GameComponents {
@@ -9,10 +10,11 @@ public class GameComponents {
 
             TRANSFORM = 1,
             RENDER = 1 << 2,
-
             PHYSICSBODY = 1 << 3,
             PLAYERMOVEMENT = 1 << 4,
-            BULLET = 1 << 5;
+            COLLIDER = 1 << 5,
+            BULLET = 1 << 6;
+
 
     public static class Transform {
         public Vector3 pos;
@@ -70,12 +72,39 @@ public class GameComponents {
         public Vector3 cameraOffset = new Vector3(0, 0, 0);
     }
 
+    public static  class Collider{
+        public static enum ColliderType{
+            BOX,
+            SPHERE
+        }
+
+        public ColliderType colliderType;
+        public Vector3 center;
+        public Vector3 colliderSize;
+
+        public Quaternion colliderRotation;
+
+        public static enum ColliderTag{
+            PLAYER,
+            ENEMY,
+            BULLET,
+            OBSTACLE,
+            GROUND,
+            WALL,
+            NONE
+        }
+
+        public ColliderTag colliderTag = ColliderTag.NONE;
+    }
+  
+    
     public static class Bullet{
         public float speed = 10.0f;
         public float lifeTime = 5.0f;
         public int damage = 1;
 
         public Vector3 direction = new Vector3(0, 0, 0);
+
 
     }
 

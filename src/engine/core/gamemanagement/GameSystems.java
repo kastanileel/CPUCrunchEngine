@@ -1,10 +1,25 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.configuration.Configurator;
+
+
+import src.engine.core.dataContainers.BoundingBox;
+import src.engine.core.dataContainers.CollisionInformation;
+import src.engine.core.matutils.Vector3;
+import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static src.engine.core.matutils.Collision.*;
+
 import src.engine.core.rendering.DrawingWindow;
 import src.engine.core.tools.MKeyListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.matutils.Mesh;
+
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
@@ -17,7 +32,90 @@ import java.util.concurrent.Executors;
 
 
 public class GameSystems {
-    
+
+
+
+
+    public static class CollisionSystem extends GameSystem{
+
+        @Override
+        public void start(EntityManager manager){
+            //Fill the collision list
+            manager.collisionList.clear();
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & GameComponents.COLLIDER) == GameComponents.COLLIDER) {
+                    manager.collisionList.put(i,new CollisionInformation());
+                }
+            }
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime){
+            //Iterate over the collision components and compute the collisions
+            //First, flush the information list
+            BoundingBox[] boundingBoxes = new BoundingBox[manager.size];
+
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.COLLIDER;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    manager.collisionList.get(i).flush();
+
+                    BoundingBox bBox = createBoundingBox(manager.collider[i], manager.collider[i].colliderRotation);
+                    boundingBoxes[i] = bBox;
+                    //System.out.println(bBox.min.x + " "+ bBox.min.y + " "+ bBox.min.z + " | "+ bBox.max.x+" "+ bBox.max.y+" "+ bBox.max.z);
+                }
+            }
+
+            List<CollisionInformation.EntityPair> collisionPairs = new ArrayList<>();
+
+            for (int i = 0; i < manager.size; i++) {
+                for (int j = i + 1; j < manager.size; j++) {
+                    if (!(boundingBoxes[i] == null || boundingBoxes[j] == null) && checkCollision(boundingBoxes[i],boundingBoxes[j])
+                            && (manager.collider[i].colliderType == GameComponents.Collider.ColliderType.BOX && manager.collider[j].colliderType == GameComponents.Collider.ColliderType.SPHERE
+                            || manager.collider[i].colliderType == GameComponents.Collider.ColliderType.SPHERE && manager.collider[j].colliderType == GameComponents.Collider.ColliderType.BOX
+                            || manager.collider[i].colliderType == GameComponents.Collider.ColliderType.SPHERE && manager.collider[j].colliderType == GameComponents.Collider.ColliderType.SPHERE
+
+                    )){
+                        collisionPairs.add(new CollisionInformation.EntityPair(i, j));
+                        //System.out.println("Collision between: " + collisionPairs.get(0).getFirst() +"    " +collisionPairs.get(0).getSecond());
+                    }
+                }
+            }
+            //Now that we have the candidates, we can process the precise collisions.
+            for (CollisionInformation.EntityPair pair : collisionPairs) {
+                GameComponents.Collider colliderA = manager.collider[pair.getFirst()];
+                GameComponents.Collider colliderB = manager.collider[pair.getSecond()];
+
+                boolean isCollision = false;
+                Vector3 hitPosition = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
+
+                if (colliderA.colliderType == GameComponents.Collider.ColliderType.SPHERE && colliderB.colliderType == GameComponents.Collider.ColliderType.SPHERE) {
+                    // Sphere-Sphere collision check
+                    isCollision = checkSphereSphereCollision(colliderA, colliderB, hitPosition);
+                } else if (colliderA.colliderType == GameComponents.Collider.ColliderType.BOX && colliderB.colliderType == GameComponents.Collider.ColliderType.SPHERE) {
+                    // Box-Sphere collision check
+                    isCollision = checkBoxSphereCollision(colliderA, colliderB, hitPosition);
+                } else if (colliderA.colliderType == GameComponents.Collider.ColliderType.SPHERE && colliderB.colliderType == GameComponents.Collider.ColliderType.BOX) {
+                    // Sphere-Box collision check (order reversed)
+                    isCollision = checkBoxSphereCollision(colliderB, colliderA, hitPosition);
+                }
+                if(isCollision){
+                  //  System.out.println("Collision between: " + pair.getFirst() +"    " +pair.getSecond());
+                 //   System.out.println("Hit position: " + hitPosition.x + " " + hitPosition.y + " " + hitPosition.z);
+                    manager.collisionList.get(pair.getFirst()).collisionEvents.add(new CollisionInformation.CollisionEvent(hitPosition, pair));
+                    manager.collisionList.get(pair.getSecond()).collisionEvents.add(new CollisionInformation.CollisionEvent(hitPosition, pair));
+                }
+            }
+
+
+
+
+        }
+    }
+
+
+
+
     public static class Renderer extends GameSystem{
 
         ExecutorService executor = Executors.newFixedThreadPool(2); // N is the number of threads
@@ -100,6 +198,7 @@ public class GameSystems {
                     doCameraRotation(manager, i, deltaTime);
                     doPlayerMovement(manager, i, deltaTime);
                     doShooting(manager, i, deltaTime);
+                    handleCollision(manager, i);
 
                 }
             }
@@ -230,75 +329,51 @@ public class GameSystems {
 
             shootingCooldown -= deltaTime;
 
-
         }
 
         private void pistol(EntityManager manager, int id, float deltaTime){
             // 1. set cooldown
             shootingCooldown = 0.5f;
 
-            // 2. create entity in manager
-            int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET);
-            if(bulletId > -1){
-
-                // 3. calculate bullet direction
-                Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
-                RenderMaths.normalizeVector(direction);
-
-                direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
-
-                direction = RenderMaths.normalizeVector(direction);
-                direction.y += 0.01f;
-                direction.x += 0.0035f;
+            shootingCooldown = 1.5f;
 
 
-               // if(direction.y < 0.0f)
-                 //   direction.y = -0.5f;
-                // 4. set values for pistol shot
-                //direction = Camera.getInstance().rotation;
+            Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
+            RenderMaths.normalizeVector(direction);
 
-                try {
-                    manager.transform[bulletId].pos =  Camera.getInstance().position;
-                    manager.transform[bulletId].rot = manager.transform[id].rot.clone();
-                    manager.transform[bulletId].scale = new Vector3(0.05f, 0.05f, 0.05f);
-                    manager.physicsBody[bulletId].mass = 0.1f;
-                    manager.bullet[bulletId].direction = direction;
-                    manager.rendering[bulletId].mesh = new Mesh("./src/objects/guns/bullets/bullet.obj", Color.RED);
-                    manager.rendering[bulletId].renderType = GameComponents.Rendering.RenderType.OneColor;
-                    manager.rendering[bulletId].modelRotation = new Vector3(0.0f, 3.1415f/ -2.0f, 0.0f);
-                    manager.physicsBody[bulletId].speed = 250.0f;
-                    manager.bullet[bulletId].lifeTime = 5.0f;
-                    manager.bullet[bulletId].damage = 1;
+            direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
 
-                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Shoot);
+            direction = RenderMaths.normalizeVector(direction);
 
-                }
-                catch (Exception e){
-                    System.out.println("Error creating bullet");
-                }
-            }
+            shoot(manager, id, direction, 150.0f, 2.0f, 1);
 
         }
 
         private void snipe(EntityManager manager, int id, float deltaTime){
-            // 1. set cooldown
             shootingCooldown = 1.5f;
 
-            // 2. create entity in manager
-            int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET);
+
+            Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
+            RenderMaths.normalizeVector(direction);
+
+            direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
+
+            direction = RenderMaths.normalizeVector(direction);
+
+            shoot(manager, id, direction, 250.0f, 2.0f, 5);
+
+        }
+
+        private void knife(){
+
+        }
+
+        private void shoot(EntityManager manager, int id, Vector3 direction, float speed, float lifeTime, int damage){
+            int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.COLLIDER);
             if(bulletId > -1){
 
-                // 3. calculate bullet direction
-                Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
-                RenderMaths.normalizeVector(direction);
-
-                direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
-
-                direction = RenderMaths.normalizeVector(direction);
-
-
                 try {
-                    manager.transform[bulletId].pos =  Camera.getInstance().position;
+                    manager.transform[bulletId].pos =  Camera.getInstance().position.clone();
                     manager.transform[bulletId].pos.y += 0.065f;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
                     manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
@@ -307,9 +382,13 @@ public class GameSystems {
                     manager.rendering[bulletId].mesh = new Mesh("./src/objects/guns/bullets/bullet.obj", Color.RED);
                     manager.rendering[bulletId].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[bulletId].modelRotation = new Vector3(0.0f, 3.1415f/ -2.0f, 0.0f);
-                    manager.physicsBody[bulletId].speed = 450.0f;
-                    manager.bullet[bulletId].lifeTime = 5.0f;
-                    manager.bullet[bulletId].damage = 5;
+                    manager.physicsBody[bulletId].speed = speed;
+                    manager.bullet[bulletId].lifeTime = lifeTime;
+                    manager.bullet[bulletId].damage = damage;
+                    manager.collider[bulletId].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                    manager.collider[bulletId].center = manager.transform[bulletId].pos;
+                    manager.collider[bulletId].colliderSize = new Vector3(0.2f, 0.2f, 0.2f);
+                    manager.collider[bulletId].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
 
                     MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Explode);
 
@@ -318,11 +397,29 @@ public class GameSystems {
                     System.out.println("Error creating bullet");
                 }
             }
-
         }
 
-        private void knife(){
+        private void handleCollision(EntityManager entityManager, int id){
+            for (CollisionInformation.CollisionEvent event : entityManager.collisionList.get(id).collisionEvents) {
+              if(event.entityIDs.getFirst() == id ){
+                  reactToCollisionTag(entityManager,id, event.entityIDs.getSecond());
 
+              }
+              else if (event.entityIDs.getSecond() == id){
+
+                  reactToCollisionTag(entityManager,id, event.entityIDs.getFirst());
+              }
+            }
+        }
+
+        private void reactToCollisionTag(EntityManager entityManager, int playerId, int otherId){
+            GameComponents.Collider.ColliderTag tag = entityManager.collider[otherId].colliderTag;
+            switch (tag){
+
+                case ENEMY -> {
+
+                }
+            }
         }
 
 
@@ -341,20 +438,17 @@ public class GameSystems {
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
 
+
+
                     // apply gravity -> change force
                     // Apply gravity -> change force
                     if(manager.playerMovement[i] != null) {
-                        if (manager.transform[i].pos.y > 0.0f) {
-                            manager.physicsBody[i].force.y -= 9.81f * manager.physicsBody[i].mass;
-                        } else {
-                            // check if upwars force is applied
-                            if (manager.physicsBody[i].force.y <= 0.0f) {
-                                manager.physicsBody[i].force.y = 0.0f;
-                                manager.transform[i].pos.y = 0.0f;
-                            }
 
-                        }
+                            manager.physicsBody[i].force.y -= 9.81f * manager.physicsBody[i].mass;
+
                     }
+
+                    handlePlayerCollision(manager, i);
 
                     // apply force -> change acceleration
                     manager.physicsBody[i].acceleration.x = manager.physicsBody[i].force.x / manager.physicsBody[i].mass;
@@ -386,6 +480,54 @@ public class GameSystems {
                 }
             }
 
+        }
+
+        private void handlePlayerCollision(EntityManager manager, int id){
+            System.out.println(CollisionInformation.collisionEvents.size());
+
+            if(manager.playerMovement[id] == null){
+                return;
+            }
+
+            for (CollisionInformation.CollisionEvent event : manager.collisionList.get(id).collisionEvents) {
+                if(event.entityIDs.getFirst() == id ){
+                    reactToCollisionTagPlayer(manager,id, event.entityIDs.getSecond());
+
+                }
+                else if (event.entityIDs.getSecond() == id){
+
+                    reactToCollisionTagPlayer(manager,id, event.entityIDs.getFirst());
+                }
+            }
+        }
+
+        private void reactToCollisionTagPlayer(EntityManager manager, int playerId, int otherId){
+            GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
+            switch (tag){
+                case GROUND -> {
+                  if(manager.physicsBody[playerId].velocity.y < 0.0f){
+                      manager.physicsBody[playerId].velocity.y = 0.0f;
+                  }
+                  if(manager.physicsBody[playerId].force.y < 0.0f){
+                      manager.physicsBody[playerId].force.y = 0.0f;
+                  }
+                }
+                case OBSTACLE -> {
+                    // get center of obstacle
+                    Vector3 center = manager.collider[otherId].center;
+                    Vector3 playerPos = manager.transform[playerId].pos;
+
+                    Vector3 direction = RenderMaths.substractVectors(playerPos, center);
+
+                    direction = RenderMaths.normalizeVector(direction);
+
+                    manager.physicsBody[playerId].force.x = direction.x * 100.0f;
+                   // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                    manager.physicsBody[playerId].force.z = direction.z * 100.0f;
+
+
+                }
+            }
         }
     }
 
