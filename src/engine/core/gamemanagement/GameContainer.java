@@ -74,6 +74,7 @@ public class GameContainer {
                 rasterizer.start(manager);
 
                 collisionSystem.start(manager);
+                playerMovement.start(manager);
             }
 
             collisionSystem.update(manager, deltaTime);

@@ -8,6 +8,7 @@ import src.engine.core.dataContainers.CollisionInformation;
 import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -185,8 +186,37 @@ public class GameSystems {
 
         float shootingCooldown = 0.0f;
 
+        float knifeCooldown = 0.0f;
+        float knifeTime = 0.5f;
+        boolean knifing = false;
+
+        Vector3 knifeDir = new Vector3();
+
+        int knife;
+
         @Override
-        public void start(EntityManager manager) {
+        public void start(EntityManager manager) throws IOException {
+            // create knife
+            knife = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
+            if(knife > -1){
+                manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
+                manager.transform[knife].pos.y += 0.065f;
+                manager.transform[knife].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[knife].scale = new Vector3(0.03f, 0.03f, 0.03f);
+                manager.physicsBody[knife].mass = 0.1f;
+
+                manager.rendering[knife].mesh = new Mesh("./src/objects/guns/knife/combatKnife.obj", Color.RED);
+                manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[knife].modelRotation = new Vector3(0.1f, -3.1415f/2.0f, 3.0015f/2.0f);
+                manager.physicsBody[knife].speed = 100.0f;
+
+                manager.collider[knife].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[knife].center = manager.transform[knife].pos;
+                manager.collider[knife].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                manager.collider[knife].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
+
+
+            }
 
         }
 
@@ -286,6 +316,7 @@ public class GameSystems {
             SimpleAdvancedRenderPipeline.fFov = 120.0f;
 
             shootingCooldown -= deltaTime;
+            knifeCooldown -= deltaTime;
 
             switch (manager.playerMovement[id].weaponType){
                 case PISTOL -> {
@@ -297,14 +328,33 @@ public class GameSystems {
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
-                        knife();
+                        knife(manager);
                     }
                 }
                 case MACHINE_GUN -> {
+                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                        if (shootingCooldown <= 0.0f) {
+                            machineGun(manager, id, deltaTime);
+                            return;
+                        }
+                    }
 
+                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                        knife(manager);
+                    }
 
                 }
                 case SHOTGUN -> {
+                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                        if (shootingCooldown <= 0.0f) {
+                            shotgun(manager, id, deltaTime);
+                            return;
+                        }
+                    }
+
+                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                        knife(manager);
+                    }
 
                 }
                 case SNIPER ->{
@@ -327,15 +377,15 @@ public class GameSystems {
                 }
             }
 
-            shootingCooldown -= deltaTime;
+            if(knifing)
+                animateKnife(manager, deltaTime);
 
         }
 
         private void pistol(EntityManager manager, int id, float deltaTime){
             // 1. set cooldown
-            shootingCooldown = 0.5f;
+            shootingCooldown = 1.2f;
 
-            shootingCooldown = 1.5f;
 
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
@@ -349,8 +399,23 @@ public class GameSystems {
 
         }
 
+        private void machineGun(EntityManager manager, int id, float deltaTime){
+            // 1. set cooldown
+            shootingCooldown = 0.25f;
+
+            Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
+            RenderMaths.normalizeVector(direction);
+
+            direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
+
+            direction = RenderMaths.normalizeVector(direction);
+
+            shoot(manager, id, direction, 180.0f, 2.0f, 1);
+
+        }
+
         private void snipe(EntityManager manager, int id, float deltaTime){
-            shootingCooldown = 1.5f;
+            shootingCooldown = 2.5f;
 
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
@@ -364,7 +429,73 @@ public class GameSystems {
 
         }
 
-        private void knife(){
+        private void shotgun(EntityManager manager, int id, float deltaTime){
+            shootingCooldown = 2.5f;
+
+            Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
+            RenderMaths.normalizeVector(direction);
+
+            direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
+
+            direction = RenderMaths.normalizeVector(direction);
+
+            shoot(manager, id, direction, 250.0f, 2.0f, 1);
+
+            for (int i = 0; i < 4; i++) {
+                float factor = 0.5f;
+                // generate random, small offset
+                float x = (float) Math.random() * 0.1f - 0.05f;
+                float y = (float) Math.random() * 0.1f - 0.05f;
+                float z = (float) Math.random() * 0.1f - 0.05f;
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1);
+            }
+
+
+
+
+        }
+
+        private void knife(EntityManager manager){
+            if(knifeCooldown <= 0.0f){
+                knifing = true;
+                knifeCooldown = knifeTime;
+                manager.transform[knife].pos = Camera.getInstance().position.clone();
+
+                // get direction of camera
+                Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 3.0f), Camera.getInstance().rotation.y);
+
+                // offset the knife
+                manager.transform[knife].pos = RenderMaths.addVectors(Camera.getInstance().position.clone(),direction);
+                manager.transform[knife].pos.y -= 0.13f;
+
+
+                // set rotation
+                manager.transform[knife].rot = Camera.getInstance().rotation.clone();
+
+                // rotate direction 90 degrees
+                direction = RenderMaths.rotateVectorY(direction, 3.1415f/2.0f);
+                direction = RenderMaths.multiplyVector(direction, 0.3f);
+                //offset the knife 0.5f to the right
+                manager.transform[knife].pos = RenderMaths.addVectors(manager.transform[knife].pos, direction);
+                knifeDir = direction;
+
+                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Knife);
+            }
+        }
+
+        private void animateKnife(EntityManager manager, float deltaTime){
+            //float y = (knifeTime-knifeCooldown) * 2.0f;
+
+            if(knifeCooldown < 0.0f){
+                knifing = false;
+                manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
+                manager.rendering[knife].modelPosition = new Vector3(0.0f, 0.0f, 0.0f);
+                return;
+            }
+
+            manager.rendering[knife].modelPosition = RenderMaths.addVectors(manager.rendering[knife].modelPosition, RenderMaths.multiplyVector(knifeDir, -deltaTime*4.0f));
+
+
 
         }
 
@@ -483,7 +614,7 @@ public class GameSystems {
         }
 
         private void handlePlayerCollision(EntityManager manager, int id){
-            System.out.println(CollisionInformation.collisionEvents.size());
+            //System.out.println(manager.collisionList.size());
 
             if(manager.playerMovement[id] == null){
                 return;
