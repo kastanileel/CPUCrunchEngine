@@ -17,6 +17,12 @@ public class Mesh {
     public Triangle[] textureTriangles;
     public BufferedImage texture;
 
+    public void updateRenderType(GameComponents.Rendering.RenderType renderType){
+       for(Triangle tr: triangles){
+           tr.renderType = renderType;
+       }
+    }
+
 
   /*  public Mesh(String path, Color c) throws IOException {
         // Read a obj file and create a mesh from it

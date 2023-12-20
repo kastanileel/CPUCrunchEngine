@@ -202,11 +202,11 @@ public class GameSystems {
                 manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
                 manager.transform[knife].pos.y += 0.065f;
                 manager.transform[knife].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[knife].scale = new Vector3(0.03f, 0.03f, 0.03f);
+                manager.transform[knife].scale = new Vector3(0.05f, 0.05f, 0.05f);
                 manager.physicsBody[knife].mass = 0.1f;
 
                 manager.rendering[knife].mesh = new Mesh("./src/objects/guns/knife/combatKnife.obj", Color.RED);
-                manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.Hide;
                 manager.rendering[knife].modelRotation = new Vector3(0.1f, -3.1415f/2.0f, 3.0015f/2.0f);
                 manager.physicsBody[knife].speed = 100.0f;
 
@@ -328,7 +328,7 @@ public class GameSystems {
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
-                        knife(manager);
+                        knife(manager, id);
                     }
                 }
                 case MACHINE_GUN -> {
@@ -340,7 +340,7 @@ public class GameSystems {
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
-                        knife(manager);
+                        knife(manager, id);
                     }
 
                 }
@@ -353,7 +353,7 @@ public class GameSystems {
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
-                        knife(manager);
+                        knife(manager, id);
                     }
 
                 }
@@ -378,7 +378,7 @@ public class GameSystems {
             }
 
             if(knifing)
-                animateKnife(manager, deltaTime);
+                animateKnife(manager, id, deltaTime);
 
         }
 
@@ -455,11 +455,17 @@ public class GameSystems {
 
         }
 
-        private void knife(EntityManager manager){
+        private void knife(EntityManager manager, int id){
+            if(knifing)
+                return;
             if(knifeCooldown <= 0.0f){
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Hide;
+                manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Hide);
                 knifing = true;
                 knifeCooldown = knifeTime;
                 manager.transform[knife].pos = Camera.getInstance().position.clone();
+                manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[knife].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
 
                 // get direction of camera
                 Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 3.0f), Camera.getInstance().rotation.y);
@@ -483,13 +489,18 @@ public class GameSystems {
             }
         }
 
-        private void animateKnife(EntityManager manager, float deltaTime){
+        private void animateKnife(EntityManager manager, int id, float deltaTime){
             //float y = (knifeTime-knifeCooldown) * 2.0f;
 
             if(knifeCooldown < 0.0f){
                 knifing = false;
                 manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
                 manager.rendering[knife].modelPosition = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.Hide;
+
+                manager.rendering[knife].mesh.updateRenderType(GameComponents.Rendering.RenderType.Hide);
+                manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
                 return;
             }
 

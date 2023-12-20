@@ -407,6 +407,9 @@ public class SimpleAdvancedRenderPipeline {
                         case Emissive -> {
                             drawingWindow.drawTriangleNoLighting(triangle);
                         }
+                        case Hide -> {
+                           // do nothing
+                        }
                     }
                 }
                 catch (Exception e){

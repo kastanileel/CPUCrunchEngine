@@ -29,6 +29,7 @@ public class GameComponents {
             Textured,
             TexturedAndOutline,
             Emissive,
+            Hide,
             //OneColorAndOutline,
             //OneColorDerivedFromTexture,
 
