@@ -21,13 +21,19 @@ public class ExampleScene extends Scene {
         try {
             for(int width = 0; width < 30; width ++){
                 for(int length = 0; length < 30; length ++){
-                    int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+                    int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER);
                     if(id > -1){
                         manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj", Color.blue);
                         manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                         manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
                         manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                         manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+
+                        manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                        manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                        manager.collider[id].center = manager.transform[id].pos;
+                        manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+
                     }
                 }
             }
@@ -49,13 +55,14 @@ public class ExampleScene extends Scene {
             if(id > -1){
                 manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                manager.transform[id].pos = new Vector3(-2.0f, -0.5f, 15.0f);
+                manager.transform[id].pos = new Vector3(-2.0f, -0.5f, 7.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
 
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(3.0f, 3.0f, 3.0f);
+                manager.collider[id].colliderSize = new Vector3(5.6f, 5.6f, 5.6f);
                 manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
             }
 
 
@@ -113,6 +120,7 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                 manager.collider[id].colliderSize = new Vector3(1.0f, 2.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
             }
 
          /*   id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT

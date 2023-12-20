@@ -5,7 +5,7 @@ import src.engine.core.matutils.Vector3;
 import java.util.LinkedList;
 
 public class CollisionInformation {
-    public LinkedList<CollisionEvent> collisionEvents = new LinkedList<>();
+    public static LinkedList<CollisionEvent> collisionEvents = new LinkedList<>();
 
     //Flush the collision information
     public void flush(){

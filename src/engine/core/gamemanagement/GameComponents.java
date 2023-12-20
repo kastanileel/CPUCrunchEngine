@@ -83,6 +83,18 @@ public class GameComponents {
         public Vector3 colliderSize;
 
         public Quaternion colliderRotation;
+
+        public static enum ColliderTag{
+            PLAYER,
+            ENEMY,
+            BULLET,
+            OBSTACLE,
+            GROUND,
+            WALL,
+            NONE
+        }
+
+        public ColliderTag colliderTag = ColliderTag.NONE;
     }
   
     
