@@ -29,8 +29,9 @@ public class ExampleScene extends Scene {
                         manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                         manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
-                        manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                        manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                        manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                        manager.collider[id].colliderSize = new Vector3(0.9f, 0.9f, 0.9f);
+                        manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
                         manager.collider[id].center = manager.transform[id].pos;
                         manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
 
@@ -110,7 +111,7 @@ public class ExampleScene extends Scene {
                 manager.physicsBody[id].speed = 3.0f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
 
-                manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
+                manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
 
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.GRAY);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
@@ -118,7 +119,7 @@ public class ExampleScene extends Scene {
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
 
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(1.0f, 2.0f, 1.0f);
+                manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
             }
