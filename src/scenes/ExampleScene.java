@@ -99,7 +99,7 @@ public class ExampleScene extends Scene {
             }
 
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
+            /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
@@ -122,9 +122,9 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
-            }
+            }*/
 
-          /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
+          id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
@@ -147,7 +147,7 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
-            }*/
+            }
 
           /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
@@ -172,7 +172,7 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
-            }
+            }*/
 
            /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
