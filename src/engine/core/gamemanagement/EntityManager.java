@@ -15,6 +15,8 @@ public class EntityManager {
     public GameComponents.PhysicsBody[] physicsBody;
     public GameComponents.Bullet[] bullet;
 
+    public GameComponents.PickupWeapon[] pickupWeapon;
+
     public final int size;
 
     public HashMap<Integer, CollisionInformation> collisionList = new HashMap<>();
@@ -29,6 +31,8 @@ public class EntityManager {
         playerMovement = new GameComponents.PlayerMovement[size];
         physicsBody = new GameComponents.PhysicsBody[size];
         bullet = new GameComponents.Bullet[size];
+
+        pickupWeapon = new GameComponents.PickupWeapon[size];
 
         flag = new int[size];
 
@@ -48,6 +52,7 @@ public class EntityManager {
                 if ((flag & GameComponents.PLAYERMOVEMENT) > 0) playerMovement[i] = new GameComponents.PlayerMovement();
                 if ((flag & GameComponents.PHYSICSBODY) > 0) physicsBody[i] = new GameComponents.PhysicsBody();
                 if ((flag & GameComponents.BULLET) > 0) bullet[i] = new GameComponents.Bullet();
+                if((flag & GameComponents.PICKUPWEAPON)>0) pickupWeapon[i] = new GameComponents.PickupWeapon();
 
                 return i;
             }
