@@ -96,9 +96,9 @@ public class ExampleScene extends Scene {
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if(id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/knife/combatKnife.obj", Color.GREEN);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.GREEN);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(-10.0f, -0.9f, 10.0f);
+                manager.transform[id].pos = new Vector3(-10.0f, -0.6f, 10.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.05f, .05f, .05f);
 
@@ -110,17 +110,17 @@ public class ExampleScene extends Scene {
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+                manager.transform[id].scale = new Vector3(.09f, .09f, .09f);
                 manager.playerMovement[id].mouseSpeed = 0.05f;
                 manager.playerMovement[id].moveSpeed = 6.0f;
                 manager.playerMovement[id].cameraOffset = new Vector3(0, 0, 0);
                 manager.physicsBody[id].speed = 3.0f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
 
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.GRAY);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.ORANGE);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
-                manager.rendering[id].modelRotation = new Vector3(0.0f, /*-3.8415f/2.0f*/ (float)Math.toRadians(170), 0.0f);
+                manager.rendering[id].modelRotation = new Vector3(0.0f, /*-3.8415f/2.0f*/ (float)Math.toRadians(-10), 0.0f);
             }
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
