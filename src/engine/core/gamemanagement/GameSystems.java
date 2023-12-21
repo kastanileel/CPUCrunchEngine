@@ -675,10 +675,8 @@ public class GameSystems {
                     if(manager.playerMovement[i] != null) {
 
                             manager.physicsBody[i].force.y -= 9.81f * manager.physicsBody[i].mass;
-
+                            handlePlayerCollision(manager, i);
                     }
-
-                    handlePlayerCollision(manager, i);
 
                     // apply force -> change acceleration
                     manager.physicsBody[i].acceleration.x = manager.physicsBody[i].force.x / manager.physicsBody[i].mass;
@@ -785,6 +783,8 @@ public class GameSystems {
                         continue;
                     }
 
+                    handleBulletCollision(manager, i);
+
                     // add force to the bullet
                     manager.physicsBody[i].force.x = manager.bullet[i].direction.x * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
                     manager.physicsBody[i].force.y = manager.bullet[i].direction.y * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
@@ -797,7 +797,61 @@ public class GameSystems {
 
         }
 
+        private void handleBulletCollision(EntityManager manager, int id){
+            for (CollisionInformation.CollisionEvent event : manager.collisionList.get(id).collisionEvents) {
+                if(event.entityIDs.getFirst() == id ){
+                    reactToCollisionTagBullet(manager,id, event.entityIDs.getSecond());
 
+                }
+                else if (event.entityIDs.getSecond() == id){
+
+                    reactToCollisionTagBullet(manager,id, event.entityIDs.getFirst());
+                }
+            }
+        }
+
+        private void reactToCollisionTagBullet(EntityManager manager, int bulletId, int otherID){
+
+            if(manager.damageable[otherID] != null){
+
+                DamageSystem.damagedEntities.add(otherID);
+
+                manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
+               // manager.flag[bulletId] = 0;
+            }
+
+
+        }
+
+    }
+
+    public static class DamageSystem extends GameSystem{
+
+        public static ArrayList<Integer> damagedEntities = new ArrayList<>();
+        @Override
+        public void start(EntityManager manager) throws Exception {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+            // iterate over all damageable entities
+            for(Integer id: damagedEntities){
+                switch (manager.collider[id].colliderTag){
+                    case PLAYER -> {
+                        System.out.println("Player got hit");
+                    }
+                    default -> {
+                        if(manager.damageable[id].health <= 0){
+                            manager.flag[id] = 0;
+                        }
+                    }
+                }
+            }
+
+            // flush damage list
+            damagedEntities.clear();
+        }
     }
 
     public static class PickupWeapon extends GameSystem{

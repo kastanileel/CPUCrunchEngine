@@ -16,6 +16,7 @@ public class EntityManager {
     public GameComponents.Bullet[] bullet;
 
     public GameComponents.PickupWeapon[] pickupWeapon;
+    public GameComponents.Damageable[] damageable;
 
     public final int size;
 
@@ -33,6 +34,7 @@ public class EntityManager {
         bullet = new GameComponents.Bullet[size];
 
         pickupWeapon = new GameComponents.PickupWeapon[size];
+        damageable = new GameComponents.Damageable[size];
 
         flag = new int[size];
 
@@ -53,6 +55,7 @@ public class EntityManager {
                 if ((flag & GameComponents.PHYSICSBODY) > 0) physicsBody[i] = new GameComponents.PhysicsBody();
                 if ((flag & GameComponents.BULLET) > 0) bullet[i] = new GameComponents.Bullet();
                 if((flag & GameComponents.PICKUPWEAPON)>0) pickupWeapon[i] = new GameComponents.PickupWeapon();
+                if((flag & GameComponents.DAMAGEABLE)>0) damageable[i] = new GameComponents.Damageable();
 
                 return i;
             }

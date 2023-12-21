@@ -52,7 +52,7 @@ public class ExampleScene extends Scene {
 
 
 
-            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER);
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER | GameComponents.DAMAGEABLE);
             if(id > -1){
                 manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
@@ -64,6 +64,7 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(5.6f, 5.6f, 5.6f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
+                manager.damageable[id].health = 10;
             }
 
 

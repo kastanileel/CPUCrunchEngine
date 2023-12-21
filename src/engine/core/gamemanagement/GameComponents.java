@@ -14,7 +14,8 @@ public class GameComponents {
             PLAYERMOVEMENT = 1 << 4,
             COLLIDER = 1 << 5,
             BULLET = 1 << 6,
-            PICKUPWEAPON = 1 << 7;
+            PICKUPWEAPON = 1 << 7,
+            DAMAGEABLE = 1 << 8;
 
 
     public static class Transform {
@@ -114,6 +115,10 @@ public class GameComponents {
     public static class PickupWeapon {
 
         public PlayerMovement.WeaponType weaponType;
+    }
+
+    public static class Damageable{
+        public int health = 10;
     }
 
 }
