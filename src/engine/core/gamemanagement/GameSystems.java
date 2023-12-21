@@ -393,7 +393,10 @@ public class GameSystems {
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
-                        knife(manager, id);
+                        if (shootingCooldown <= 0.0f) {
+                            shotgunDouble(manager, id, deltaTime);
+                            return;
+                        }
                     }
 
                 }
@@ -451,7 +454,15 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 180.0f, 2.0f, 2, MusicPlayer.SoundEffect.SHOOT_AK);
+
+            float factor = 0.25f;
+            // generate random, small offset
+            float x = (float) Math.random() * 0.1f - 0.05f;
+            float y = (float) Math.random() * 0.1f - 0.05f;
+            float z = (float) Math.random() * 0.1f - 0.05f;
+
+            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 180.0f, 2.0f, 2, MusicPlayer.SoundEffect.SHOOT_AK);
+
 
         }
 
@@ -493,7 +504,7 @@ public class GameSystems {
         }
 
         private void shotgunDouble(EntityManager manager, int id, float deltaTime){
-            shootingCooldown = 5.0f;
+            shootingCooldown = 4.0f;
             //Add Double Shot
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
@@ -502,11 +513,13 @@ public class GameSystems {
             direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
 
             direction = RenderMaths.normalizeVector(direction);
-
+            //initial two pellets
+            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
             shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
-            for (int i = 0; i < 4; i++) {
-                float factor = 0.5f;
+            //remaining 8 pellets
+            for (int i = 0; i < 8; i++) {
+                float factor = 0.8f;
                 // generate random, small offset
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
