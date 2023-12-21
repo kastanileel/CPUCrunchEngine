@@ -83,7 +83,7 @@ public class DrawingWindow extends JPanel {
                 break;
             case SHOTGUN:
                 //draw holow circle crosshair to indicate random pellet spread
-                graphics.drawOval(this.getWidth() / 2, this.getHeight() / 2, 80, 80);
+                graphics.drawOval(this.getWidth() / 2 - 40, this.getHeight() / 2 -40, 80, 80);
                 break;
             case MACHINE_GUN:
                 //draw hollow crosshair to indicate slight random bullet spread
