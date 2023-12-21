@@ -69,11 +69,13 @@ public class ExampleScene extends Scene {
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if(id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.blue);//"./src/objects/rock/rock64.png");
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.cyan);//"./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = new Vector3(1.0f, -0.5f, 15.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+
+
 
             }
 
@@ -88,13 +90,70 @@ public class ExampleScene extends Scene {
             }
 
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+
+
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if(id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/knife/combatKnife.obj", Color.GREEN);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.YELLOW);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(-10.0f, -0.9f, 10.0f);
+                manager.transform[id].pos = new Vector3(-10.0f, -0.5f, -10.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.05f, .05f, .05f);
+                manager.transform[id].scale = new Vector3(.15f, .15f, .15f);
+
+                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
+
+            }
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON| GameComponents.COLLIDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.GREEN);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(-5.0f, -0.5f, -10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.025f, .025f, .025f);
+
+                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
+
+            }
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON| GameComponents.COLLIDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.RED);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(0.0f, -0.5f, -10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.025f, .025f, .025f);
+
+                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
+
+            }
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON| GameComponents.COLLIDER);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.BLUE);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(5.0f, -0.5f, -10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.015f, .015f, .015f);
+
+                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
 
             }
 
@@ -181,9 +240,9 @@ public class ExampleScene extends Scene {
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.04f, 0.04f, 0.04f);
                 manager.playerMovement[id].mouseSpeed = 0.05f;
-                manager.playerMovement[id].moveSpeed = 2.5f;
+                manager.playerMovement[id].moveSpeed = 4.5f;
                 manager.playerMovement[id].cameraOffset = new Vector3(0, 0, 0);
-                manager.physicsBody[id].speed = 4.0f;
+                manager.physicsBody[id].speed = 4.5f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
 
                 manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
