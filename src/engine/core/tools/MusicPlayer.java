@@ -12,9 +12,18 @@ public class MusicPlayer {
     // enum for sound effects
     public enum SoundEffect {
         Shoot("src/sound/shoot.wav"),
-        BIG_SHOOT("src/sound/destroy.wav"),
-        Knife("src/sound/knife.wav"),
-        Weapon_Equip("src/sound/weaponEquip.wav");
+
+        //BIG_SHOOT("src/sound/destroy.wav"),
+        PICKUP_PISTOL("src/sound/pickupPistol.wav"),
+        SHOOT_PISTOL("src/sound/pistolShot.wav"),
+        PICKUP_SHOTGUN("src/sound/pickupShotgun.wav"),
+        SHOOT_SHOTGUN("src/sound/shotgunShot.wav"),
+        SHOOT_AK("src/sound/AKM_shoot.wav"),
+        PICKUP_AK("src/sound/AKM_rack.wav"),
+        SHOOT_SNIPER("src/sound/sniperShot.wav"),
+        PICKUP_SNIPER("src/sound/sniperPickup.wav"),
+        SCOPE("src/sound/scope.wav"),
+        Knife("src/sound/knife.wav");
 
 
         private final String path;
