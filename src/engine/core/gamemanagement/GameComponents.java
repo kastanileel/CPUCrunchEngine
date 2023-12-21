@@ -66,7 +66,7 @@ public class GameComponents {
         }
 
         public WeaponType weaponType;
-        public float mouseSpeed = 0.03f;
+        public float mouseSpeed = 0.05f;
         public float moveSpeed = 4.0f;
 
         public float jumpIntensity = 20.0f;
