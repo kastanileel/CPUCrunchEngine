@@ -12,6 +12,7 @@ public class MusicPlayer {
     // enum for sound effects
     public enum SoundEffect {
         Shoot("src/sound/shoot.wav"),
+
         //BIG_SHOOT("src/sound/destroy.wav"),
         PICKUP_PISTOL("src/sound/pickupPistol.wav"),
         SHOOT_PISTOL("src/sound/pistolShot.wav"),

@@ -226,6 +226,41 @@ public class GameSystems {
                     doShooting(manager, i, deltaTime);
                     handleCollision(manager, i);
 
+                    if(MKeyListener.getInstance().isKeyPressed('1')) {
+                        try {
+                            changeWeapon(GameComponents.PlayerMovement.WeaponType.PISTOL, manager, i);
+
+                        } catch (Exception e) {
+
+                        }
+
+                    }
+                    if(MKeyListener.getInstance().isKeyPressed('2')) {
+                        try {
+                            changeWeapon(GameComponents.PlayerMovement.WeaponType.MACHINE_GUN, manager, i);
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    if(MKeyListener.getInstance().isKeyPressed('3')) {
+                        try {
+                            changeWeapon(GameComponents.PlayerMovement.WeaponType.SHOTGUN, manager, i);
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    if(MKeyListener.getInstance().isKeyPressed('4')) {
+                        try {
+                            changeWeapon(GameComponents.PlayerMovement.WeaponType.SNIPER, manager, i);
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+
+
                 }
             }
 
@@ -599,6 +634,72 @@ public class GameSystems {
                 case ENEMY -> {
 
                 }
+                case PICKUPWEAPON -> {
+                    try {
+                        changeWeapon(entityManager.pickupWeapon[otherId].weaponType, entityManager, playerId);
+                    }
+                    catch (Exception e){
+                        System.out.println("oops");
+                    }
+                    entityManager.flag[otherId] = 0;
+
+
+                }
+            }
+        }
+
+        private void changeWeapon(GameComponents.PlayerMovement.WeaponType weaponType, EntityManager manager, int id) throws IOException {
+            DrawingWindow.snipe = false;
+
+            switch (weaponType){
+                case PISTOL -> {
+                    manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
+                    manager.transform[id].scale = new Vector3(.2f, 0.2f, 0.2f);
+                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.GRAY);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
+                    manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_PISTOL);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
+                }
+                case MACHINE_GUN -> {
+                    manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
+                    manager.transform[id].scale = new Vector3(.05f, 0.05f, 0.05f);
+                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.GRAY);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 3.0f);
+                    manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_AK);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
+                }
+                case SHOTGUN -> {
+                    manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
+                    manager.transform[id].scale = new Vector3(.05f, 0.05f, 0.05f);
+                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.GRAY);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
+                    manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SHOTGUN);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
+                }
+                case SNIPER -> {
+                    manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
+                    manager.transform[id].scale = new Vector3(.04f, 0.04f, 0.04f);
+                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.GRAY);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 4.2f);
+                    manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SNIPER);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
+                }
             }
         }
 
@@ -748,5 +849,24 @@ public class GameSystems {
         }
 
 
+    }
+
+    public static class PickupWeapon extends GameSystem{
+        @Override
+        public void start(EntityManager manager) throws Exception {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+
+            int required_GameComponents = GameComponents.PICKUPWEAPON | GameComponents.TRANSFORM | GameComponents.RENDER;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    manager.transform[i].rot.y += deltaTime * 2.0f;
+                }
+            }
+
+        }
     }
 }
