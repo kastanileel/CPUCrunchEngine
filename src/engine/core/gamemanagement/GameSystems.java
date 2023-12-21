@@ -430,8 +430,6 @@ public class GameSystems {
             // 1. set cooldown
             shootingCooldown = 1.2f;
 
-
-
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
             RenderMaths.normalizeVector(direction);
 
@@ -439,7 +437,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 150.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+            shoot(manager, id, direction, 300.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL);
 
         }
 
@@ -455,13 +453,13 @@ public class GameSystems {
             direction = RenderMaths.normalizeVector(direction);
 
 
-            float factor = 0.25f;
+            float factor = 0.15f;
             // generate random, small offset
-            float x = (float) Math.random() * 0.1f - 0.05f;
-            float y = (float) Math.random() * 0.1f - 0.05f;
-            float z = (float) Math.random() * 0.1f - 0.05f;
+            float x = (float) Math.random() * 0.1f - 0.01f;
+            float y = (float) Math.random() * 0.1f - 0.01f;
+            float z = (float) Math.random() * 0.1f - 0.01f;
 
-            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 180.0f, 2.0f, 2, MusicPlayer.SoundEffect.SHOOT_AK);
+            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 400.0f, 1.5f, 2, MusicPlayer.SoundEffect.SHOOT_AK);
 
 
         }
@@ -491,7 +489,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 150.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
             for (int i = 0; i < 4; i++) {
                 float factor = 0.5f;
