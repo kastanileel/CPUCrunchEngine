@@ -240,6 +240,15 @@ public class GameSystems {
             float mouseY = MMouseListener.getInstance().getMouseDeltaY();
             cam.rotation.x += mouseY * deltaTime * manager.playerMovement[id].mouseSpeed;
 
+            if(MKeyListener.getInstance().isKeyPressed('l'))
+                cam.rotation.y += 1.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+            if(MKeyListener.getInstance().isKeyPressed('j'))
+                cam.rotation.y -= 1.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+            if(MKeyListener.getInstance().isKeyPressed('i'))
+                cam.rotation.x -= 1.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+            if(MKeyListener.getInstance().isKeyPressed('k'))
+                cam.rotation.x += 1.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+
             // Clamp the vertical rotation to a range if you don't want it to flip over
             if (cam.rotation.x > 0.1f)
                 cam.rotation.x = 0.1f;

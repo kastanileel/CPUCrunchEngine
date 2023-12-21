@@ -98,8 +98,8 @@ public class ExampleScene extends Scene {
 
             }
 
-/*
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
+
+            /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
@@ -122,9 +122,9 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
-            } */
+            }*/
 
-         /*   id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
+          /* id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
@@ -147,9 +147,9 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
-            }
-*/
-          /* id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
+            }*/
+
+        /*  id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
@@ -172,7 +172,7 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
-            }*/
+            } */
 
            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
@@ -180,10 +180,10 @@ public class ExampleScene extends Scene {
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.04f, 0.04f, 0.04f);
-                manager.playerMovement[id].mouseSpeed = 0.35f;
-                manager.playerMovement[id].moveSpeed = 6.0f;
+                manager.playerMovement[id].mouseSpeed = 0.05f;
+                manager.playerMovement[id].moveSpeed = 2.5f;
                 manager.playerMovement[id].cameraOffset = new Vector3(0, 0, 0);
-                manager.physicsBody[id].speed = 3.0f;
+                manager.physicsBody[id].speed = 4.0f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
 
                 manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
