@@ -629,13 +629,15 @@ public class GameSystems {
                         System.out.println("oops");
                     }
                     entityManager.flag[otherId] = 0;
-                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Weapon_Equip);
+
 
                 }
             }
         }
 
         private void changeWeapon(GameComponents.PlayerMovement.WeaponType weaponType, EntityManager manager, int id) throws IOException {
+            DrawingWindow.snipe = false;
+
             switch (weaponType){
                 case PISTOL -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
@@ -644,6 +646,10 @@ public class GameSystems {
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_PISTOL);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
                 }
                 case MACHINE_GUN -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
@@ -652,6 +658,10 @@ public class GameSystems {
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_AK);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
                 }
                 case SHOTGUN -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
@@ -660,6 +670,10 @@ public class GameSystems {
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SHOTGUN);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
                 }
                 case SNIPER -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
@@ -668,6 +682,10 @@ public class GameSystems {
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 4.2f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SNIPER);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
                 }
             }
         }
