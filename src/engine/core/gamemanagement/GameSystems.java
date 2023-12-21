@@ -22,14 +22,10 @@ import src.engine.core.tools.MMouseListener;
 import src.engine.core.matutils.Mesh;
 
 import src.engine.core.matutils.RenderMaths;
-import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.Camera;
-import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 import src.engine.core.tools.MusicPlayer;
 
 import java.awt.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class GameSystems {
@@ -395,7 +391,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 150.0f, 2.0f, 1);
+            shoot(manager, id, direction, 150.0f, 2.0f, 1, MusicPlayer.SoundEffect.Shoot);
 
         }
 
@@ -410,7 +406,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 180.0f, 2.0f, 1);
+            shoot(manager, id, direction, 180.0f, 2.0f, 1, MusicPlayer.SoundEffect.Shoot);
 
         }
 
@@ -425,7 +421,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 250.0f, 2.0f, 5);
+            shoot(manager, id, direction, 250.0f, 2.0f, 5, MusicPlayer.SoundEffect.BIG_SHOOT);
 
         }
 
@@ -439,7 +435,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 250.0f, 2.0f, 1);
+            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.BIG_SHOOT);
 
             for (int i = 0; i < 4; i++) {
                 float factor = 0.5f;
@@ -447,7 +443,7 @@ public class GameSystems {
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
                 float z = (float) Math.random() * 0.1f - 0.05f;
-                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1);
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.BIG_SHOOT);
             }
 
 
@@ -510,7 +506,7 @@ public class GameSystems {
 
         }
 
-        private void shoot(EntityManager manager, int id, Vector3 direction, float speed, float lifeTime, int damage){
+        private void shoot(EntityManager manager, int id, Vector3 direction, float speed, float lifeTime, int damage, MusicPlayer.SoundEffect soundEffect){
             int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.COLLIDER);
             if(bulletId > -1){
 
@@ -532,7 +528,7 @@ public class GameSystems {
                     manager.collider[bulletId].colliderSize = new Vector3(0.2f, 0.2f, 0.2f);
                     manager.collider[bulletId].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
 
-                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Explode);
+                    MusicPlayer.getInstance().playSound(soundEffect);
 
                 }
                 catch (Exception e){

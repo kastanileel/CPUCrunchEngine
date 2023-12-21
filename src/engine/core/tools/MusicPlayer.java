@@ -2,9 +2,7 @@ package src.engine.core.tools;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.sound.sampled.*;
@@ -14,7 +12,7 @@ public class MusicPlayer {
     // enum for sound effects
     public enum SoundEffect {
         Shoot("src/sound/shoot.wav"),
-        Explode("src/sound/destroy.wav"),
+        BIG_SHOOT("src/sound/destroy.wav"),
         Knife("src/sound/knife.wav");
 
 
