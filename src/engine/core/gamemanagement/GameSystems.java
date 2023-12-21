@@ -233,6 +233,7 @@ public class GameSystems {
                         } catch (Exception e) {
 
                         }
+
                     }
                     if(MKeyListener.getInstance().isKeyPressed('2')) {
                         try {
@@ -598,6 +599,17 @@ public class GameSystems {
             switch (tag){
 
                 case ENEMY -> {
+
+                }
+                case PICKUPWEAPON -> {
+                    try {
+                        changeWeapon(entityManager.pickupWeapon[otherId].weaponType, entityManager, playerId);
+                    }
+                    catch (Exception e){
+                        System.out.println("oops");
+                    }
+                    entityManager.flag[otherId] = 0;
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Weapon_Equip);
 
                 }
             }

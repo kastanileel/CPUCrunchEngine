@@ -93,6 +93,7 @@ public class GameComponents {
             OBSTACLE,
             GROUND,
             WALL,
+            PICKUPWEAPON,
             NONE
         }
 
