@@ -21,6 +21,8 @@ public class GameContainer {
 
     GameSystems.CollisionSystem collisionSystem;
 
+    GameSystems.PickupWeapon pickupWeapon;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
@@ -36,6 +38,8 @@ public class GameContainer {
         playerMovement = new GameSystems.PlayerMovement();
 
         bulletSystem = new GameSystems.BulletSystem();
+
+        pickupWeapon = new GameSystems.PickupWeapon();
 
 
 
@@ -82,6 +86,7 @@ public class GameContainer {
             physicsHandler.update(manager, deltaTime);
             playerMovement.update(manager, deltaTime);
             bulletSystem.update(manager, deltaTime);
+            pickupWeapon.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();

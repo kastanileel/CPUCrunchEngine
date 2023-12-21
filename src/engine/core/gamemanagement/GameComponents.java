@@ -13,7 +13,8 @@ public class GameComponents {
             PHYSICSBODY = 1 << 3,
             PLAYERMOVEMENT = 1 << 4,
             COLLIDER = 1 << 5,
-            BULLET = 1 << 6;
+            BULLET = 1 << 6,
+            PICKUPWEAPON = 1 << 7;
 
 
     public static class Transform {
@@ -107,6 +108,11 @@ public class GameComponents {
         public Vector3 direction = new Vector3(0, 0, 0);
 
 
+    }
+
+    public static class PickupWeapon {
+
+        public PlayerMovement.WeaponType weaponType;
     }
 
 }

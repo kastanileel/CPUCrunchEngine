@@ -88,13 +88,42 @@ public class ExampleScene extends Scene {
             }
 
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+
+
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
             if(id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/knife/combatKnife.obj", Color.GREEN);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.YELLOW);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(-10.0f, -0.9f, 10.0f);
+                manager.transform[id].pos = new Vector3(-10.0f, -0.9f, -10.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.05f, .05f, .05f);
+                manager.transform[id].scale = new Vector3(.15f, .15f, .15f);
+
+            }
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.GREEN);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(-5.0f, -0.9f, -10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.025f, .025f, .025f);
+
+            }
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.RED);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(0.0f, -0.9f, -10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.025f, .025f, .025f);
+
+            }
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
+            if(id > -1){
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.BLUE);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(5.0f, -0.9f, -10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.015f, .015f, .015f);
 
             }
 
