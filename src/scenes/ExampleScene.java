@@ -74,9 +74,6 @@ public class ExampleScene extends Scene {
                 manager.transform[id].pos = new Vector3(1.0f, -0.5f, 15.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
-
-
-
             }
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
