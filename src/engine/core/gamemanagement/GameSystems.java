@@ -608,7 +608,7 @@ public class GameSystems {
                     catch (Exception e){
                         System.out.println("oops");
                     }
-                    entityManager.flag[otherId] = 0;
+                    entityManager.destroyEntity(otherId);
                     MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Weapon_Equip);
 
                 }
@@ -779,7 +779,7 @@ public class GameSystems {
 
                     // check if the bullet is still alive
                     if(manager.bullet[i].lifeTime <= 0.0f){
-                        manager.flag[i] = 0;
+                        manager.destroyEntity(i);
                         continue;
                     }
 
@@ -813,11 +813,14 @@ public class GameSystems {
         private void reactToCollisionTagBullet(EntityManager manager, int bulletId, int otherID){
 
             if(manager.damageable[otherID] != null){
-
+                System.out.println(manager.damageable[otherID].health);
                 DamageSystem.damagedEntities.add(otherID);
 
                 manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
-               // manager.flag[bulletId] = 0;
+
+                System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
+
+                manager.destroyEntity(bulletId);
             }
 
 
@@ -843,7 +846,7 @@ public class GameSystems {
                     }
                     default -> {
                         if(manager.damageable[id].health <= 0){
-                            manager.flag[id] = 0;
+                            manager.destroyEntity(id);
                         }
                     }
                 }

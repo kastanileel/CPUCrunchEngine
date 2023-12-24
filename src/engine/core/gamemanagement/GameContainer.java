@@ -95,6 +95,7 @@ public class GameContainer {
 
 
             MMouseListener.getInstance().update();
+            manager.clearDestroyedEntities();
 
         }
 
