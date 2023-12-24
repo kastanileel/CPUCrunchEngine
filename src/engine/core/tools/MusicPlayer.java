@@ -102,8 +102,9 @@ public class MusicPlayer {
     public void loopMusic(String sound) {
         threadPool.execute(() -> {
             Clip clip = loadClip(sound); // Implement loadClip to load and return a Clip
-            soundClips.put(sound, clip);
+             soundClips.put(sound, clip);
            clip.loop(Clip.LOOP_CONTINUOUSLY);
+
         });
     }
 

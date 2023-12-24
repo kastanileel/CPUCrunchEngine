@@ -653,7 +653,9 @@ public class GameSystems {
                     catch (Exception e){
                         System.out.println("oops");
                     }
-                    entityManager.flag[otherId] = 0;
+
+                    entityManager.destroyEntity(otherId);
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Weapon_Equip);
 
 
                 }
@@ -738,10 +740,8 @@ public class GameSystems {
                     if(manager.playerMovement[i] != null) {
 
                             manager.physicsBody[i].force.y -= 9.81f * manager.physicsBody[i].mass;
-
+                            handlePlayerCollision(manager, i);
                     }
-
-                    handlePlayerCollision(manager, i);
 
                     // apply force -> change acceleration
                     manager.physicsBody[i].acceleration.x = manager.physicsBody[i].force.x / manager.physicsBody[i].mass;
@@ -844,9 +844,11 @@ public class GameSystems {
 
                     // check if the bullet is still alive
                     if(manager.bullet[i].lifeTime <= 0.0f){
-                        manager.flag[i] = 0;
+                        manager.destroyEntity(i);
                         continue;
                     }
+
+                    handleBulletCollision(manager, i);
 
                     // add force to the bullet
                     manager.physicsBody[i].force.x = manager.bullet[i].direction.x * manager.physicsBody[i].mass * manager.physicsBody[i].speed;
@@ -860,7 +862,64 @@ public class GameSystems {
 
         }
 
+        private void handleBulletCollision(EntityManager manager, int id){
+            for (CollisionInformation.CollisionEvent event : manager.collisionList.get(id).collisionEvents) {
+                if(event.entityIDs.getFirst() == id ){
+                    reactToCollisionTagBullet(manager,id, event.entityIDs.getSecond());
 
+                }
+                else if (event.entityIDs.getSecond() == id){
+
+                    reactToCollisionTagBullet(manager,id, event.entityIDs.getFirst());
+                }
+            }
+        }
+
+        private void reactToCollisionTagBullet(EntityManager manager, int bulletId, int otherID){
+
+            if(manager.damageable[otherID] != null){
+                System.out.println(manager.damageable[otherID].health);
+                DamageSystem.damagedEntities.add(otherID);
+
+                manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
+
+                System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
+
+                manager.destroyEntity(bulletId);
+            }
+
+
+        }
+
+    }
+
+    public static class DamageSystem extends GameSystem{
+
+        public static ArrayList<Integer> damagedEntities = new ArrayList<>();
+        @Override
+        public void start(EntityManager manager) throws Exception {
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+            // iterate over all damageable entities
+            for(Integer id: damagedEntities){
+                switch (manager.collider[id].colliderTag){
+                    case PLAYER -> {
+                        System.out.println("Player got hit");
+                    }
+                    default -> {
+                        if(manager.damageable[id].health <= 0){
+                            manager.destroyEntity(id);
+                        }
+                    }
+                }
+            }
+
+            // flush damage list
+            damagedEntities.clear();
+        }
     }
 
     public static class PickupWeapon extends GameSystem{

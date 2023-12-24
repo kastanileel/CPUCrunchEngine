@@ -23,6 +23,8 @@ public class GameContainer {
 
     GameSystems.PickupWeapon pickupWeapon;
 
+    GameSystems.DamageSystem damageSystem;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
@@ -40,6 +42,8 @@ public class GameContainer {
         bulletSystem = new GameSystems.BulletSystem();
 
         pickupWeapon = new GameSystems.PickupWeapon();
+
+        damageSystem = new GameSystems.DamageSystem();
 
 
 
@@ -87,9 +91,11 @@ public class GameContainer {
             playerMovement.update(manager, deltaTime);
             bulletSystem.update(manager, deltaTime);
             pickupWeapon.update(manager, deltaTime);
+            damageSystem.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();
+            manager.clearDestroyedEntities();
 
         }
 
