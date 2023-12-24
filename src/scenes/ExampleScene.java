@@ -69,11 +69,14 @@ public class ExampleScene extends Scene {
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if(id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.cyan);//"./src/objects/rock/rock64.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/sightseeker/sightseeker.obj", "./src/objects/rock/rock64.png");//"./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                 manager.transform[id].pos = new Vector3(1.0f, -0.5f, 15.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+
+                manager.transform[id].rot = new Vector3(0.0f, 3.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.5f, .5f, .5f);
+
+
             }
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
