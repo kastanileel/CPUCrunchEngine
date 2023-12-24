@@ -190,6 +190,8 @@ public class GameSystems {
 
         int knife;
 
+        float defaultMoveSpeed, defaultMouseSpeed;
+
         @Override
         public void start(EntityManager manager) throws IOException {
             // create knife
@@ -212,6 +214,14 @@ public class GameSystems {
                 manager.collider[knife].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
 
 
+            }
+
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    defaultMouseSpeed = manager.playerMovement[i].mouseSpeed;
+                    defaultMoveSpeed = manager.playerMovement[i].moveSpeed;
+                }
             }
 
         }
@@ -412,10 +422,14 @@ public class GameSystems {
                         //MusicPlayer.getInstance().playSound("src/sound/scope.wav");
                         SimpleAdvancedRenderPipeline.fFov = 40.0f;
                         DrawingWindow.snipe = true;
+                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed/2.0f;
+                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed/2.0f;
                     }
                     else {
                         SimpleAdvancedRenderPipeline.fFov = 120.0f;
                         DrawingWindow.snipe = false;
+                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed;
+                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed;
                     }
 
                 }

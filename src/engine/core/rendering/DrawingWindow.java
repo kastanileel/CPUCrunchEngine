@@ -28,7 +28,7 @@ public class DrawingWindow extends JPanel {
     private Graphics graphics;
 
 
-    public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
+    public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
 
     public static boolean snipe = false;
 
