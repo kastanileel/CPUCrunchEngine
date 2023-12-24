@@ -1,6 +1,7 @@
 package src.engine.core.rendering;
 
 
+import src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
 import src.engine.core.matutils.Vector3;
@@ -25,6 +26,9 @@ public class DrawingWindow extends JPanel {
     private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     private BufferedImage imageBuffer;
     private Graphics graphics;
+
+
+    public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
 
     public static boolean snipe = false;
 
@@ -71,14 +75,38 @@ public class DrawingWindow extends JPanel {
 
         // draw crosshair
         graphics.setColor(Color.white);
-        graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
-        graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
 
 
-        if(snipe){
-            graphics.drawLine(0, this.getHeight() / 2, this.getWidth() , this.getHeight() / 2);
-            graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight() );
-
+        switch (weaponType)
+{
+            case PISTOL:
+                graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
+                break;
+            case SHOTGUN:
+                //draw holow circle crosshair to indicate random pellet spread
+                graphics.drawOval(this.getWidth() / 2 - 40, this.getHeight() / 2 -40, 80, 80);
+                break;
+            case MACHINE_GUN:
+                //draw hollow crosshair to indicate slight random bullet spread
+                graphics.drawLine(this.getWidth() / 2 - 25, this.getHeight() / 2, this.getWidth() / 2 - 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2 + 25, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 25, this.getWidth() / 2, this.getHeight() / 2 - 10);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 + 25, this.getWidth() / 2, this.getHeight() / 2 + 10);
+                break;
+            case SNIPER:
+                if (snipe){
+                    //draw crosshair
+                    graphics.drawLine(0, this.getHeight() / 2, this.getWidth() , this.getHeight() / 2);
+                    graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight() );
+                    //draw scope circle
+                    graphics.drawOval(this.getWidth() / 2 - 350, this.getHeight() / 2 - 350, 700, 700);
+                    //limit FOV to simulate scope
+                    graphics.setColor(Color.black);
+                    graphics.fillRect(0, 0, this.getWidth() / 2 - 350, this.getHeight());
+                    graphics.fillRect(this.getWidth() / 2 + 350, 0, this.getWidth() / 2 - 350, this.getHeight());
+                }
+                break;
         }
 
     }

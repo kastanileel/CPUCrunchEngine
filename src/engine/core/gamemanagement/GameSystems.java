@@ -190,6 +190,8 @@ public class GameSystems {
 
         int knife;
 
+        float defaultMoveSpeed, defaultMouseSpeed;
+
         @Override
         public void start(EntityManager manager) throws IOException {
             // create knife
@@ -212,6 +214,14 @@ public class GameSystems {
                 manager.collider[knife].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
 
 
+            }
+
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    defaultMouseSpeed = manager.playerMovement[i].mouseSpeed;
+                    defaultMoveSpeed = manager.playerMovement[i].moveSpeed;
+                }
             }
 
         }
@@ -393,7 +403,10 @@ public class GameSystems {
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
-                        knife(manager, id);
+                        if (shootingCooldown <= 0.0f) {
+                            shotgunDouble(manager, id, deltaTime);
+                            return;
+                        }
                     }
 
                 }
@@ -406,12 +419,17 @@ public class GameSystems {
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
+                        //MusicPlayer.getInstance().playSound("src/sound/scope.wav");
                         SimpleAdvancedRenderPipeline.fFov = 40.0f;
                         DrawingWindow.snipe = true;
+                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed/2.0f;
+                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed/2.0f;
                     }
                     else {
                         SimpleAdvancedRenderPipeline.fFov = 120.0f;
                         DrawingWindow.snipe = false;
+                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed;
+                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed;
                     }
 
                 }
@@ -426,8 +444,6 @@ public class GameSystems {
             // 1. set cooldown
             shootingCooldown = 1.2f;
 
-
-
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
             RenderMaths.normalizeVector(direction);
 
@@ -435,13 +451,13 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 150.0f, 2.0f, 1, MusicPlayer.SoundEffect.Shoot);
+            shoot(manager, id, direction, 300.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL);
 
         }
 
         private void machineGun(EntityManager manager, int id, float deltaTime){
             // 1. set cooldown
-            shootingCooldown = 0.25f;
+            shootingCooldown = 0.1f;
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
             RenderMaths.normalizeVector(direction);
@@ -450,7 +466,15 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 180.0f, 2.0f, 1, MusicPlayer.SoundEffect.Shoot);
+
+            float factor = 0.15f;
+            // generate random, small offset
+            float x = (float) Math.random() * 0.1f - 0.01f;
+            float y = (float) Math.random() * 0.1f - 0.01f;
+            float z = (float) Math.random() * 0.1f - 0.01f;
+
+            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 400.0f, 1.5f, 2, MusicPlayer.SoundEffect.SHOOT_AK);
+
 
         }
 
@@ -465,7 +489,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 250.0f, 2.0f, 5, MusicPlayer.SoundEffect.BIG_SHOOT);
+            shoot(manager, id, direction, 600.0f, 1.5f, 5, MusicPlayer.SoundEffect.SHOOT_SNIPER);
 
         }
 
@@ -479,7 +503,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.BIG_SHOOT);
+            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
             for (int i = 0; i < 4; i++) {
                 float factor = 0.5f;
@@ -487,12 +511,33 @@ public class GameSystems {
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
                 float z = (float) Math.random() * 0.1f - 0.05f;
-                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.BIG_SHOOT);
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
             }
+        }
 
+        private void shotgunDouble(EntityManager manager, int id, float deltaTime){
+            shootingCooldown = 4.0f;
+            //Add Double Shot
 
+            Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
+            RenderMaths.normalizeVector(direction);
 
+            direction.y = (float) Math.sin(-Camera.getInstance().rotation.x);
 
+            direction = RenderMaths.normalizeVector(direction);
+            //initial two pellets
+            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+
+            //remaining 8 pellets
+            for (int i = 0; i < 8; i++) {
+                float factor = 0.8f;
+                // generate random, small offset
+                float x = (float) Math.random() * 0.1f - 0.05f;
+                float y = (float) Math.random() * 0.1f - 0.05f;
+                float z = (float) Math.random() * 0.1f - 0.05f;
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            }
         }
 
         private void knife(EntityManager manager, int id){
@@ -608,14 +653,18 @@ public class GameSystems {
                     catch (Exception e){
                         System.out.println("oops");
                     }
+
                     entityManager.destroyEntity(otherId);
                     MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Weapon_Equip);
+
 
                 }
             }
         }
 
         private void changeWeapon(GameComponents.PlayerMovement.WeaponType weaponType, EntityManager manager, int id) throws IOException {
+            DrawingWindow.snipe = false;
+
             switch (weaponType){
                 case PISTOL -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
@@ -624,6 +673,10 @@ public class GameSystems {
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_PISTOL);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
                 }
                 case MACHINE_GUN -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
@@ -632,6 +685,10 @@ public class GameSystems {
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_AK);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
                 }
                 case SHOTGUN -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
@@ -640,6 +697,10 @@ public class GameSystems {
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SHOTGUN);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
                 }
                 case SNIPER -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
@@ -648,6 +709,10 @@ public class GameSystems {
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 4.2f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+
+                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SNIPER);
+
+                    DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
                 }
             }
         }
