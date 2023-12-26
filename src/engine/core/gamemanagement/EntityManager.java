@@ -19,6 +19,8 @@ public class EntityManager {
     public GameComponents.PickupWeapon[] pickupWeapon;
     public GameComponents.Damageable[] damageable;
 
+    public GameComponents.AIBEHAVIOR[] aiBehavior;
+
     public final int size;
 
     public HashMap<Integer, CollisionInformation> collisionList = new HashMap<>();

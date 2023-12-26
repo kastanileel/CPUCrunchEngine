@@ -15,7 +15,8 @@ public class GameComponents {
             COLLIDER = 1 << 5,
             BULLET = 1 << 6,
             PICKUPWEAPON = 1 << 7,
-            DAMAGEABLE = 1 << 8;
+            DAMAGEABLE = 1 << 8,
+            AIBEHAVIOR = 1 << 9;
 
 
     public static class Transform {
@@ -119,6 +120,16 @@ public class GameComponents {
 
     public static class Damageable{
         public int health = 10;
+    }
+
+    public static class AIBEHAVIOR {
+        public enum State {
+            WANDERING,
+            CHASING,
+            ATTACKING
+        }
+        public State currentState;
+
     }
 
 }
