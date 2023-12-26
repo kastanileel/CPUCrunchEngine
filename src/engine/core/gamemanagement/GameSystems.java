@@ -11,6 +11,7 @@ import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -931,7 +932,14 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR;
 
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
+
+                }
+            }
         }
 
         @Override
@@ -953,15 +961,48 @@ public class GameSystems {
         }
 
         private void updateAI(EntityManager manager, int entityId, float deltaTime) {
-
+            switch (manager.aiBehavior[entityId].currentState) {
+                case WANDERING:
+                    handleWandering(manager, entityId, deltaTime);
+                    break;
+                case CHASING:
+                    handleChasing(manager, entityId, deltaTime);
+                    break;
+                case ATTACKING:
+                    handleAttacking(manager, entityId, deltaTime);
+                    break;
+            }
         }
 
         private void updatePhysics(EntityManager manager, int entityId, float deltaTime) {
+            GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
+            GameComponents.Transform transform = manager.transform[entityId];
 
+            // Apply physics calculations based on the current velocity and forces
+            transform.pos.x += physicsBody.velocity.x * deltaTime;
+            transform.pos.y += physicsBody.velocity.y * deltaTime;
+            transform.pos.z += physicsBody.velocity.z * deltaTime;
         }
 
-        private void handleInteractions(EntityManager manager, int entityId, float deltaTime) {
 
+        private void handleWandering(EntityManager manager, int entityId, float deltaTime) {
+            GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
+            physicsBody.velocity = new Vector3(/* random or predetermined values */);
+        }
+
+
+    private void handleChasing(EntityManager manager, int entityId, float deltaTime) {
+        GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
+        GameComponents.Transform enemyTransform = manager.transform[entityId];
+        GameComponents.Transform playerTransform = /* Get the player's transform component */;
+
+        Vector3 direction = playerTransform.pos.subtract(enemyTransform.pos).normalize();
+        physicsBody.velocity = direction.scale(/* chasing speed */);
+    }
+
+        private void handleAttacking(EntityManager manager, int entityId, float deltaTime) {
+            // Example: Trigger attack animations and calculate attack effects
+            // This may not involve much physics, but could trigger other game events
         }
     }
 }

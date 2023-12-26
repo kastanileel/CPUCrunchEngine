@@ -122,12 +122,13 @@ public class GameComponents {
         public int health = 10;
     }
 
+    public enum State {
+        WANDERING,
+        CHASING,
+        ATTACKING
+    }
+
     public static class AIBEHAVIOR {
-        public enum State {
-            WANDERING,
-            CHASING,
-            ATTACKING
-        }
         public State currentState;
 
     }

@@ -25,6 +25,8 @@ public class GameContainer {
 
     GameSystems.DamageSystem damageSystem;
 
+    GameSystems.EnemySystem enemySystem;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
@@ -45,6 +47,7 @@ public class GameContainer {
 
         damageSystem = new GameSystems.DamageSystem();
 
+        enemySystem = new GameSystems.EnemySystem();
 
 
        Scene example = new ExampleScene(1000, "example");

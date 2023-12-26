@@ -40,6 +40,8 @@ public class EntityManager {
         pickupWeapon = new GameComponents.PickupWeapon[size];
         damageable = new GameComponents.Damageable[size];
 
+        aiBehavior = new GameComponents.AIBEHAVIOR[size];
+
         flag = new int[size];
 
     }
