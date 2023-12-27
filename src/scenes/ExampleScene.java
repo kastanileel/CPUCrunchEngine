@@ -172,9 +172,7 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                 manager.collider[id].colliderSize = new Vector3(5.6f, 5.6f, 5.6f);
                 manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
-
-                manager.damageable[id].health = 10;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
 
             }
 
@@ -206,7 +204,7 @@ public class ExampleScene extends Scene {
             }*/
 
           id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
-                    | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
+                    | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER | GameComponents.DAMAGEABLE);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -228,6 +226,8 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
+
+
             }
 
           /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT

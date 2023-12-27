@@ -609,6 +609,7 @@ public class GameSystems {
 
                     MusicPlayer.getInstance().playSound(soundEffect);
 
+                    System.out.println(manager.damageable[id].health);
                 } catch (Exception e) {
                     System.out.println("Error creating bullet");
                 }
@@ -804,6 +805,36 @@ public class GameSystems {
                     manager.physicsBody[playerId].force.z = direction.z * 100.0f;
 
 
+                }
+                case PLAYER -> {
+                    Vector3 center = manager.collider[otherId].center;
+                    Vector3 playerPos = manager.transform[playerId].pos;
+
+                    Vector3 direction = RenderMaths.substractVectors(playerPos, center);
+
+                    direction = RenderMaths.normalizeVector(direction);
+
+                    manager.physicsBody[playerId].force.x = direction.x * 100.0f;
+                    // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                    manager.physicsBody[playerId].force.z = direction.z * 100.0f;
+
+                    manager.damageable[playerId].health -= 5;
+                    System.out.println(manager.damageable[playerId].health);
+                }
+
+                case ENEMY -> {
+                    Vector3 center = manager.collider[playerId].center;
+                    Vector3 otherPos = manager.transform[otherId].pos;
+
+                    Vector3 direction = RenderMaths.substractVectors(otherPos, center);
+
+                    direction = RenderMaths.normalizeVector(direction);
+
+                    manager.physicsBody[otherId].force.x = direction.x * 100.0f;
+                    // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                    manager.physicsBody[otherId].force.z = direction.z * 100.0f;
+
+                    manager.damageable[otherId].health -= 5;
                 }
             }
         }
@@ -1037,7 +1068,7 @@ public class GameSystems {
                            int damage, MusicPlayer.SoundEffect soundEffect) {
             int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.COLLIDER);
             if (bulletId > -1) {
-                System.out.println("Shoot " + bulletId);
+                //System.out.println("Shoot " + bulletId);
 
                 try {
                     manager.transform[bulletId].pos = manager.transform[id].pos;
