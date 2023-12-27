@@ -932,21 +932,19 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR;
-
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
+                    manager.aiBehavior[i].wanderingSpeed = 1f;
                     playerPosition = manager.transform[i].pos;
-                    manager.physicsBody[i].velocity = new Vector3(1f, 1f, 1f);
                 }
             }
         }
 
         @Override
         public void update(EntityManager manager, float deltaTime) throws Exception {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR;
-
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     updateAI(manager, i, deltaTime);
@@ -985,14 +983,18 @@ public class GameSystems {
             if (manager.aiBehavior[entityId].timeSinceLastDirectionChange > manager.aiBehavior[entityId].wanderingDuration) {
 
                 float angle = (float) (Math.random() * 2 * Math.PI);
-                Vector3 direction = new Vector3((float) Math.cos(angle), 0, (float) Math.sin(angle));
+                // Assuming the constructor and methods of your Vector3 class can handle this operation:
+                physicsBody.velocity.x = (float) Math.cos(angle) * manager.aiBehavior[entityId].wanderingSpeed;
+                physicsBody.velocity.y = 0.0f; // Assuming enemies only wander on a 2D plane, y-axis velocity is 0.
+                physicsBody.velocity.z = (float) Math.sin(angle) * manager.aiBehavior[entityId].wanderingSpeed;
 
-                physicsBody.velocity = direction.scale(manager.aiBehavior[entityId].wanderingSpeed);
+                System.out.println(physicsBody.velocity);
 
                 manager.aiBehavior[entityId].timeSinceLastDirectionChange = 0;
                 manager.aiBehavior[entityId].wanderingDuration = (float) (Math.random() * maxWanderingDuration);
             } else {
                 manager.aiBehavior[entityId].timeSinceLastDirectionChange += deltaTime;
+                System.out.println(manager.aiBehavior[entityId].timeSinceLastDirectionChange);
             }
         }
 

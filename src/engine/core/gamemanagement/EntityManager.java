@@ -63,6 +63,7 @@ public class EntityManager {
                 if ((flag & GameComponents.BULLET) > 0) bullet[i] = new GameComponents.Bullet();
                 if((flag & GameComponents.PICKUPWEAPON)>0) pickupWeapon[i] = new GameComponents.PickupWeapon();
                 if((flag & GameComponents.DAMAGEABLE)>0) damageable[i] = new GameComponents.Damageable();
+                if((flag & GameComponents.AIBEHAVIOR)>0) aiBehavior[i] = new GameComponents.AIBEHAVIOR();
 
                 return i;
             }
@@ -86,6 +87,7 @@ public class EntityManager {
             if (bullet[entityID] != null) bullet[entityID] = null;
             if (pickupWeapon[entityID] != null) pickupWeapon[entityID] = null;
             if (damageable[entityID] != null) damageable[entityID] = null;
+            if (aiBehavior[entityID] != null) aiBehavior[entityID] = null;
 
         }
 

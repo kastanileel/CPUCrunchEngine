@@ -88,6 +88,8 @@ public class GameContainer implements GameEventListener {
 
                 collisionSystem.start(manager);
                 playerMovement.start(manager);
+
+                enemySystem.start(manager);
             }
 
             collisionSystem.update(manager, deltaTime);
@@ -97,6 +99,7 @@ public class GameContainer implements GameEventListener {
             bulletSystem.update(manager, deltaTime);
             pickupWeapon.update(manager, deltaTime);
             damageSystem.update(manager, deltaTime);
+            enemySystem.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();
