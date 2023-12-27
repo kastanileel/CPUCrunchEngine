@@ -128,11 +128,21 @@ public class GameComponents {
         ATTACKING
     }
 
+    public enum EnemyType {
+        GUNTURRED,
+        SIGHTSEEKER
+
+    }
+
     public static class AIBEHAVIOR {
         public State currentState;
+        public EnemyType enemyType;
         public float timeSinceLastDirectionChange;
         public float wanderingDuration;
+        public Vector3 wanderingDirection;
         public float wanderingSpeed;
+        public float chasingDistance;
+        public float attackingDistance;
 
     }
 

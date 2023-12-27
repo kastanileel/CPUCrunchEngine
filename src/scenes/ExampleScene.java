@@ -90,9 +90,6 @@ public class ExampleScene extends Scene {
 
             }
 
-
-
-
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if(id > -1){
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.YELLOW);
@@ -161,21 +158,23 @@ public class ExampleScene extends Scene {
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 // Set up the transformation component
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.CYAN);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
-
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
 
                 manager.transform[id].pos = new Vector3(1.0f, -0.5f, 10.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 3.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1f,1f,1f);
 
-                // Set up the damageable component
-                manager.damageable[id].health = 1;
+                manager.aiBehavior[id].chasingDistance = 15;
+                manager.aiBehavior[id].attackingDistance = 8;
+                manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
 
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE; // or BOX, depending on the shape
-                manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(5.6f, 5.6f, 5.6f);
                 manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER; // Set the collider tag to ENEMY
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
+
+                manager.damageable[id].health = 10;
 
             }
 
