@@ -1,17 +1,17 @@
 package src.engine.core.gamemanagement;
 
 
+import src.engine.core.gamemanagement.gamelogic.EventSystem;
+import src.engine.core.gamemanagement.gamelogic.GameEventListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
 import src.scenes.ExampleScene;
 
 import java.util.HashMap;
 
-public class GameContainer {
+public class GameContainer implements GameEventListener {
 
-    public static void main(String[] args) throws Exception {
-        new GameContainer();
-    }
+
 
     EntityManager manager;
     GameSystems.Renderer rasterizer;
@@ -51,6 +51,8 @@ public class GameContainer {
        scenes.put(example.getName(), example);
 
         currentSceneName = "example";
+
+        EventSystem.getInstance().addListener(this);
 
         startGameLoop();
     }
@@ -102,4 +104,20 @@ public class GameContainer {
         //System.out.println(System.nanoTime()/1000000 - lastTime);
     }
 
+    @Override
+    public void onFinishLevel(int level) {
+
+        // maybe switch active scenes here
+
+    }
+
+    @Override
+    public void onPlayerDeath() {
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        new GameContainer();
+    }
 }
+
