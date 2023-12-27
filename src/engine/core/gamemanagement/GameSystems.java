@@ -655,7 +655,6 @@ public class GameSystems {
                     }
 
                     entityManager.destroyEntity(otherId);
-                    MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Weapon_Equip);
 
 
                 }
@@ -814,9 +813,9 @@ public class GameSystems {
 
                     direction = RenderMaths.normalizeVector(direction);
 
-                    manager.physicsBody[playerId].force.x = direction.x * 100.0f;
+                    manager.physicsBody[playerId].force.x = direction.x * 30.0f;
                    // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
-                    manager.physicsBody[playerId].force.z = direction.z * 100.0f;
+                    manager.physicsBody[playerId].force.z = direction.z * 30.0f;
 
 
                 }
