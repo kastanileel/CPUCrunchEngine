@@ -928,7 +928,7 @@ public class GameSystems {
     }
 
     public static class EnemySystem extends GameSystem {
-
+        private Vector3 playerPosition = null;
 
         @Override
         public void start(EntityManager manager) throws Exception {
@@ -937,7 +937,8 @@ public class GameSystems {
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
-
+                    playerPosition = manager.transform[i].pos;
+                    manager.physicsBody[i].velocity = new Vector3(1f, 1f, 1f);
                 }
             }
         }
@@ -948,15 +949,9 @@ public class GameSystems {
 
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    // Process each enemy entity here
-
-                    // Update AI behavior
                     updateAI(manager, i, deltaTime);
-
-                    // Update physics and movement
                     updatePhysics(manager, i, deltaTime);
                 }
-
             }
         }
 
@@ -978,31 +973,42 @@ public class GameSystems {
             GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
             GameComponents.Transform transform = manager.transform[entityId];
 
-            // Apply physics calculations based on the current velocity and forces
             transform.pos.x += physicsBody.velocity.x * deltaTime;
             transform.pos.y += physicsBody.velocity.y * deltaTime;
             transform.pos.z += physicsBody.velocity.z * deltaTime;
         }
 
         private void handleWandering(EntityManager manager, int entityId, float deltaTime) {
+            float maxWanderingDuration = 10f;
             GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
-            physicsBody.velocity = new Vector3(/* random or predetermined values */);
+
+            if (manager.aiBehavior[entityId].timeSinceLastDirectionChange > manager.aiBehavior[entityId].wanderingDuration) {
+
+                float angle = (float) (Math.random() * 2 * Math.PI);
+                Vector3 direction = new Vector3((float) Math.cos(angle), 0, (float) Math.sin(angle));
+
+                physicsBody.velocity = direction.scale(manager.aiBehavior[entityId].wanderingSpeed);
+
+                manager.aiBehavior[entityId].timeSinceLastDirectionChange = 0;
+                manager.aiBehavior[entityId].wanderingDuration = (float) (Math.random() * maxWanderingDuration);
+            } else {
+                manager.aiBehavior[entityId].timeSinceLastDirectionChange += deltaTime;
+            }
         }
 
         private void handleChasing(EntityManager manager, int entityId, float deltaTime) {
             GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
             GameComponents.Transform enemyTransform = manager.transform[entityId];
-            Vector3 playerPosition = manager.getPlayerPosition();
 
             if (playerPosition != null) {
                 Vector3 direction = playerPosition.subtract(enemyTransform.pos).normalize();
                 physicsBody.velocity = direction.scale(1.5f);
+
             }
         }
 
         private void handleAttacking(EntityManager manager, int entityId, float deltaTime) {
-            // Example: Trigger attack animations and calculate attack effects
-            // This may not involve much physics, but could trigger other game events
+
         }
     }
 }

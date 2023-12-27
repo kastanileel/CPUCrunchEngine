@@ -130,6 +130,9 @@ public class GameComponents {
 
     public static class AIBEHAVIOR {
         public State currentState;
+        public float timeSinceLastDirectionChange;
+        public float wanderingDuration;
+        public float wanderingSpeed;
 
     }
 

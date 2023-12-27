@@ -158,6 +158,28 @@ public class ExampleScene extends Scene {
 
             }
 
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.AIBEHAVIOR | GameComponents.DAMAGEABLE | GameComponents.COLLIDER);
+            if (id > -1) {
+                // Set up the transformation component
+                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.CYAN);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+
+
+                manager.transform[id].pos = new Vector3(1.0f, -0.5f, 10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 3.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(1f,1f,1f);
+
+                // Set up the damageable component
+                manager.damageable[id].health = 1;
+
+                // Set up the collider component
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE; // or BOX, depending on the shape
+                manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY; // Set the collider tag to ENEMY
+            }
+
+
 
             /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);

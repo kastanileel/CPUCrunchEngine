@@ -91,14 +91,4 @@ public class EntityManager {
 
         destroyList.clear();
     }
-
-    public Vector3 getPlayerPosition() {
-        for (int i = 0; i < size; i++) {
-            if (playerMovement[i] != null) {
-                return transform[i].pos;
-            }
-        }
-        return null;
-    }
-
 }
