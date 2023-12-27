@@ -984,21 +984,21 @@ public class GameSystems {
             transform.pos.z += physicsBody.velocity.z * deltaTime;
         }
 
-
         private void handleWandering(EntityManager manager, int entityId, float deltaTime) {
             GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
             physicsBody.velocity = new Vector3(/* random or predetermined values */);
         }
 
+        private void handleChasing(EntityManager manager, int entityId, float deltaTime) {
+            GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
+            GameComponents.Transform enemyTransform = manager.transform[entityId];
+            Vector3 playerPosition = manager.getPlayerPosition();
 
-    private void handleChasing(EntityManager manager, int entityId, float deltaTime) {
-        GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
-        GameComponents.Transform enemyTransform = manager.transform[entityId];
-        GameComponents.Transform playerTransform = /* Get the player's transform component */;
-
-        Vector3 direction = playerTransform.pos.subtract(enemyTransform.pos).normalize();
-        physicsBody.velocity = direction.scale(/* chasing speed */);
-    }
+            if (playerPosition != null) {
+                Vector3 direction = playerPosition.subtract(enemyTransform.pos).normalize();
+                physicsBody.velocity = direction.scale(1.5f);
+            }
+        }
 
         private void handleAttacking(EntityManager manager, int entityId, float deltaTime) {
             // Example: Trigger attack animations and calculate attack effects

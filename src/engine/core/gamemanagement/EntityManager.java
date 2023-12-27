@@ -1,6 +1,7 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.core.dataContainers.CollisionInformation;
+import src.engine.core.matutils.Vector3;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -89,6 +90,15 @@ public class EntityManager {
         }
 
         destroyList.clear();
+    }
+
+    public Vector3 getPlayerPosition() {
+        for (int i = 0; i < size; i++) {
+            if (playerMovement[i] != null) {
+                return transform[i].pos;
+            }
+        }
+        return null;
     }
 
 }
