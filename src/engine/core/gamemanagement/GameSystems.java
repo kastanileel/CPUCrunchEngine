@@ -590,6 +590,7 @@ public class GameSystems {
             if (bulletId > -1) {
 
                 try {
+                    manager.bullet[bulletId].shooter = GameComponents.Bullet.ShooterType.PLAYER;
                     manager.transform[bulletId].pos = Camera.getInstance().position.clone();
                     manager.transform[bulletId].pos.y += 0.065f;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
@@ -891,16 +892,18 @@ public class GameSystems {
         }
 
         private void reactToCollisionTagBullet(EntityManager manager, int bulletId, int otherID) {
-
             if (manager.damageable[otherID] != null) {
-                System.out.println(manager.damageable[otherID].health);
-                DamageSystem.damagedEntities.add(otherID);
+                if (!((manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.ENEMY && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.ENEMY)
+                        || (manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.PLAYER && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER))) {
+                    System.out.println(manager.damageable[otherID].health);
+                    DamageSystem.damagedEntities.add(otherID);
 
-                manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
+                    manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
 
-                System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
+                    System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
 
-                manager.destroyEntity(bulletId);
+                    manager.destroyEntity(bulletId);
+                }
             }
         }
     }
@@ -962,13 +965,13 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR;
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if (manager.playerMovement[i] != null) {
                     playerPosition = manager.transform[i].pos;
                 }
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    manager.aiBehavior[i].currentState = GameComponents.State.CHASING;
+                    manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
                     manager.aiBehavior[i].wanderingSpeed = 0.1f;
                     manager.aiBehavior[i].wanderingDirection = new Vector3(0f, 0f, 0f);
 
@@ -978,7 +981,7 @@ public class GameSystems {
 
         @Override
         public void update(EntityManager manager, float deltaTime) throws Exception {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR;
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if (manager.playerMovement[i] != null) {
                     playerPosition = manager.transform[i].pos;
@@ -1018,12 +1021,28 @@ public class GameSystems {
             float maxWanderingDuration = 10f;
             GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
             GameComponents.AIBEHAVIOR aibehavior = manager.aiBehavior[entityId];
+            GameComponents.Transform transform = manager.transform[entityId];
 
             if (aibehavior.timeSinceLastDirectionChange > aibehavior.wanderingDuration) {
                 float angle = (float) (Math.random() * 2 * Math.PI);
                 aibehavior.wanderingDirection = new Vector3((float) Math.cos(angle) * manager.aiBehavior[entityId].wanderingSpeed, 0.0f, (float) Math.sin(angle) * manager.aiBehavior[entityId].wanderingSpeed);
 
                 aibehavior.timeSinceLastDirectionChange = 0;
+                Vector3 velocityDirection = aibehavior.wanderingDirection.normalize();
+
+                Vector3 forward = new Vector3(0,0,1);
+                float dotProduct = Vector3.dot(forward, velocityDirection);
+                angle = (float) Math.acos(dotProduct);
+
+                Vector3 crossProduct = RenderMaths.crossProduct(forward,velocityDirection);
+                if (crossProduct.y < 0) {
+                    angle = -angle;
+                }
+
+                float angleDegrees = (float) Math.toDegrees(angle);
+                transform.rot.y -= angleDegrees;
+
+                System.out.println(transform.rot.x + " ; " + transform.rot.y + " ; " + transform.rot.z);
                 aibehavior.wanderingDuration = (float) (Math.random() * maxWanderingDuration);
             } else {
                 manager.aiBehavior[entityId].timeSinceLastDirectionChange += deltaTime;
@@ -1071,7 +1090,8 @@ public class GameSystems {
                 //System.out.println("Shoot " + bulletId);
 
                 try {
-                    manager.transform[bulletId].pos = manager.transform[id].pos;
+                    manager.bullet[bulletId].shooter = GameComponents.Bullet.ShooterType.ENEMY;
+                    manager.transform[bulletId].pos = manager.transform[id].pos.clone();
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
                     manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
                     manager.physicsBody[bulletId].mass = 0.1f;

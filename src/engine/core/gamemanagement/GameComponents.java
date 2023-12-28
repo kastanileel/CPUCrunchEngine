@@ -108,9 +108,15 @@ public class GameComponents {
         public float lifeTime = 5.0f;
         public int damage = 1;
 
+        public ShooterType shooter;
+
         public Vector3 direction = new Vector3(0, 0, 0);
 
+        public enum ShooterType {
+            ENEMY,
+            PLAYER
 
+        }
     }
 
     public static class PickupWeapon {
