@@ -11,6 +11,7 @@ import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -960,8 +961,8 @@ public class GameSystems {
     public static class EnemySystem extends GameSystem {
         private Vector3 playerPosition = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private Vector3 distanceVectorPlayerEnemy = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
-        float shootingCooldown = 0.0f;
-
+        private final Random random = new Random();
+        private int i;
 
         @Override
         public void start(EntityManager manager) throws Exception {
@@ -971,10 +972,20 @@ public class GameSystems {
                     playerPosition = manager.transform[i].pos;
                 }
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    manager.aiBehavior[i].spawnPoint = new Vector3(manager.transform[i].pos.x, manager.transform[i].pos.y, manager.transform[i].pos.z);
                     manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
-                    manager.aiBehavior[i].wanderingSpeed = 0.1f;
                     manager.aiBehavior[i].wanderingDirection = new Vector3(0f, 0f, 0f);
-
+                    switch (manager.aiBehavior[i].enemyType) {
+                        case SIGHTSEEKER -> {
+                            manager.physicsBody[i].speed = 2f;
+                        }
+                        case GUNTURRED -> {
+                            manager.physicsBody[i].speed = 0f;
+                        }
+                        case GROUNDENEMY -> {
+                            manager.physicsBody[i].speed = 0.5f;
+                        }
+                    }
                 }
             }
         }
@@ -1006,11 +1017,26 @@ public class GameSystems {
         private void updateAI(EntityManager manager, int entityId, float deltaTime) {
             switch (manager.aiBehavior[entityId].currentState) {
                 case WANDERING:
-                    handleWandering(manager, entityId, deltaTime);
+                    switch (manager.aiBehavior[entityId].enemyType) {
+                        case SIGHTSEEKER, GROUNDENEMY -> {
+                            handleWandering(manager, entityId, deltaTime);
+                            rotateEnemy(manager, entityId, deltaTime, manager.aiBehavior[entityId].wanderingDirection);
+                        }
+                        case GUNTURRED -> {
+                            rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
+                        }
+                    }
                     break;
                 case CHASING:
-                    handleChasing(manager, entityId, deltaTime);
-                    break;
+                    switch (manager.aiBehavior[entityId].enemyType) {
+                        case SIGHTSEEKER, GROUNDENEMY -> {
+                            handleChasing(manager, entityId, deltaTime);
+                            rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
+                        }
+                        case GUNTURRED -> {
+                            rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
+                        }
+                    }
                 case ATTACKING:
                     handleAttacking(manager, entityId, deltaTime);
                     break;
@@ -1021,61 +1047,126 @@ public class GameSystems {
             float maxWanderingDuration = 10f;
             GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
             GameComponents.AIBEHAVIOR aibehavior = manager.aiBehavior[entityId];
-            GameComponents.Transform transform = manager.transform[entityId];
 
             if (aibehavior.timeSinceLastDirectionChange > aibehavior.wanderingDuration) {
-                float angle = (float) (Math.random() * 2 * Math.PI);
-                aibehavior.wanderingDirection = new Vector3((float) Math.cos(angle) * manager.aiBehavior[entityId].wanderingSpeed, 0.0f, (float) Math.sin(angle) * manager.aiBehavior[entityId].wanderingSpeed);
-
+                calculateWanderingDirection(manager, entityId, deltaTime);
                 aibehavior.timeSinceLastDirectionChange = 0;
-                Vector3 velocityDirection = aibehavior.wanderingDirection.normalize();
-
-                Vector3 forward = new Vector3(0,0,1);
-                float dotProduct = Vector3.dot(forward, velocityDirection);
-                angle = (float) Math.acos(dotProduct);
-
-                Vector3 crossProduct = RenderMaths.crossProduct(forward,velocityDirection);
-                if (crossProduct.y < 0) {
-                    angle = -angle;
-                }
-
-                float angleDegrees = (float) Math.toDegrees(angle);
-                transform.rot.y -= angleDegrees;
-
-                System.out.println(transform.rot.x + " ; " + transform.rot.y + " ; " + transform.rot.z);
                 aibehavior.wanderingDuration = (float) (Math.random() * maxWanderingDuration);
             } else {
                 manager.aiBehavior[entityId].timeSinceLastDirectionChange += deltaTime;
                 physicsBody.velocity = new Vector3(aibehavior.wanderingDirection.x, aibehavior.wanderingDirection.y, aibehavior.wanderingDirection.z);
+            }
+        }
+
+        private void calculateWanderingDirection(EntityManager manager, int entityId, float deltaTime) {
+            System.out.println(manager.aiBehavior[entityId].chooseWanderingCounter);
+
+            if (manager.aiBehavior[entityId].chooseWanderingCounter < random.nextInt(2)) {
+                manager.aiBehavior[entityId].chooseWanderingCounter++;
+                float angle = (float) (Math.random() * 2 * Math.PI);
+                manager.aiBehavior[entityId].wanderingDirection = new Vector3(
+                        (float) Math.cos(angle) * manager.physicsBody[entityId].speed,
+                        0.0f,
+                        (float) Math.sin(angle) * manager.physicsBody[entityId].speed
+                );
+            } else {
+                System.out.println(manager.transform[entityId].pos.x + "; " + manager.transform[entityId].pos.y + "; " + manager.transform[entityId].pos.z);
+                manager.aiBehavior[entityId].chooseWanderingCounter = 0;
+                Vector3 normalizedVectorToSpawn = RenderMaths.normalizeVector(manager.aiBehavior[entityId].spawnPoint.subtract(manager.transform[entityId].pos));
+                manager.aiBehavior[entityId].wanderingDirection = new Vector3(normalizedVectorToSpawn.x, normalizedVectorToSpawn.y, normalizedVectorToSpawn.z);
 
             }
         }
 
-        private void handleChasing(EntityManager manager, int entityId, float deltaTime) {
-            manager.physicsBody[entityId].velocity = distanceVectorPlayerEnemy.normalize();
+        private void rotateEnemy(EntityManager manager, int entityId, float deltaTime, Vector3 direction) {
+            Vector3 turretPosition = manager.transform[entityId].pos;
+            float currentAngleY = manager.transform[entityId].rot.y;
 
+            Vector3 directionToPlayer = playerPosition.subtract(turretPosition);
+
+            Vector3 normalizedDirection = RenderMaths.normalizeVector(directionToPlayer);
+
+            float desiredAngleY = (float) Math.atan2(normalizedDirection.z, normalizedDirection.x);
+            desiredAngleY = (desiredAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
+
+            currentAngleY = (currentAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
+
+            float angleDifference = desiredAngleY - currentAngleY;
+            angleDifference = (angleDifference + (float) Math.PI) % ((float) Math.PI * 2) - (float) Math.PI;
+
+            float rotationAmount = angleDifference;
+
+            currentAngleY += rotationAmount;
+
+            manager.transform[entityId].rot.y = currentAngleY;
+
+            /*if (i > 10) {
+                i = 0;
+                System.out.println("Angledif : " + angleDifference);
+                //System.out.println("Playerposition: " + playerPosition.x + ", " + playerPosition.y + ", " + playerPosition.z);
+                System.out.println("Enemy-player-vector: " + normalizedDirection.x + ", " + normalizedDirection.y + ", " + normalizedDirection.z);
+            } else {
+                i++;
+            }*/
+        }
+
+
+        private void handleChasing(EntityManager manager, int entityId, float deltaTime) {
+            Vector3 vector3 = RenderMaths.normalizeVector(distanceVectorPlayerEnemy);
+            manager.physicsBody[entityId].velocity = new Vector3(
+                    vector3.x * manager.physicsBody[entityId].speed,
+                    vector3.y * manager.physicsBody[entityId].speed,
+                    vector3.z * manager.physicsBody[entityId].speed
+            );
         }
 
         private void handleAttacking(EntityManager manager, int entityId, float deltaTime) {
             manager.physicsBody[entityId].velocity = new Vector3(0.0f, 0.0f, 0.0f);
 
-            shootingCooldown -= deltaTime;
+            manager.aiBehavior[entityId].shootingCooldown -= deltaTime;
 
             switch (manager.aiBehavior[entityId].enemyType) {
                 case SIGHTSEEKER -> {
-                    if (shootingCooldown <= 0.0f) {
-                        sightseeker(manager, entityId, deltaTime);
+                    if (manager.aiBehavior[entityId].shootingCooldown <= 0.0f) {
+                        sightseekerShotHandler(manager, entityId, deltaTime);
                     }
                 }
                 case GUNTURRED -> {
-
+                    if (manager.aiBehavior[entityId].shootingCooldown <= 0.0f) {
+                        gunturredShotHandler(manager, entityId, deltaTime);
+                    }
+                }
+                case GROUNDENEMY -> {
+                    if (manager.aiBehavior[entityId].shootingCooldown <= 0.0f) {
+                        groundenemyShotHandler(manager, entityId, deltaTime);
+                    }
                 }
             }
         }
 
-        private void sightseeker(EntityManager manager, int id, float deltaTime) {
+        private void sightseekerShotHandler(EntityManager manager, int id, float deltaTime) {
             // 1. set cooldown
-            shootingCooldown = 1.2f;
+            manager.aiBehavior[id].shootingCooldown = 3f;
+
+            Vector3 direction = distanceVectorPlayerEnemy.normalize();
+
+            shoot(manager, id, direction, 150.0f, 2.0f, 5, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+
+        }
+
+        private void gunturredShotHandler(EntityManager manager, int id, float deltaTime) {
+            // 1. set cooldown
+            manager.aiBehavior[id].shootingCooldown = 1f;
+
+            Vector3 direction = distanceVectorPlayerEnemy.normalize();
+
+            shoot(manager, id, direction, 400.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+
+        }
+
+        private void groundenemyShotHandler(EntityManager manager, int id, float deltaTime) {
+            // 1. set cooldown
+            manager.aiBehavior[id].shootingCooldown = 3f;
 
             Vector3 direction = distanceVectorPlayerEnemy.normalize();
 

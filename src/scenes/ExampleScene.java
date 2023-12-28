@@ -158,16 +158,40 @@ public class ExampleScene extends Scene {
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 // Set up the transformation component
-                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
+                //manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
+                //manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.blue);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
 
                 manager.transform[id].pos = new Vector3(0.0f, -0.9f, 15.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                manager.aiBehavior[id].chasingDistance = 120;
-                manager.aiBehavior[id].attackingDistance = 100;
-                manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
+                manager.aiBehavior[id].chasingDistance = 0;
+                manager.aiBehavior[id].attackingDistance = 0;
+                manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+
+            }
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+            if (id > -1) {
+                // Set up the transformation component
+                //manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
+                //manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.blue);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+
+                manager.transform[id].pos = new Vector3(0f, -0.9f, 10.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+
+                manager.aiBehavior[id].chasingDistance = 0;
+                manager.aiBehavior[id].attackingDistance = 0;
+                manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
 
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                 manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);

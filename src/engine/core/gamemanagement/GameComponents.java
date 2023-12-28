@@ -136,7 +136,8 @@ public class GameComponents {
 
     public enum EnemyType {
         GUNTURRED,
-        SIGHTSEEKER
+        SIGHTSEEKER,
+        GROUNDENEMY
 
     }
 
@@ -146,9 +147,11 @@ public class GameComponents {
         public float timeSinceLastDirectionChange;
         public float wanderingDuration;
         public Vector3 wanderingDirection;
-        public float wanderingSpeed;
+        public Vector3 spawnPoint;
         public float chasingDistance;
         public float attackingDistance;
+        public float shootingCooldown;
+        public int chooseWanderingCounter;
 
     }
 
