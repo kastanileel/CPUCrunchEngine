@@ -70,12 +70,12 @@ public class ExampleScene extends Scene {
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if(id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/sightseeker/sightseeker.obj", "./src/objects/rock/rock64.png");//"./src/objects/rock/rock64.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                manager.transform[id].pos = new Vector3(1.0f, -0.5f, 15.0f);
+                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);//"./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = new Vector3(3.0f, -0.9f, 10.0f);
 
-                manager.transform[id].rot = new Vector3(0.0f, 3.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.5f, .5f, .5f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
 
             }
