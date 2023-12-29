@@ -132,7 +132,6 @@ public class GameComponents {
         WANDERING,
         CHASING,
         ATTACKING,
-        WAITING
     }
 
     public enum EnemyType {

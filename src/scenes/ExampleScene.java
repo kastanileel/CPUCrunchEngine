@@ -162,8 +162,8 @@ public class ExampleScene extends Scene {
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                manager.aiBehavior[id].chasingDistance = 10;
-                manager.aiBehavior[id].attackingDistance = 5;
+                manager.aiBehavior[id].chasingDistance = 20;
+                manager.aiBehavior[id].attackingDistance = 20;
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
 
                 manager.damageable[id].health = 1;
@@ -177,14 +177,14 @@ public class ExampleScene extends Scene {
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 // Set up the transformation component
-                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.blue);
+                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
 
                 manager.transform[id].pos = new Vector3(0f, -0.9f, 10.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                manager.aiBehavior[id].chasingDistance = 10;
+                manager.aiBehavior[id].chasingDistance = 7;
                 manager.aiBehavior[id].attackingDistance = 5;
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
 
@@ -202,11 +202,11 @@ public class ExampleScene extends Scene {
                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
 
-                manager.transform[id].pos = new Vector3(5f, -0.9f, 15.0f);
+                manager.transform[id].pos = new Vector3(5f, 0f, 15.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                manager.aiBehavior[id].chasingDistance = 10;
+                manager.aiBehavior[id].chasingDistance = 7;
                 manager.aiBehavior[id].attackingDistance = 5;
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
 

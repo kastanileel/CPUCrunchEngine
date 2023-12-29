@@ -820,6 +820,7 @@ public class GameSystems {
                     // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
                     manager.physicsBody[playerId].force.z = direction.z * 100.0f;
 
+                    DamageSystem.damagedEntities.add(playerId);
                     manager.damageable[playerId].health -= 5;
                     System.out.println("Playercollision "  + manager.damageable[playerId].health);
                 }
@@ -836,9 +837,9 @@ public class GameSystems {
                     // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
                     manager.physicsBody[otherId].force.z = direction.z * 100.0f;
 
-                    manager.damageable[otherId].health -= 5;
-                    System.out.println("Enemycollision" + manager.damageable[otherId].health);
-
+                    DamageSystem.damagedEntities.add(playerId);
+                    manager.damageable[playerId].health -= 5;
+                    System.out.println("Playercollision "  + manager.damageable[playerId].health);
                 }
             }
         }
@@ -964,7 +965,7 @@ public class GameSystems {
         private Vector3 playerPosition = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private Vector3 distanceVectorPlayerEnemy = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private final Random random = new Random();
-        private int i;
+        private int counterI;
 
         @Override
         public void start(EntityManager manager) throws Exception {
@@ -975,8 +976,8 @@ public class GameSystems {
                 }
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     manager.aiBehavior[i].spawnPoint = new Vector3(manager.transform[i].pos.x, manager.transform[i].pos.y, manager.transform[i].pos.z);
-                    manager.aiBehavior[i].currentState = GameComponents.State.WAITING;
-                    manager.aiBehavior[i].wanderingDirection = new Vector3(0f, 0f, 0f);
+                    manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
+                    manager.aiBehavior[i].wanderingDirection = new Vector3(1f, 0f, 1f);
                     switch (manager.aiBehavior[i].enemyType) {
                         case SIGHTSEEKER -> {
                             manager.physicsBody[i].speed = 2f;
@@ -1011,6 +1012,7 @@ public class GameSystems {
                         manager.aiBehavior[i].currentState = GameComponents.State.ATTACKING;
 
                     }
+                    //System.out.println(i + ": " + manager.aiBehavior[i].currentState);
                     updateAI(manager, i, deltaTime);
                 }
             }
@@ -1023,7 +1025,6 @@ public class GameSystems {
                         case SIGHTSEEKER, GROUNDENEMY -> {
                             handleWandering(manager, entityId, deltaTime);
                             rotateEnemy(manager, entityId, deltaTime, manager.aiBehavior[entityId].wanderingDirection);
-                            System.out.println(entityId + ": " + manager.transform[entityId].pos.x + " ;" + manager.transform[entityId].pos.y + " ;" + manager.transform[entityId].pos.z);
 
                         }
                         case GUNTURRED -> {
@@ -1041,6 +1042,7 @@ public class GameSystems {
                             rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
                         }
                     }
+                    break;
                 case ATTACKING:
                     rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
                     handleAttacking(manager, entityId, deltaTime);
@@ -1059,7 +1061,7 @@ public class GameSystems {
                 aibehavior.wanderingDuration = (float) (Math.random() * maxWanderingDuration);
             } else {
                 manager.aiBehavior[entityId].timeSinceLastDirectionChange += deltaTime;
-                physicsBody.velocity = new Vector3(aibehavior.wanderingDirection.x, aibehavior.wanderingDirection.y, aibehavior.wanderingDirection.z);
+                physicsBody.velocity = new Vector3(aibehavior.wanderingDirection.x, 0f, aibehavior.wanderingDirection.z);
             }
         }
 
@@ -1075,13 +1077,12 @@ public class GameSystems {
             } else {
                 manager.aiBehavior[entityId].chooseWanderingCounter = 0;
                 Vector3 normalizedVectorToSpawn = RenderMaths.normalizeVector(manager.aiBehavior[entityId].spawnPoint.subtract(manager.transform[entityId].pos));
-                manager.aiBehavior[entityId].wanderingDirection = new Vector3(normalizedVectorToSpawn.x, normalizedVectorToSpawn.y, normalizedVectorToSpawn.z);
+                manager.aiBehavior[entityId].wanderingDirection = RenderMaths.normalizeVector(new Vector3(normalizedVectorToSpawn.x, normalizedVectorToSpawn.y, normalizedVectorToSpawn.z));
 
             }
         }
 
         private void rotateEnemy(EntityManager manager, int entityId, float deltaTime, Vector3 direction) {
-            Vector3 turretPosition = manager.transform[entityId].pos;
             float currentAngleY = manager.transform[entityId].rot.y;
 
             Vector3 normalizedDirection = RenderMaths.normalizeVector(direction);
@@ -1113,7 +1114,7 @@ public class GameSystems {
             Vector3 vector3 = RenderMaths.normalizeVector(distanceVectorPlayerEnemy);
             manager.physicsBody[entityId].velocity = new Vector3(
                     vector3.x * manager.physicsBody[entityId].speed,
-                    vector3.y * manager.physicsBody[entityId].speed,
+                    manager.transform[entityId].pos.y - manager.aiBehavior[entityId].spawnPoint.y,
                     vector3.z * manager.physicsBody[entityId].speed
             );
         }
@@ -1148,7 +1149,7 @@ public class GameSystems {
 
             Vector3 direction = distanceVectorPlayerEnemy.normalize();
 
-            shoot(manager, id, direction, 150.0f, 2.0f, 5, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+            shoot(manager, id, direction, 150.0f, 2.0f, 5, MusicPlayer.SoundEffect.SHOOT_PISTOL, 0);
 
         }
 
@@ -1158,7 +1159,7 @@ public class GameSystems {
 
             Vector3 direction = distanceVectorPlayerEnemy.normalize();
 
-            shoot(manager, id, direction, 400.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+            shoot(manager, id, direction, 400.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL, 1f);
 
         }
 
@@ -1168,20 +1169,24 @@ public class GameSystems {
 
             Vector3 direction = distanceVectorPlayerEnemy.normalize();
 
-            shoot(manager, id, direction, 300.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+            shoot(manager, id, direction, 300.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL, 1f);
 
         }
 
         private void shoot(EntityManager manager, int id, Vector3 direction, float speed, float lifeTime,
-                           int damage, MusicPlayer.SoundEffect soundEffect) {
+                           int damage, MusicPlayer.SoundEffect soundEffect, float yPosAdd) {
             int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.COLLIDER);
             if (bulletId > -1) {
-                //System.out.println("Shoot " + bulletId);
 
                 try {
                     manager.bullet[bulletId].shooter = GameComponents.Bullet.ShooterType.ENEMY;
                     manager.transform[bulletId].pos = manager.transform[id].pos.clone();
+                    manager.transform[bulletId].pos.y += yPosAdd;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
+
+                    if (manager.aiBehavior[id].enemyType != GameComponents.EnemyType.GROUNDENEMY)
+                        manager.transform[bulletId].rot.y += (float) Math.PI/2;
+
                     manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
                     manager.physicsBody[bulletId].mass = 0.1f;
                     manager.bullet[bulletId].direction = direction;
