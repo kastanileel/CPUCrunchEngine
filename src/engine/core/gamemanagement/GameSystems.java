@@ -419,9 +419,9 @@ public class GameSystems {
                             return;
                         }
                         else if (magazineShotgun == 0){
-                            shootingCooldown = 3.0f;
+                            shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SHOTGUN);
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
                         }
                     }
@@ -434,9 +434,9 @@ public class GameSystems {
                             return;
                         }
                         else if (magazineShotgun == 0){
-                            shootingCooldown = 3.0f;
+                            shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SHOTGUN);
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
                         }
                     }
