@@ -186,6 +186,11 @@ public class GameSystems {
         float knifeTime = 0.5f;
         boolean knifing = false;
 
+        int magazinePistol = 10;
+        int magazineMachineGun = 30;
+        int magazineShotgun = 2;
+        int magazineSniper = 5;
+
         Vector3 knifeDir = new Vector3();
 
         int knife;
@@ -370,25 +375,37 @@ public class GameSystems {
 
             switch (manager.playerMovement[id].weaponType){
                 case PISTOL -> {
-                    if(MMouseListener.getInstance().isLeftButtonPressed()){
-                        if (shootingCooldown <= 0.0f) {
+                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
+                        if (shootingCooldown <= 0.0f && magazinePistol > 0) {
                             pistol(manager, id, deltaTime);
+                            magazinePistol--;
                             return;
                         }
+                        else if (magazinePistol == 0){
+                            shootingCooldown = 5.0f;
+                            System.out.println("Reloading Pistol!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_PISTOL);
+                            magazinePistol = 10;
+                        }
                     }
-
                     if(MMouseListener.getInstance().isRightButtonPressed()){
                         knife(manager, id);
                     }
                 }
                 case MACHINE_GUN -> {
                     if(MMouseListener.getInstance().isLeftButtonPressed()){
-                        if (shootingCooldown <= 0.0f) {
+                        if (shootingCooldown <= 0.0f && magazineMachineGun > 0) {
                             machineGun(manager, id, deltaTime);
+                            magazineMachineGun--;
                             return;
                         }
+                        else if (magazineMachineGun == 0){
+                            shootingCooldown = 5.0f;
+                            System.out.println("Reloading Machine Gun!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_AK);
+                            magazineMachineGun = 30;
+                        }
                     }
-
                     if(MMouseListener.getInstance().isRightButtonPressed()){
                         knife(manager, id);
                     }
@@ -396,25 +413,46 @@ public class GameSystems {
                 }
                 case SHOTGUN -> {
                     if(MMouseListener.getInstance().isLeftButtonPressed()){
-                        if (shootingCooldown <= 0.0f) {
+                        if (shootingCooldown <= 0.0f && magazineShotgun > 0) {
                             shotgun(manager, id, deltaTime);
+                            magazineShotgun--;
                             return;
+                        }
+                        else if (magazineShotgun == 0){
+                            shootingCooldown = 3.0f;
+                            System.out.println("Reloading Shotgun!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SHOTGUN);
+                            magazineShotgun = 2;
                         }
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
-                        if (shootingCooldown <= 0.0f) {
+                        if (shootingCooldown <= 0.0f && magazineShotgun > 1) {
                             shotgunDouble(manager, id, deltaTime);
+                            magazineShotgun--;
+                            magazineShotgun--;
                             return;
+                        }
+                        else if (magazineShotgun == 0){
+                            shootingCooldown = 3.0f;
+                            System.out.println("Reloading Shotgun!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SHOTGUN);
+                            magazineShotgun = 2;
                         }
                     }
 
                 }
                 case SNIPER ->{
                     if(MMouseListener.getInstance().isLeftButtonPressed()){
-                        if (shootingCooldown <= 0.0f) {
+                        if (shootingCooldown <= 0.0f && magazineSniper > 0) {
                             snipe(manager, id, deltaTime);
-
+                            magazineSniper--;
+                        }
+                        else if (magazineSniper == 0){
+                            shootingCooldown = 6.0f;
+                            System.out.println("Reloading Sniper!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
+                            magazineSniper = 5;
                         }
                     }
 
@@ -442,7 +480,7 @@ public class GameSystems {
 
         private void pistol(EntityManager manager, int id, float deltaTime){
             // 1. set cooldown
-            shootingCooldown = 1.2f;
+            shootingCooldown = 1.0f;
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
             RenderMaths.normalizeVector(direction);
@@ -516,7 +554,7 @@ public class GameSystems {
         }
 
         private void shotgunDouble(EntityManager manager, int id, float deltaTime){
-            shootingCooldown = 4.0f;
+            shootingCooldown = 3.5f;
             //Add Double Shot
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
