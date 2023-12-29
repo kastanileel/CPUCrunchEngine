@@ -131,7 +131,8 @@ public class GameComponents {
     public enum State {
         WANDERING,
         CHASING,
-        ATTACKING
+        ATTACKING,
+        WAITING
     }
 
     public enum EnemyType {

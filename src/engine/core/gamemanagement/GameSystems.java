@@ -821,7 +821,7 @@ public class GameSystems {
                     manager.physicsBody[playerId].force.z = direction.z * 100.0f;
 
                     manager.damageable[playerId].health -= 5;
-                    System.out.println(manager.damageable[playerId].health);
+                    System.out.println("Playercollision "  + manager.damageable[playerId].health);
                 }
 
                 case ENEMY -> {
@@ -837,6 +837,8 @@ public class GameSystems {
                     manager.physicsBody[otherId].force.z = direction.z * 100.0f;
 
                     manager.damageable[otherId].health -= 5;
+                    System.out.println("Enemycollision" + manager.damageable[otherId].health);
+
                 }
             }
         }
@@ -973,7 +975,7 @@ public class GameSystems {
                 }
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     manager.aiBehavior[i].spawnPoint = new Vector3(manager.transform[i].pos.x, manager.transform[i].pos.y, manager.transform[i].pos.z);
-                    manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
+                    manager.aiBehavior[i].currentState = GameComponents.State.WAITING;
                     manager.aiBehavior[i].wanderingDirection = new Vector3(0f, 0f, 0f);
                     switch (manager.aiBehavior[i].enemyType) {
                         case SIGHTSEEKER -> {
@@ -1021,6 +1023,8 @@ public class GameSystems {
                         case SIGHTSEEKER, GROUNDENEMY -> {
                             handleWandering(manager, entityId, deltaTime);
                             rotateEnemy(manager, entityId, deltaTime, manager.aiBehavior[entityId].wanderingDirection);
+                            System.out.println(entityId + ": " + manager.transform[entityId].pos.x + " ;" + manager.transform[entityId].pos.y + " ;" + manager.transform[entityId].pos.z);
+
                         }
                         case GUNTURRED -> {
                             rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
@@ -1038,6 +1042,7 @@ public class GameSystems {
                         }
                     }
                 case ATTACKING:
+                    rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
                     handleAttacking(manager, entityId, deltaTime);
                     break;
             }
@@ -1059,8 +1064,6 @@ public class GameSystems {
         }
 
         private void calculateWanderingDirection(EntityManager manager, int entityId, float deltaTime) {
-            System.out.println(manager.aiBehavior[entityId].chooseWanderingCounter);
-
             if (manager.aiBehavior[entityId].chooseWanderingCounter < random.nextInt(2)) {
                 manager.aiBehavior[entityId].chooseWanderingCounter++;
                 float angle = (float) (Math.random() * 2 * Math.PI);
@@ -1070,7 +1073,6 @@ public class GameSystems {
                         (float) Math.sin(angle) * manager.physicsBody[entityId].speed
                 );
             } else {
-                System.out.println(manager.transform[entityId].pos.x + "; " + manager.transform[entityId].pos.y + "; " + manager.transform[entityId].pos.z);
                 manager.aiBehavior[entityId].chooseWanderingCounter = 0;
                 Vector3 normalizedVectorToSpawn = RenderMaths.normalizeVector(manager.aiBehavior[entityId].spawnPoint.subtract(manager.transform[entityId].pos));
                 manager.aiBehavior[entityId].wanderingDirection = new Vector3(normalizedVectorToSpawn.x, normalizedVectorToSpawn.y, normalizedVectorToSpawn.z);
@@ -1082,9 +1084,7 @@ public class GameSystems {
             Vector3 turretPosition = manager.transform[entityId].pos;
             float currentAngleY = manager.transform[entityId].rot.y;
 
-            Vector3 directionToPlayer = playerPosition.subtract(turretPosition);
-
-            Vector3 normalizedDirection = RenderMaths.normalizeVector(directionToPlayer);
+            Vector3 normalizedDirection = RenderMaths.normalizeVector(direction);
 
             float desiredAngleY = (float) Math.atan2(normalizedDirection.z, normalizedDirection.x);
             desiredAngleY = (desiredAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
@@ -1098,16 +1098,14 @@ public class GameSystems {
 
             currentAngleY += rotationAmount;
 
-            manager.transform[entityId].rot.y = currentAngleY;
-
-            /*if (i > 10) {
-                i = 0;
-                System.out.println("Angledif : " + angleDifference);
-                //System.out.println("Playerposition: " + playerPosition.x + ", " + playerPosition.y + ", " + playerPosition.z);
-                System.out.println("Enemy-player-vector: " + normalizedDirection.x + ", " + normalizedDirection.y + ", " + normalizedDirection.z);
-            } else {
-                i++;
-            }*/
+            switch (manager.aiBehavior[entityId].enemyType) {
+                case GUNTURRED, SIGHTSEEKER:
+                    manager.transform[entityId].rot.y = currentAngleY + (float) Math.PI;
+                    break;
+                case GROUNDENEMY:
+                    manager.transform[entityId].rot.y = currentAngleY + (float) (Math.PI/2);
+                    break;
+            }
         }
 
 
