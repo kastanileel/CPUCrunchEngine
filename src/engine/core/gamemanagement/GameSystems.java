@@ -965,7 +965,6 @@ public class GameSystems {
         private Vector3 playerPosition = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private Vector3 distanceVectorPlayerEnemy = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private final Random random = new Random();
-        private int counterI;
 
         @Override
         public void start(EntityManager manager) throws Exception {
@@ -978,15 +977,33 @@ public class GameSystems {
                     manager.aiBehavior[i].spawnPoint = new Vector3(manager.transform[i].pos.x, manager.transform[i].pos.y, manager.transform[i].pos.z);
                     manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
                     manager.aiBehavior[i].wanderingDirection = new Vector3(1f, 0f, 1f);
+                    manager.collider[i].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                    manager.collider[i].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+
                     switch (manager.aiBehavior[i].enemyType) {
                         case SIGHTSEEKER -> {
-                            manager.physicsBody[i].speed = 2f;
-                        }
+                            manager.physicsBody[i].speed = 4f;
+                            manager.damageable[i].health = 1;
+                            manager.aiBehavior[i].chasingDistance = 30;
+                            manager.aiBehavior[i].attackingDistance = 5;
+                            manager.collider[i].colliderSize = new Vector3(0.75f, 0.75f, 0.75f);
+                            manager.collider[i].center = manager.transform[i].pos;
+                            }
                         case GUNTURRED -> {
                             manager.physicsBody[i].speed = 0f;
+                            manager.damageable[i].health = 5;
+                            manager.aiBehavior[i].chasingDistance = 40;
+                            manager.aiBehavior[i].attackingDistance = 40;
+                            manager.collider[i].colliderSize = new Vector3(1f, 1f, 1f);
+                            manager.collider[i].center = manager.transform[i].pos;
                         }
                         case GROUNDENEMY -> {
-                            manager.physicsBody[i].speed = 0.5f;
+                            manager.physicsBody[i].speed = 1f;
+                            manager.damageable[i].health = 10;
+                            manager.aiBehavior[i].chasingDistance = 40;
+                            manager.aiBehavior[i].attackingDistance = 30;
+                            manager.collider[i].colliderSize = new Vector3(2f, 2f, 1f);
+                            manager.collider[i].center = manager.transform[i].pos;
                         }
                     }
                 }
@@ -1051,7 +1068,7 @@ public class GameSystems {
         }
 
         private void handleWandering(EntityManager manager, int entityId, float deltaTime) {
-            float maxWanderingDuration = 10f;
+            float maxWanderingDuration = 5f;
             GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
             GameComponents.AIBEHAVIOR aibehavior = manager.aiBehavior[entityId];
 
@@ -1069,15 +1086,20 @@ public class GameSystems {
             if (manager.aiBehavior[entityId].chooseWanderingCounter < random.nextInt(2)) {
                 manager.aiBehavior[entityId].chooseWanderingCounter++;
                 float angle = (float) (Math.random() * 2 * Math.PI);
+                System.out.println(entityId + ":Cos/Sin: " + Math.cos(angle) + "; "+ Math.sin(angle));
                 manager.aiBehavior[entityId].wanderingDirection = new Vector3(
-                        (float) Math.cos(angle) * manager.physicsBody[entityId].speed,
+                        (float) Math.cos(angle) * manager.physicsBody[entityId].speed * 0.25f,
                         0.0f,
-                        (float) Math.sin(angle) * manager.physicsBody[entityId].speed
+                        (float) Math.sin(angle) * manager.physicsBody[entityId].speed * 0.25f
                 );
             } else {
                 manager.aiBehavior[entityId].chooseWanderingCounter = 0;
                 Vector3 normalizedVectorToSpawn = RenderMaths.normalizeVector(manager.aiBehavior[entityId].spawnPoint.subtract(manager.transform[entityId].pos));
-                manager.aiBehavior[entityId].wanderingDirection = RenderMaths.normalizeVector(new Vector3(normalizedVectorToSpawn.x, normalizedVectorToSpawn.y, normalizedVectorToSpawn.z));
+                manager.aiBehavior[entityId].wanderingDirection = new Vector3(
+                        normalizedVectorToSpawn.x * 0.25f * manager.physicsBody[entityId].speed,
+                        normalizedVectorToSpawn.y * 0.25f * manager.physicsBody[entityId].speed,
+                        normalizedVectorToSpawn.z * 0.25f * manager.physicsBody[entityId].speed
+                );
 
             }
         }
@@ -1149,7 +1171,7 @@ public class GameSystems {
 
             Vector3 direction = distanceVectorPlayerEnemy.normalize();
 
-            shoot(manager, id, direction, 150.0f, 2.0f, 5, MusicPlayer.SoundEffect.SHOOT_PISTOL, 0);
+            shoot(manager, id, direction, 150.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL, 0);
 
         }
 
@@ -1165,11 +1187,11 @@ public class GameSystems {
 
         private void groundenemyShotHandler(EntityManager manager, int id, float deltaTime) {
             // 1. set cooldown
-            manager.aiBehavior[id].shootingCooldown = 3f;
+            manager.aiBehavior[id].shootingCooldown = 6f;
 
             Vector3 direction = distanceVectorPlayerEnemy.normalize();
 
-            shoot(manager, id, direction, 300.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL, 1f);
+            shoot(manager, id, direction, 500.0f, 2.0f, 5, MusicPlayer.SoundEffect.SHOOT_PISTOL, 1f);
 
         }
 

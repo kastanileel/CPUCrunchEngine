@@ -162,18 +162,9 @@ public class ExampleScene extends Scene {
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                manager.aiBehavior[id].chasingDistance = 20;
-                manager.aiBehavior[id].attackingDistance = 20;
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
-
-                manager.damageable[id].health = 1;
-
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
-                manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
-
             }
+
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 // Set up the transformation component
@@ -184,18 +175,9 @@ public class ExampleScene extends Scene {
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                manager.aiBehavior[id].chasingDistance = 7;
-                manager.aiBehavior[id].attackingDistance = 5;
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
-
-                manager.damageable[id].health = 1;
-
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(2f, 2f, 1f);
-                manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
-
             }
+
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 // Set up the transformation component
@@ -206,17 +188,7 @@ public class ExampleScene extends Scene {
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                manager.aiBehavior[id].chasingDistance = 7;
-                manager.aiBehavior[id].attackingDistance = 5;
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
-
-                manager.damageable[id].health = 1;
-
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(0.75f, 0.75f, 0.75f);
-                manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
-
             }
 
 
