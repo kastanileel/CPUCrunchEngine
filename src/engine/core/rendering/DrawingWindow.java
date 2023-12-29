@@ -5,6 +5,7 @@ import src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
 import src.engine.core.matutils.Vector3;
+import src.engine.core.tools.MusicPlayer;
 
 import javax.swing.*;
 import java.awt.*;

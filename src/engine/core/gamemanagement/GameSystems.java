@@ -191,6 +191,8 @@ public class GameSystems {
         int magazineShotgun = 2;
         int magazineSniper = 5;
 
+        boolean scopedIn = false;
+
         Vector3 knifeDir = new Vector3();
 
         int knife;
@@ -457,13 +459,17 @@ public class GameSystems {
                     }
 
                     if(MMouseListener.getInstance().isRightButtonPressed()){
-                        //MusicPlayer.getInstance().playSound("src/sound/scope.wav");
+                        if (!scopedIn){
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SCOPE);
+                            scopedIn = true;
+                        }
                         SimpleAdvancedRenderPipeline.fFov = 40.0f;
                         DrawingWindow.snipe = true;
                         manager.playerMovement[id].mouseSpeed = defaultMouseSpeed/2.0f;
                         manager.playerMovement[id].moveSpeed = defaultMoveSpeed/2.0f;
                     }
                     else {
+                        scopedIn = false;
                         SimpleAdvancedRenderPipeline.fFov = 120.0f;
                         DrawingWindow.snipe = false;
                         manager.playerMovement[id].mouseSpeed = defaultMouseSpeed;
