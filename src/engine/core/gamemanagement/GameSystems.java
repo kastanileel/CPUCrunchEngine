@@ -486,7 +486,7 @@ public class GameSystems {
 
         private void pistol(EntityManager manager, int id, float deltaTime){
             // 1. set cooldown
-            shootingCooldown = 1.0f;
+            shootingCooldown = 0.4f;
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
             RenderMaths.normalizeVector(direction);
@@ -538,7 +538,7 @@ public class GameSystems {
         }
 
         private void shotgun(EntityManager manager, int id, float deltaTime){
-            shootingCooldown = 2.5f;
+            shootingCooldown = 0.8f;
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
             RenderMaths.normalizeVector(direction);
@@ -647,7 +647,7 @@ public class GameSystems {
                     manager.transform[bulletId].pos =  Camera.getInstance().position.clone();
                     manager.transform[bulletId].pos.y += 0.065f;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
-                    manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
+                    manager.transform[bulletId].scale = new Vector3(0.08f, 0.08f, 0.08f);
                     manager.physicsBody[bulletId].mass = 0.1f;
                     manager.bullet[bulletId].direction = direction;
                     manager.rendering[bulletId].mesh = new Mesh("./src/objects/guns/bullets/bullet.obj", Color.RED);
