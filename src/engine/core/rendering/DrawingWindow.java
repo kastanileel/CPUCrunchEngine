@@ -33,6 +33,8 @@ public class DrawingWindow extends JPanel {
 
     public static boolean snipe = false;
 
+    public static int currentAmmo = 0;
+
     public int maxAccuracy;
     public int minAccuracy;
 
@@ -73,6 +75,9 @@ public class DrawingWindow extends JPanel {
     }
 
     private void applyUI(){
+        graphics.setColor(Color.red);
+
+        graphics.drawString(Integer.toString(currentAmmo), 100,100);
 
         // draw crosshair
         graphics.setColor(Color.white);

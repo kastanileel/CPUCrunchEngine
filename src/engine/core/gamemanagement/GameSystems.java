@@ -377,6 +377,7 @@ public class GameSystems {
 
             switch (manager.playerMovement[id].weaponType){
                 case PISTOL -> {
+                    DrawingWindow.currentAmmo = magazinePistol;
                     if (MMouseListener.getInstance().isLeftButtonPressed()) {
                         if (shootingCooldown <= 0.0f && magazinePistol > 0) {
                             pistol(manager, id, deltaTime);
@@ -395,6 +396,7 @@ public class GameSystems {
                     }
                 }
                 case MACHINE_GUN -> {
+                    DrawingWindow.currentAmmo = magazineMachineGun;
                     if(MMouseListener.getInstance().isLeftButtonPressed()){
                         if (shootingCooldown <= 0.0f && magazineMachineGun > 0) {
                             machineGun(manager, id, deltaTime);
@@ -414,6 +416,7 @@ public class GameSystems {
 
                 }
                 case SHOTGUN -> {
+                    DrawingWindow.currentAmmo = magazineShotgun;
                     if(MMouseListener.getInstance().isLeftButtonPressed()){
                         if (shootingCooldown <= 0.0f && magazineShotgun > 0) {
                             shotgun(manager, id, deltaTime);
@@ -445,6 +448,7 @@ public class GameSystems {
 
                 }
                 case SNIPER ->{
+                    DrawingWindow.currentAmmo = magazineSniper;
                     if(MMouseListener.getInstance().isLeftButtonPressed()){
                         if (shootingCooldown <= 0.0f && magazineSniper > 0) {
                             snipe(manager, id, deltaTime);
