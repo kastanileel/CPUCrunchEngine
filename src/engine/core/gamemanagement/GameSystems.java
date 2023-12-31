@@ -930,10 +930,16 @@ public class GameSystems {
                 switch (manager.collider[id].colliderTag) {
                     case PLAYER:
                         System.out.println("Player got hit");
+                        if (manager.damageable[id].health <= 0) {
+                            DrawingWindow.playerHealth = 0;
+                            manager.destroyEntity(id);
+                        }
+                        break;
                     default:
                         if (manager.damageable[id].health <= 0) {
                             manager.destroyEntity(id);
                         }
+                        break;
                 }
             }
 
