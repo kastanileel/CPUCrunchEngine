@@ -76,8 +76,9 @@ public class DrawingWindow extends JPanel {
 
     private void applyUI(){
         graphics.setColor(Color.red);
-
-        graphics.drawString(Integer.toString(currentAmmo), 100,100);
+        //draw ammo count
+        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+        graphics.drawString(Integer.toString(currentAmmo), 150,this.getHeight() -150);
 
         // draw crosshair
         graphics.setColor(Color.white);

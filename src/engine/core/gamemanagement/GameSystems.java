@@ -499,7 +499,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 300.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+            shoot(manager, id, direction, 300.0f, 2.0f, 15, MusicPlayer.SoundEffect.SHOOT_PISTOL);
 
         }
 
@@ -521,7 +521,7 @@ public class GameSystems {
             float y = (float) Math.random() * 0.1f - 0.01f;
             float z = (float) Math.random() * 0.1f - 0.01f;
 
-            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 400.0f, 1.5f, 2, MusicPlayer.SoundEffect.SHOOT_AK);
+            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 400.0f, 1.5f, 20, MusicPlayer.SoundEffect.SHOOT_AK);
 
 
         }
@@ -537,7 +537,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 600.0f, 1.5f, 5, MusicPlayer.SoundEffect.SHOOT_SNIPER);
+            shoot(manager, id, direction, 600.0f, 1.5f, 80, MusicPlayer.SoundEffect.SHOOT_SNIPER);
 
         }
 
@@ -551,15 +551,15 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
             for (int i = 0; i < 4; i++) {
-                float factor = 0.5f;
+                float factor = 0.4f;
                 // generate random, small offset
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
                 float z = (float) Math.random() * 0.1f - 0.05f;
-                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
             }
         }
 
@@ -574,17 +574,17 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
             //initial two pellets
-            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
-            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
             //remaining 8 pellets
             for (int i = 0; i < 8; i++) {
-                float factor = 0.8f;
+                float factor = 0.6f;
                 // generate random, small offset
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
                 float z = (float) Math.random() * 0.1f - 0.05f;
-                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
             }
         }
 
