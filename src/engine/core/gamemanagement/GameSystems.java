@@ -208,7 +208,6 @@ public class GameSystems {
                 manager.collider[knife].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[knife].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
 
-
             }
 
             int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
@@ -216,6 +215,8 @@ public class GameSystems {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     defaultMouseSpeed = manager.playerMovement[i].mouseSpeed;
                     defaultMoveSpeed = manager.playerMovement[i].moveSpeed;
+                    manager.damageable[i].health = 100;
+                    DrawingWindow.playerHealth = manager.damageable[i].health;
                 }
             }
 
@@ -611,7 +612,6 @@ public class GameSystems {
 
                     MusicPlayer.getInstance().playSound(soundEffect);
 
-                    System.out.println(manager.damageable[id].health);
                 } catch (Exception e) {
                     System.out.println("Error creating bullet");
                 }
@@ -822,7 +822,7 @@ public class GameSystems {
 
                     DamageSystem.damagedEntities.add(playerId);
                     manager.damageable[playerId].health -= 5;
-                    System.out.println("Playercollision "  + manager.damageable[playerId].health);
+                    System.out.println("Playercollision " + manager.damageable[playerId].health);
                 }
 
                 case ENEMY -> {
@@ -839,7 +839,7 @@ public class GameSystems {
 
                     DamageSystem.damagedEntities.add(playerId);
                     manager.damageable[playerId].health -= 5;
-                    System.out.println("Playercollision "  + manager.damageable[playerId].health);
+                    System.out.println("Playercollision " + manager.damageable[playerId].health);
                 }
             }
         }
@@ -903,7 +903,9 @@ public class GameSystems {
                     DamageSystem.damagedEntities.add(otherID);
 
                     manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
-
+                    if (manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER) {
+                        DrawingWindow.playerHealth = manager.damageable[otherID].health;
+                    }
                     System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
 
                     manager.destroyEntity(bulletId);
@@ -926,14 +928,12 @@ public class GameSystems {
             // iterate over all damageable entities
             for (Integer id : damagedEntities) {
                 switch (manager.collider[id].colliderTag) {
-                    case PLAYER -> {
+                    case PLAYER:
                         System.out.println("Player got hit");
-                    }
-                    default -> {
+                    default:
                         if (manager.damageable[id].health <= 0) {
                             manager.destroyEntity(id);
                         }
-                    }
                 }
             }
 
@@ -965,6 +965,7 @@ public class GameSystems {
         private Vector3 playerPosition = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private Vector3 distanceVectorPlayerEnemy = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private final Random random = new Random();
+        private int levelVariable = 1;
 
         @Override
         public void start(EntityManager manager) throws Exception {
@@ -988,7 +989,7 @@ public class GameSystems {
                             manager.aiBehavior[i].attackingDistance = 5;
                             manager.collider[i].colliderSize = new Vector3(0.75f, 0.75f, 0.75f);
                             manager.collider[i].center = manager.transform[i].pos;
-                            }
+                        }
                         case GUNTURRED -> {
                             manager.physicsBody[i].speed = 0f;
                             manager.damageable[i].health = 5;
@@ -1086,7 +1087,7 @@ public class GameSystems {
             if (manager.aiBehavior[entityId].chooseWanderingCounter < random.nextInt(2)) {
                 manager.aiBehavior[entityId].chooseWanderingCounter++;
                 float angle = (float) (Math.random() * 2 * Math.PI);
-                System.out.println(entityId + ":Cos/Sin: " + Math.cos(angle) + "; "+ Math.sin(angle));
+                System.out.println(entityId + ":Cos/Sin: " + Math.cos(angle) + "; " + Math.sin(angle));
                 manager.aiBehavior[entityId].wanderingDirection = new Vector3(
                         (float) Math.cos(angle) * manager.physicsBody[entityId].speed * 0.25f,
                         0.0f,
@@ -1126,7 +1127,7 @@ public class GameSystems {
                     manager.transform[entityId].rot.y = currentAngleY + (float) Math.PI;
                     break;
                 case GROUNDENEMY:
-                    manager.transform[entityId].rot.y = currentAngleY + (float) (Math.PI/2);
+                    manager.transform[entityId].rot.y = currentAngleY + (float) (Math.PI / 2);
                     break;
             }
         }
@@ -1168,46 +1169,87 @@ public class GameSystems {
         private void sightseekerShotHandler(EntityManager manager, int id, float deltaTime) {
             // 1. set cooldown
             manager.aiBehavior[id].shootingCooldown = 3f;
+            //Bullet Spawnpoint adaption
+            float yOffSet = 0f;
+            //Scattering factor
+            float factor = 0.7f;
+            // generate random, small offset
+            float x = (float) Math.random() * 0.1f - 0.01f;
+            float y = (float) Math.random() * 0.1f - 0.01f;
+            float z = (float) Math.random() * 0.1f - 0.01f;
 
-            Vector3 direction = distanceVectorPlayerEnemy.normalize();
+            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x,manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
+            Vector3 direction = new Vector3(
+                    normalizeVector.x + x * factor,
+                    normalizeVector.y + y * factor,
+                    normalizeVector.z + z * factor
+            );
 
-            shoot(manager, id, direction, 150.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL, 0);
+
+            shoot(manager, direction, id, 150.0f, 2.0f, 1 * levelVariable, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
 
         }
 
         private void gunturredShotHandler(EntityManager manager, int id, float deltaTime) {
             // 1. set cooldown
             manager.aiBehavior[id].shootingCooldown = 1f;
+            //Bullet Spawnpoint adaption
+            float yOffSet = 1f;
+            //Scattering factor
+            float factor = 0.4f;
+            // generate random, small offset
+            float x = (float) Math.random() * 0.1f - 0.01f;
+            float y = (float) Math.random() * 0.1f - 0.01f;
+            float z = (float) Math.random() * 0.1f - 0.01f;
 
-            Vector3 direction = distanceVectorPlayerEnemy.normalize();
+            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x,manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
+            Vector3 direction = new Vector3(
+                    normalizeVector.x + x * factor,
+                    normalizeVector.y + y * factor,
+                    normalizeVector.z + z * factor
+            );
 
-            shoot(manager, id, direction, 400.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL, 1f);
+
+            shoot(manager, direction, id, 150.0f, 2.0f, 2 * levelVariable, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
 
         }
 
         private void groundenemyShotHandler(EntityManager manager, int id, float deltaTime) {
             // 1. set cooldown
             manager.aiBehavior[id].shootingCooldown = 6f;
+            //Bullet Spawnpoint adaption
+            float yOffSet = 1f;
+            //Scattering factor
+            float factor = 0.01f;
+            // generate random, small offset
+            float x = (float) Math.random() * 0.1f - 0.01f;
+            float y = (float) Math.random() * 0.1f - 0.01f;
+            float z = (float) Math.random() * 0.1f - 0.01f;
 
-            Vector3 direction = distanceVectorPlayerEnemy.normalize();
+            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x,manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
+            Vector3 direction = new Vector3(
+                    normalizeVector.x + x * factor,
+                    normalizeVector.y + y * factor,
+                    normalizeVector.z + z * factor
+            );
 
-            shoot(manager, id, direction, 500.0f, 2.0f, 5, MusicPlayer.SoundEffect.SHOOT_PISTOL, 1f);
+            shoot(manager, direction, id, 150.0f, 2.0f, 5 * levelVariable, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
 
         }
 
-        private void shoot(EntityManager manager, int id, Vector3 direction, float speed, float lifeTime,
-                           int damage, MusicPlayer.SoundEffect soundEffect, float yPosAdd) {
+        private void shoot(EntityManager manager, Vector3 direction, int id, float speed, float lifeTime,
+                           int damage, MusicPlayer.SoundEffect soundEffect, float yOffSet) {
             int bulletId = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.BULLET | GameComponents.COLLIDER);
             if (bulletId > -1) {
 
                 try {
                     manager.bullet[bulletId].shooter = GameComponents.Bullet.ShooterType.ENEMY;
                     manager.transform[bulletId].pos = manager.transform[id].pos.clone();
-                    manager.transform[bulletId].pos.y += yPosAdd;
+                    manager.transform[bulletId].pos.y += yOffSet;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
 
                     if (manager.aiBehavior[id].enemyType != GameComponents.EnemyType.GROUNDENEMY)
-                        manager.transform[bulletId].rot.y += (float) Math.PI/2;
+                        manager.transform[bulletId].rot.y += (float) Math.PI / 2;
 
                     manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
                     manager.physicsBody[bulletId].mass = 0.1f;

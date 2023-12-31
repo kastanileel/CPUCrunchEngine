@@ -1,7 +1,7 @@
 package src.engine.core.rendering;
 
 
-import src.engine.core.gamemanagement.GameComponents;
+import  src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
 import src.engine.core.matutils.Vector3;
@@ -31,6 +31,7 @@ public class DrawingWindow extends JPanel {
     public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
 
     public static boolean snipe = false;
+    public static int playerHealth;
 
     public int maxAccuracy;
     public int minAccuracy;
@@ -75,6 +76,12 @@ public class DrawingWindow extends JPanel {
 
         // draw crosshair
         graphics.setColor(Color.white);
+        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
+        graphics.setFont(font);
+        graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.05),(int)(this.getHeight() * 0.85));
+        graphics.setColor(Color.red);
+        graphics.drawLine((int)(this.getWidth() * 0.05),(int)(this.getHeight() * 0.85),
+                (int)(this.getWidth() * 0.05 + this.getWidth() * 0.1 * playerHealth / 100),(int)(this.getHeight() * 0.85));
 
 
         switch (weaponType)
@@ -332,6 +339,7 @@ public class DrawingWindow extends JPanel {
         drawTriangleOutline(triangle, new Color(255, 0, 0, 255), thickness);
     }
 
+
     private void drawTriangleOutline(Triangle triangle, Color color, int stroke) {
         graphics.setColor(color);
 
@@ -344,6 +352,4 @@ public class DrawingWindow extends JPanel {
                 3
         ));
     }
-
-
 }
