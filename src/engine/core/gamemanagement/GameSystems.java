@@ -1537,6 +1537,7 @@ public class GameSystems {
                             // Set up the transformation component
                             manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
 
                             manager.transform[id].pos = new Vector3(spawnX, 0f, spawnZ);
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
