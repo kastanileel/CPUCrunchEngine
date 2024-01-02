@@ -1055,7 +1055,7 @@ public class GameSystems {
                             manager.damageable[i].health = 1;
                             manager.aiBehavior[i].chasingDistance = 30;
                             manager.aiBehavior[i].attackingDistance = 5;
-                            manager.collider[i].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                            manager.collider[i].colliderSize = new Vector3(0.4f, 1f, 1f);
                             manager.collider[i].center = manager.transform[i].pos;
                         }
                         case GUNTURRED -> {
@@ -1065,14 +1065,14 @@ public class GameSystems {
                             manager.aiBehavior[i].attackingDistance = 40;
                             manager.collider[i].colliderSize = new Vector3(1f, 1f, 1f);
                             manager.collider[i].center = manager.transform[i].pos;
-                            manager.rendering[i].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
+                            manager.rendering[i].modelTranslation = new Vector3(1.5f, 1.0f, 1.0f);
                         }
                         case GROUNDENEMY -> {
                             manager.physicsBody[i].speed = 1f;
                             manager.damageable[i].health = 10;
                             manager.aiBehavior[i].chasingDistance = 40;
                             manager.aiBehavior[i].attackingDistance = 30;
-                            manager.collider[i].colliderSize = new Vector3(2f, 2f, 1f);
+                            manager.collider[i].colliderSize = new Vector3(2.2f, 1f, 1f);
                             manager.collider[i].center = manager.transform[i].pos;
                         }
                     }
@@ -1099,7 +1099,6 @@ public class GameSystems {
                         manager.aiBehavior[i].currentState = GameComponents.State.ATTACKING;
 
                     }
-                    //System.out.println(i + ": " + manager.aiBehavior[i].currentState);
                     updateAI(manager, i, deltaTime);
                 }
             }
@@ -1156,7 +1155,6 @@ public class GameSystems {
             if (manager.aiBehavior[entityId].chooseWanderingCounter < random.nextInt(2)) {
                 manager.aiBehavior[entityId].chooseWanderingCounter++;
                 float angle = (float) (Math.random() * 2 * Math.PI);
-                System.out.println(entityId + ":Cos/Sin: " + Math.cos(angle) + "; " + Math.sin(angle));
                 manager.aiBehavior[entityId].wanderingDirection = new Vector3(
                         (float) Math.cos(angle) * manager.physicsBody[entityId].speed * 0.25f,
                         0.0f,
@@ -1263,7 +1261,7 @@ public class GameSystems {
             // 1. set cooldown
             manager.aiBehavior[id].shootingCooldown = 1f;
             //Bullet Spawnpoint adaption
-            float yOffSet = 1f;
+            float yOffSet = 0f;
             //Scattering factor
             float factor = 0.4f;
             // generate random, small offset
