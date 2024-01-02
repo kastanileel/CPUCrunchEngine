@@ -1,7 +1,7 @@
 package src.engine.core.rendering;
 
 
-import src.engine.core.gamemanagement.GameComponents;
+import  src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
 import src.engine.core.matutils.Vector3;
@@ -31,6 +31,7 @@ public class DrawingWindow extends JPanel {
     public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
 
     public static boolean snipe = false;
+    public static int playerHealth;
 
     public int maxAccuracy;
     public int minAccuracy;
@@ -75,7 +76,11 @@ public class DrawingWindow extends JPanel {
 
         // draw crosshair
         graphics.setColor(Color.white);
-
+        drawHealthBar(playerHealth);
+        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
+        graphics.setFont(font);
+        graphics.setColor(Color.white);
+        graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));
 
         switch (weaponType)
 {
@@ -332,6 +337,7 @@ public class DrawingWindow extends JPanel {
         drawTriangleOutline(triangle, new Color(255, 0, 0, 255), thickness);
     }
 
+
     private void drawTriangleOutline(Triangle triangle, Color color, int stroke) {
         graphics.setColor(color);
 
@@ -344,6 +350,41 @@ public class DrawingWindow extends JPanel {
                 3
         ));
     }
+    public void drawThickLine(int x1, int y1, int x2, int y2, int thickness) {
+        // Calculate the delta values to create the thickness effect
+        int deltaX = x2 - x1;
+        int deltaY = y2 - y1;
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        double xm = distance / thickness;
+        double xn = deltaY / xm;
+        double yn = deltaX / xm;
 
+        for (int i = 0; i < thickness; i++) {
+            int newX1 = (int) (x1 - xn + (i * xn / thickness));
+            int newY1 = (int) (y1 + yn - (i * yn / thickness));
+            int newX2 = (int) (x2 - xn + (i * xn / thickness));
+            int newY2 = (int) (y2 + yn - (i * yn / thickness));
 
+            graphics.drawLine(newX1, newY1, newX2, newY2);
+        }
+    }
+    public void drawBox(int x, int y, int width, int height) {
+        graphics.drawRect(x, y, width, height);
+    }
+
+    public void drawHealthBar(int playerHealth) {
+        int boxX = (int) (this.getWidth() * 0.05);
+        int boxY = (int) (this.getHeight() * 0.78);
+        int boxWidth = (int) (this.getWidth() * 0.085);
+        int boxHeight = 60;
+
+        // Draw the health bar line
+        graphics.setColor(Color.RED);
+        int lineX2 = boxX + (int) (boxWidth * playerHealth / 100.0);
+        drawThickLine(boxX, boxY, lineX2, boxY, boxHeight);
+
+        // Draw the box
+        graphics.setColor(Color.black);
+        drawBox(boxX, boxY, boxWidth, boxHeight);
+    }
 }
