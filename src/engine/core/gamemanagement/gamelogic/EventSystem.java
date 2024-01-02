@@ -34,4 +34,10 @@ public class EventSystem {
             listener.onPlayerDeath();
         }
     }
+
+    public void onKillEnemy(){
+        for (GameEventListener listener : listeners){
+            listener.onKillEnemy();
+        }
+    }
 }
