@@ -181,6 +181,13 @@ public class GameSystems {
         float knifeTime = 0.5f;
         boolean knifing = false;
 
+        int magazinePistol = 10;
+        int magazineMachineGun = 30;
+        int magazineShotgun = 2;
+        int magazineSniper = 5;
+
+        boolean scopedIn = false;
+
         Vector3 knifeDir = new Vector3();
 
         int knife;
@@ -364,61 +371,113 @@ public class GameSystems {
 
             switch (manager.playerMovement[id].weaponType) {
                 case PISTOL -> {
+                    DrawingWindow.currentAmmo = magazinePistol;
                     if (MMouseListener.getInstance().isLeftButtonPressed()) {
-                        if (shootingCooldown <= 0.0f) {
+                        if (shootingCooldown <= 0.0f && magazinePistol > 0) {
+
+
                             pistol(manager, id, deltaTime);
+                            magazinePistol--;
                             return;
                         }
+                        else if (magazinePistol == 0){
+                            shootingCooldown = 5.0f;
+                            System.out.println("Reloading Pistol!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_PISTOL);
+                            magazinePistol = 10;
+                        }
                     }
+                    if(MMouseListener.getInstance().isRightButtonPressed()){
 
-                    if (MMouseListener.getInstance().isRightButtonPressed()) {
                         knife(manager, id);
                     }
                 }
                 case MACHINE_GUN -> {
-                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
-                        if (shootingCooldown <= 0.0f) {
+                    DrawingWindow.currentAmmo = magazineMachineGun;
+                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                        if (shootingCooldown <= 0.0f && magazineMachineGun > 0) {
+
                             machineGun(manager, id, deltaTime);
+                            magazineMachineGun--;
                             return;
                         }
+                        else if (magazineMachineGun == 0){
+                            shootingCooldown = 5.0f;
+                            System.out.println("Reloading Machine Gun!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_AK);
+                            magazineMachineGun = 30;
+                        }
                     }
+                    if(MMouseListener.getInstance().isRightButtonPressed()){
 
-                    if (MMouseListener.getInstance().isRightButtonPressed()) {
                         knife(manager, id);
                     }
 
                 }
                 case SHOTGUN -> {
-                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
-                        if (shootingCooldown <= 0.0f) {
+                    DrawingWindow.currentAmmo = magazineShotgun;
+                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                        if (shootingCooldown <= 0.0f && magazineShotgun > 0) {
+
                             shotgun(manager, id, deltaTime);
+                            magazineShotgun--;
                             return;
+                        }
+                        else if (magazineShotgun == 0){
+                            shootingCooldown = 4.0f;
+                            System.out.println("Reloading Shotgun!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
+                            magazineShotgun = 2;
                         }
                     }
 
-                    if (MMouseListener.getInstance().isRightButtonPressed()) {
-                        if (shootingCooldown <= 0.0f) {
+                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                        if (shootingCooldown <= 0.0f && magazineShotgun > 1) {
+
                             shotgunDouble(manager, id, deltaTime);
+                            magazineShotgun--;
+                            magazineShotgun--;
                             return;
+                        }
+                        else if (magazineShotgun == 0){
+                            shootingCooldown = 4.0f;
+                            System.out.println("Reloading Shotgun!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
+                            magazineShotgun = 2;
                         }
                     }
 
                 }
-                case SNIPER -> {
-                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
-                        if (shootingCooldown <= 0.0f) {
-                            snipe(manager, id, deltaTime);
+                case SNIPER ->{
+                    DrawingWindow.currentAmmo = magazineSniper;
+                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                        if (shootingCooldown <= 0.0f && magazineSniper > 0) {
 
+                            snipe(manager, id, deltaTime);
+                            magazineSniper--;
+                        }
+                        else if (magazineSniper == 0){
+                            shootingCooldown = 6.0f;
+                            System.out.println("Reloading Sniper!");
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
+                            magazineSniper = 5;
                         }
                     }
 
-                    if (MMouseListener.getInstance().isRightButtonPressed()) {
-                        //MusicPlayer.getInstance().playSound("src/sound/scope.wav");
+
+                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                        if (!scopedIn){
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SCOPE);
+                            scopedIn = true;
+                        }
                         SimpleAdvancedRenderPipeline.fFov = 40.0f;
                         DrawingWindow.snipe = true;
-                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed / 2.0f;
-                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed / 2.0f;
-                    } else {
+                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed/2.0f;
+                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed/2.0f;
+                    }
+                    else {
+                        scopedIn = false;
+
                         SimpleAdvancedRenderPipeline.fFov = 120.0f;
                         DrawingWindow.snipe = false;
                         manager.playerMovement[id].mouseSpeed = defaultMouseSpeed;
@@ -435,7 +494,7 @@ public class GameSystems {
 
         private void pistol(EntityManager manager, int id, float deltaTime) {
             // 1. set cooldown
-            shootingCooldown = 1.2f;
+            shootingCooldown = 0.4f;
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
             RenderMaths.normalizeVector(direction);
@@ -444,7 +503,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 300.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+            shoot(manager, id, direction, 300.0f, 2.0f, 15, MusicPlayer.SoundEffect.SHOOT_PISTOL);
 
         }
 
@@ -466,7 +525,7 @@ public class GameSystems {
             float y = (float) Math.random() * 0.1f - 0.01f;
             float z = (float) Math.random() * 0.1f - 0.01f;
 
-            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 400.0f, 1.5f, 2, MusicPlayer.SoundEffect.SHOOT_AK);
+            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 400.0f, 1.5f, 20, MusicPlayer.SoundEffect.SHOOT_AK);
 
 
         }
@@ -482,12 +541,12 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 600.0f, 1.5f, 5, MusicPlayer.SoundEffect.SHOOT_SNIPER);
+            shoot(manager, id, direction, 600.0f, 1.5f, 80, MusicPlayer.SoundEffect.SHOOT_SNIPER);
 
         }
 
-        private void shotgun(EntityManager manager, int id, float deltaTime) {
-            shootingCooldown = 2.5f;
+        private void shotgun(EntityManager manager, int id, float deltaTime){
+            shootingCooldown = 0.8f;
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
             RenderMaths.normalizeVector(direction);
@@ -496,20 +555,21 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
             for (int i = 0; i < 4; i++) {
-                float factor = 0.5f;
+                float factor = 0.4f;
                 // generate random, small offset
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
                 float z = (float) Math.random() * 0.1f - 0.05f;
-                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
             }
         }
 
-        private void shotgunDouble(EntityManager manager, int id, float deltaTime) {
-            shootingCooldown = 4.0f;
+        private void shotgunDouble(EntityManager manager, int id, float deltaTime){
+            shootingCooldown = 3.5f;
+
             //Add Double Shot
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
@@ -519,17 +579,17 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
             //initial two pellets
-            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
-            shoot(manager, id, direction, 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
             //remaining 8 pellets
             for (int i = 0; i < 8; i++) {
-                float factor = 0.8f;
+                float factor = 0.6f;
                 // generate random, small offset
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
                 float z = (float) Math.random() * 0.1f - 0.05f;
-                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 1, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
             }
         }
 
@@ -596,7 +656,7 @@ public class GameSystems {
                     manager.transform[bulletId].pos = Camera.getInstance().position.clone();
                     manager.transform[bulletId].pos.y += 0.065f;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
-                    manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
+                    manager.transform[bulletId].scale = new Vector3(0.08f, 0.08f, 0.08f);
                     manager.physicsBody[bulletId].mass = 0.1f;
                     manager.bullet[bulletId].direction = direction;
                     manager.rendering[bulletId].mesh = new Mesh("./src/objects/guns/bullets/bullet.obj", Color.RED);

@@ -232,8 +232,8 @@ public class ExampleScene extends Scene {
 
                 manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
 
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.GRAY);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", "./src/objects/guns/machineGun/AKM_texture.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                 manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 3.0f);
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
 

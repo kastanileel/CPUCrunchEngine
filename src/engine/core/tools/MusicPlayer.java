@@ -20,7 +20,7 @@ public class MusicPlayer {
         //Shotgun SFX
         PICKUP_SHOTGUN("src/sound/pickupShotgun.wav"),
         SHOOT_SHOTGUN("src/sound/shotgunShot.wav"),
-        RELOAD_SHOTGUN("src/sound/shotgunReload.wav"),
+        RELOAD_SHOTGUN("src/sound/reloadShotgun.wav"),
         //AK SFX
         SHOOT_AK("src/sound/AKM_shoot.wav"),
         PICKUP_AK("src/sound/AKM_rack.wav"),

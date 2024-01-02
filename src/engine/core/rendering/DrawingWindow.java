@@ -5,6 +5,7 @@ import  src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
 import src.engine.core.matutils.Vector3;
+import src.engine.core.tools.MusicPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,6 +33,8 @@ public class DrawingWindow extends JPanel {
 
     public static boolean snipe = false;
     public static int playerHealth;
+
+    public static int currentAmmo = 0;
 
     public int maxAccuracy;
     public int minAccuracy;
@@ -73,6 +76,10 @@ public class DrawingWindow extends JPanel {
     }
 
     private void applyUI(){
+        graphics.setColor(Color.red);
+        //draw ammo count
+        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+        graphics.drawString(Integer.toString(currentAmmo), 150,this.getHeight() -150);
 
         // draw crosshair
         graphics.setColor(Color.white);
