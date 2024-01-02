@@ -1360,6 +1360,8 @@ public class GameSystems {
         int livingEnemies = 0;
         boolean finishedLevel;
 
+        float finishTimer = 0.0f;
+
         @Override
         public void start(EntityManager manager) throws Exception {
             EventSystem.getInstance().addListener(this);
@@ -1371,6 +1373,10 @@ public class GameSystems {
         @Override
         public void update(EntityManager manager, float deltaTime) throws Exception {
             if(finishedLevel){
+                if(finishTimer > 0.0f) {
+                    finishTimer -= deltaTime;
+                    return;
+                }
                 finishedLevel = false;
 
                 level += 1;
@@ -1383,6 +1389,7 @@ public class GameSystems {
         @Override
         public void onFinishLevel(int level) {
             finishedLevel = true;
+            finishTimer = 20.0f;
         }
 
         @Override
