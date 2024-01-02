@@ -191,6 +191,7 @@ public class GameSystems {
         Vector3 knifeDir = new Vector3();
 
         int knife;
+        private GameComponents.Rendering.RenderType weaponRenderType;
 
         float defaultMoveSpeed, defaultMouseSpeed;
 
@@ -597,6 +598,7 @@ public class GameSystems {
             if (knifing)
                 return;
             if (knifeCooldown <= 0.0f) {
+                weaponRenderType = manager.rendering[id].renderType;
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Hide;
                 manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Hide);
                 knifing = true;
@@ -634,11 +636,11 @@ public class GameSystems {
                 knifing = false;
                 manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
                 manager.rendering[knife].modelPosition = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[id].renderType = weaponRenderType;
                 manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.Hide;
 
                 manager.rendering[knife].mesh.updateRenderType(GameComponents.Rendering.RenderType.Hide);
-                manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
+                manager.rendering[id].mesh.updateRenderType(weaponRenderType);
                 return;
             }
 
@@ -1035,7 +1037,7 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.AIBEHAVIOR;
+            int required_GameComponents =  GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if (manager.playerMovement[i] != null) {
                     playerPosition = manager.transform[i].pos;
@@ -1053,7 +1055,7 @@ public class GameSystems {
                             manager.damageable[i].health = 1;
                             manager.aiBehavior[i].chasingDistance = 30;
                             manager.aiBehavior[i].attackingDistance = 5;
-                            manager.collider[i].colliderSize = new Vector3(0.75f, 0.75f, 0.75f);
+                            manager.collider[i].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                             manager.collider[i].center = manager.transform[i].pos;
                         }
                         case GUNTURRED -> {
@@ -1063,6 +1065,7 @@ public class GameSystems {
                             manager.aiBehavior[i].attackingDistance = 40;
                             manager.collider[i].colliderSize = new Vector3(1f, 1f, 1f);
                             manager.collider[i].center = manager.transform[i].pos;
+                            manager.rendering[i].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
                         }
                         case GROUNDENEMY -> {
                             manager.physicsBody[i].speed = 1f;
