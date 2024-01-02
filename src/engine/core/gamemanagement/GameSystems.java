@@ -999,6 +999,13 @@ public class GameSystems {
                             manager.destroyEntity(id);
                         }
                         break;
+                    case ENEMY:
+                        System.out.println("Enemy got hit");
+                        if (manager.damageable[id].health <= 0) {
+                            manager.destroyEntity(id);
+                            EventSystem.getInstance().onKillEnemy();
+                        }
+                        break;
                     default:
                         if (manager.damageable[id].health <= 0) {
                             manager.destroyEntity(id);
@@ -1348,29 +1355,148 @@ public class GameSystems {
 
     public static class GameLogicSystem extends GameSystem implements GameEventListener {
 
+        int level = 0;
+        int score = 0;
+        int livingEnemies = 0;
+        boolean finishedLevel;
+
         @Override
         public void start(EntityManager manager) throws Exception {
             EventSystem.getInstance().addListener(this);
+            level = 1;
+            loadNextLevel(manager);
+
         }
 
         @Override
         public void update(EntityManager manager, float deltaTime) throws Exception {
+            if(finishedLevel){
+                finishedLevel = false;
 
+                level += 1;
+
+                loadNextLevel(manager);
+
+            }
         }
 
         @Override
         public void onFinishLevel(int level) {
-
+            finishedLevel = true;
         }
 
         @Override
         public void onPlayerDeath() {
-
+            DrawingWindow.playerDead = true;
         }
 
         @Override
         public void onKillEnemy() {
+            livingEnemies -= 1;
 
+            if(livingEnemies == 0){
+                onFinishLevel(level);
+            }
+        }
+
+        private void loadNextLevel(EntityManager manager) throws IOException {
+
+            DrawingWindow.level = level;
+
+            livingEnemies = level;
+
+            Random rand = new Random();
+
+            for(int i  = 0; i < livingEnemies; i++){
+
+                int enemyType = rand.nextInt(3);
+                float spawnX = rand.nextFloat(15.0f) * 2.0f - 15.0f;
+                float spawnZ = rand.nextFloat(15.0f) * 2.0f - 15.0f;
+
+                switch (enemyType){
+                    case 0 -> {
+                        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                        if (id > -1) {
+                            // Set up the transformation component
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+
+
+
+                            manager.transform[id].pos = new Vector3(spawnX, -0.9f, spawnZ);
+                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                            manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+
+                            manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
+
+                            manager.physicsBody[id].speed = 1f;
+                            manager.damageable[id].health = 10;
+                            manager.aiBehavior[id].chasingDistance = 40;
+                            manager.aiBehavior[id].attackingDistance = 30;
+                            manager.collider[id].colliderSize = new Vector3(2f, 2f, 1f);
+                            manager.collider[id].center = manager.transform[id].pos;
+                            manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                            manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                        }
+                    }
+                    case 1 ->{
+                        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                        if (id > -1) {
+                            // Set up the transformation component
+                            manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+
+                            manager.transform[id].pos = new Vector3(spawnX, 0f, spawnZ);
+                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                            manager.transform[id].scale = new Vector3(.4f, .4f, .4f);
+
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+
+                            manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
+
+                            manager.physicsBody[id].speed = 4f;
+                            manager.damageable[id].health = 300;
+                            manager.aiBehavior[id].chasingDistance = 30;
+                            manager.aiBehavior[id].attackingDistance = 5;
+                            manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                            manager.collider[id].center = manager.transform[id].pos;
+                            manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                            manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                        }
+
+                    }
+                    case 2 ->{
+                        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                        if (id > -1) {
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+
+                            manager.transform[id].pos = new Vector3(spawnX, 0.0f, spawnZ);
+                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
+                            manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+
+                            manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
+                            manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
+
+                            manager.physicsBody[id].speed = 0f;
+                            manager.damageable[id].health = 5;
+                            manager.aiBehavior[id].chasingDistance = 40;
+                            manager.aiBehavior[id].attackingDistance = 40;
+                            manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
+                            manager.collider[id].center = manager.transform[id].pos;
+                            manager.rendering[id].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
+                            manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                            manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                        }
+                    }
+
+
+                }
+            }
         }
     }
 

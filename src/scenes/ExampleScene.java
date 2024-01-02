@@ -135,7 +135,7 @@ public class ExampleScene extends Scene {
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
             } */
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+           /* id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 // Set up the transformation component
                 manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
@@ -159,7 +159,7 @@ public class ExampleScene extends Scene {
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
-            }
+            }*/
 
 
 

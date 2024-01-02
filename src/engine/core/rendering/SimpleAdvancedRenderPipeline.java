@@ -417,7 +417,8 @@ public class SimpleAdvancedRenderPipeline {
                 catch (Exception e){
                     if(triangle.renderType != null)
                         System.out.println(triangle.renderType.name());
-                   // triangle.color = Color.RED;
+                   if(triangle.color == null)
+                       triangle.color = Color.RED;
                     drawingWindow.drawTriangle(triangle);
                 }
 

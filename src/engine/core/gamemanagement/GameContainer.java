@@ -13,9 +13,6 @@ import java.util.HashMap;
 public class GameContainer {
 
 
-
-
-
     EntityManager manager;
     GameSystems.Renderer rasterizer;
     GameSystems.PyhsicsHandler physicsHandler;
@@ -108,7 +105,7 @@ public class GameContainer {
             pickupWeapon.update(manager, deltaTime);
             damageSystem.update(manager, deltaTime);
             enemySystem.update(manager, deltaTime);
-            gameLogicSystem.update(manager, deltaTime);
+           gameLogicSystem.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();
