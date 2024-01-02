@@ -202,7 +202,7 @@ public class GameSystems {
             // create knife
             knife = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
             if (knife > -1) {
-                manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
+                manager.transform[knife].pos = new Vector3(0.0f, -3.1f, 0.0f);
                 manager.transform[knife].pos.y += 0.065f;
                 manager.transform[knife].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[knife].scale = new Vector3(0.05f, 0.05f, 0.05f);
@@ -1363,6 +1363,7 @@ public class GameSystems {
         boolean finishedLevel;
 
         float finishTimer = 0.0f;
+        float cooldown = 7.0f;
 
         Vector3 weaponSpawn = new Vector3(0.0f, -0.5f, 0.0f);
 
@@ -1395,7 +1396,7 @@ public class GameSystems {
         @Override
         public void onFinishLevel(int level) {
             finishedLevel = true;
-            finishTimer = 20.0f;
+            finishTimer = cooldown;
             try {
 
                 spawnRandomWeapon(localManager);
