@@ -47,7 +47,7 @@ public class ExampleScene extends Scene {
 
 
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
             if (id > -1) {
                 manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.CYAN);//"./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OutlineOnly;
@@ -122,17 +122,18 @@ public class ExampleScene extends Scene {
 
             }
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+         /*   id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
 
-                manager.transform[id].pos = new Vector3(0.0f, 1.0f, 5.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 5.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
+                manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
-            }
+            } */
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
