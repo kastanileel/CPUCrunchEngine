@@ -131,9 +131,9 @@ public class Mesh {
                 }
 
                 if(tokens.length == 4){
-                    triangles.add(new Triangle(vertices.get(Integer.parseInt(tokens[1].split("//")[0]) - 1), vertices.get(Integer.parseInt(tokens[2].split("//")[0]) - 1), vertices.get(Integer.parseInt(tokens[3].split("//")[0]) - 1)));
+                    triangles.add(new Triangle(vertices.get(Integer.parseInt(tokens[1].split("/")[0]) - 1), vertices.get(Integer.parseInt(tokens[2].split("/")[0]) - 1), vertices.get(Integer.parseInt(tokens[3].split("//")[0]) - 1)));
                     if(normal)
-                        triangles.getLast().normal = normals.get(Integer.parseInt(tokens[1].split("//")[2]) - 1);
+                        triangles.getLast().normal = normals.get(Integer.parseInt(tokens[1].split("/")[2]) - 1);
                 }
                 if(tokens.length == 5){
                     triangles.add(new Triangle(vertices.get(Integer.parseInt(tokens[1].split("//")[0]) - 1), vertices.get(Integer.parseInt(tokens[2].split("//")[0]) - 1), vertices.get(Integer.parseInt(tokens[3].split("//")[0]) - 1)));

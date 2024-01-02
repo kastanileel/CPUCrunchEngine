@@ -365,7 +365,7 @@ public class GameSystems {
         }
 
         private void doShooting(EntityManager manager, int id, float deltaTime) {
-            SimpleAdvancedRenderPipeline.fFov = 120.0f;
+            SimpleAdvancedRenderPipeline.fFov = 150.0f;
 
             shootingCooldown -= deltaTime;
             knifeCooldown -= deltaTime;
@@ -479,7 +479,7 @@ public class GameSystems {
                     else {
                         scopedIn = false;
 
-                        SimpleAdvancedRenderPipeline.fFov = 120.0f;
+                        SimpleAdvancedRenderPipeline.fFov = 150.0f;
                         DrawingWindow.snipe = false;
                         manager.playerMovement[id].mouseSpeed = defaultMouseSpeed;
                         manager.playerMovement[id].moveSpeed = defaultMoveSpeed;
