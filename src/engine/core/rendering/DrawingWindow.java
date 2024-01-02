@@ -78,13 +78,14 @@ public class DrawingWindow extends JPanel {
     private void applyUI(){
         graphics.setColor(Color.red);
         //draw ammo count
-        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
-        graphics.drawString(Integer.toString(currentAmmo), 150,this.getHeight() -150);
+        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
+        graphics.drawString(Integer.toString(currentAmmo) + "/\u221E", (int)(this.getWidth() * 0.15),(int)(this.getHeight() * 0.855));
 
         // draw crosshair
         graphics.setColor(Color.white);
+
+        //draw Playerhealth
         drawHealthBar(playerHealth);
-        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
         graphics.setFont(font);
         graphics.setColor(Color.white);
         graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));
