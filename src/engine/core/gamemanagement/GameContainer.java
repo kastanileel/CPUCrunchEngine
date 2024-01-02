@@ -3,13 +3,16 @@ package src.engine.core.gamemanagement;
 
 import src.engine.core.gamemanagement.gamelogic.EventSystem;
 import src.engine.core.gamemanagement.gamelogic.GameEventListener;
+import src.engine.core.rendering.DrawingWindow;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
 import src.scenes.ExampleScene;
 
 import java.util.HashMap;
 
-public class GameContainer implements GameEventListener {
+public class GameContainer {
+
+
 
 
 
@@ -26,6 +29,9 @@ public class GameContainer implements GameEventListener {
     GameSystems.DamageSystem damageSystem;
 
     GameSystems.EnemySystem enemySystem;
+
+
+    GameSystems.GameLogicSystem gameLogicSystem;
 
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
@@ -49,13 +55,15 @@ public class GameContainer implements GameEventListener {
 
         enemySystem = new GameSystems.EnemySystem();
 
+        gameLogicSystem = new GameSystems.GameLogicSystem();
+
 
        Scene example = new ExampleScene(1000, "example");
        scenes.put(example.getName(), example);
 
         currentSceneName = "example";
 
-        EventSystem.getInstance().addListener(this);
+
 
         startGameLoop();
     }
@@ -84,12 +92,12 @@ public class GameContainer implements GameEventListener {
 
                 activeSceneName = currentSceneName;
 
-                rasterizer.start(manager);
 
+                rasterizer.start(manager);
                 collisionSystem.start(manager);
                 playerMovement.start(manager);
-
                 enemySystem.start(manager);
+                gameLogicSystem.start(manager);
             }
 
             collisionSystem.update(manager, deltaTime);
@@ -100,6 +108,7 @@ public class GameContainer implements GameEventListener {
             pickupWeapon.update(manager, deltaTime);
             damageSystem.update(manager, deltaTime);
             enemySystem.update(manager, deltaTime);
+            gameLogicSystem.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();
@@ -110,17 +119,6 @@ public class GameContainer implements GameEventListener {
         //System.out.println(System.nanoTime()/1000000 - lastTime);
     }
 
-    @Override
-    public void onFinishLevel(int level) {
-
-        // maybe switch active scenes here
-
-    }
-
-    @Override
-    public void onPlayerDeath() {
-
-    }
 
     public static void main(String[] args) throws Exception {
         new GameContainer();

@@ -5,6 +5,8 @@ import src.engine.configuration.Configurator;
 
 import src.engine.core.dataContainers.BoundingBox;
 import src.engine.core.dataContainers.CollisionInformation;
+import src.engine.core.gamemanagement.gamelogic.EventSystem;
+import src.engine.core.gamemanagement.gamelogic.GameEventListener;
 import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
@@ -1052,7 +1054,7 @@ public class GameSystems {
                     switch (manager.aiBehavior[i].enemyType) {
                         case SIGHTSEEKER -> {
                             manager.physicsBody[i].speed = 4f;
-                            manager.damageable[i].health = 1;
+                            manager.damageable[i].health = 300;
                             manager.aiBehavior[i].chasingDistance = 30;
                             manager.aiBehavior[i].attackingDistance = 5;
                             manager.collider[i].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
@@ -1342,4 +1344,34 @@ public class GameSystems {
             }
         }
     }
+
+
+    public static class GameLogicSystem extends GameSystem implements GameEventListener {
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+            EventSystem.getInstance().addListener(this);
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+
+        }
+
+        @Override
+        public void onFinishLevel(int level) {
+
+        }
+
+        @Override
+        public void onPlayerDeath() {
+
+        }
+
+        @Override
+        public void onKillEnemy() {
+
+        }
+    }
+
 }

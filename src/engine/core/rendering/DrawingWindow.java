@@ -36,6 +36,8 @@ public class DrawingWindow extends JPanel {
 
     public static int currentAmmo = 0;
 
+    public static boolean playerDead = false;
+
     public int maxAccuracy;
     public int minAccuracy;
 
@@ -76,6 +78,13 @@ public class DrawingWindow extends JPanel {
     }
 
     private void applyUI(){
+
+        if(playerDead){
+            // TODO: Death screen
+
+            return;
+        }
+
         graphics.setColor(Color.red);
         //draw ammo count
         graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
@@ -90,7 +99,7 @@ public class DrawingWindow extends JPanel {
         graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));
 
         switch (weaponType)
-{
+        {
             case PISTOL:
                 graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
                 graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
