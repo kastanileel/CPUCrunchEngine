@@ -39,44 +39,13 @@ public class ExampleScene extends Scene {
                 }
             }
 
-       /*int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-       if(id > -1){
-           manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.red);
-           manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-           manager.transform[id].pos = new Vector3(0.0f, 5.0f, 15.0f);
-           manager.transform[id].rot = new Vector3(0.0f, 3.1415f, 0.0f);
-           manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
-       }*/
+
 
 
             int id;
-            /*int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER | GameComponents.DAMAGEABLE);
-            if(id > -1){
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", "./src/objects/rock/rock64.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                manager.transform[id].pos = new Vector3(-2.0f, -0.5f, 7.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
-
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(5.6f, 5.6f, 5.6f);
-                manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
-                manager.damageable[id].health = 10;
-            }*/
 
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
-            if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);//"./src/objects/rock/rock64.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(3.0f, -0.9f, 10.0f);
 
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
-
-
-            }
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if (id > -1) {
@@ -155,10 +124,10 @@ public class ExampleScene extends Scene {
 
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.blue);
+                manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
 
-                manager.transform[id].pos = new Vector3(0.0f, -0.9f, 5.0f);
+                manager.transform[id].pos = new Vector3(0.0f, 1.0f, 5.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 

@@ -413,6 +413,7 @@ public class SimpleAdvancedRenderPipeline {
                     }
                 }
                 catch (Exception e){
+                    triangle.color = Color.RED;
                     drawingWindow.drawTriangle(triangle);
                 }
 

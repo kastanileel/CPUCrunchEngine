@@ -1035,7 +1035,7 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.AIBEHAVIOR;
+            int required_GameComponents =  GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if (manager.playerMovement[i] != null) {
                     playerPosition = manager.transform[i].pos;
