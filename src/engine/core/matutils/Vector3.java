@@ -4,8 +4,10 @@ public class Vector3 {
     public float x, y, z;
     public float w = 1.0f;
 
-    public Vector3(){ }
-    public Vector3(float x, float y, float z){
+    public Vector3() {
+    }
+
+    public Vector3(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -16,16 +18,16 @@ public class Vector3 {
         return new Vector3(x, y, z);
     }
 
-    public Vector3 add(Vector3 other){
+    public Vector3 add(Vector3 other) {
         return new Vector3(x + other.x, y + other.y, z + other.z);
     }
 
-    public Vector3 subtract(Vector3 other){
+    public Vector3 subtract(Vector3 other) {
         return new Vector3(x - other.x, y - other.y, z - other.z);
     }
 
 
-    public Vector3 divide(float other){
+    public Vector3 divide(float other) {
         return new Vector3(x / other, y / other, z / other);
     }
 

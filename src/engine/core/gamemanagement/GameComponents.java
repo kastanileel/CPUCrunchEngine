@@ -15,7 +15,8 @@ public class GameComponents {
             COLLIDER = 1 << 5,
             BULLET = 1 << 6,
             PICKUPWEAPON = 1 << 7,
-            DAMAGEABLE = 1 << 8;
+            DAMAGEABLE = 1 << 8,
+            AIBEHAVIOR = 1 << 9;
 
 
     public static class Transform {
@@ -107,9 +108,15 @@ public class GameComponents {
         public float lifeTime = 5.0f;
         public int damage = 1;
 
+        public ShooterType shooter;
+
         public Vector3 direction = new Vector3(0, 0, 0);
 
+        public enum ShooterType {
+            ENEMY,
+            PLAYER
 
+        }
     }
 
     public static class PickupWeapon {
@@ -119,6 +126,33 @@ public class GameComponents {
 
     public static class Damageable{
         public int health = 10;
+    }
+
+    public enum State {
+        WANDERING,
+        CHASING,
+        ATTACKING,
+    }
+
+    public enum EnemyType {
+        GUNTURRED,
+        SIGHTSEEKER,
+        GROUNDENEMY
+
+    }
+
+    public static class AIBEHAVIOR {
+        public State currentState;
+        public EnemyType enemyType;
+        public float timeSinceLastDirectionChange;
+        public float wanderingDuration;
+        public Vector3 wanderingDirection;
+        public Vector3 spawnPoint;
+        public float chasingDistance;
+        public float attackingDistance;
+        public float shootingCooldown;
+        public int chooseWanderingCounter;
+
     }
 
 }

@@ -25,6 +25,8 @@ public class GameContainer implements GameEventListener {
 
     GameSystems.DamageSystem damageSystem;
 
+    GameSystems.EnemySystem enemySystem;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
@@ -45,6 +47,7 @@ public class GameContainer implements GameEventListener {
 
         damageSystem = new GameSystems.DamageSystem();
 
+        enemySystem = new GameSystems.EnemySystem();
 
 
        Scene example = new ExampleScene(1000, "example");
@@ -85,6 +88,8 @@ public class GameContainer implements GameEventListener {
 
                 collisionSystem.start(manager);
                 playerMovement.start(manager);
+
+                enemySystem.start(manager);
             }
 
             collisionSystem.update(manager, deltaTime);
@@ -94,6 +99,7 @@ public class GameContainer implements GameEventListener {
             bulletSystem.update(manager, deltaTime);
             pickupWeapon.update(manager, deltaTime);
             damageSystem.update(manager, deltaTime);
+            enemySystem.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();

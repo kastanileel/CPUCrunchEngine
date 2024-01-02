@@ -1,6 +1,7 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.core.dataContainers.CollisionInformation;
+import src.engine.core.matutils.Vector3;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,6 +19,8 @@ public class EntityManager {
 
     public GameComponents.PickupWeapon[] pickupWeapon;
     public GameComponents.Damageable[] damageable;
+
+    public GameComponents.AIBEHAVIOR[] aiBehavior;
 
     public final int size;
 
@@ -37,6 +40,8 @@ public class EntityManager {
 
         pickupWeapon = new GameComponents.PickupWeapon[size];
         damageable = new GameComponents.Damageable[size];
+
+        aiBehavior = new GameComponents.AIBEHAVIOR[size];
 
         flag = new int[size];
 
@@ -58,6 +63,7 @@ public class EntityManager {
                 if ((flag & GameComponents.BULLET) > 0) bullet[i] = new GameComponents.Bullet();
                 if((flag & GameComponents.PICKUPWEAPON)>0) pickupWeapon[i] = new GameComponents.PickupWeapon();
                 if((flag & GameComponents.DAMAGEABLE)>0) damageable[i] = new GameComponents.Damageable();
+                if((flag & GameComponents.AIBEHAVIOR)>0) aiBehavior[i] = new GameComponents.AIBEHAVIOR();
 
                 return i;
             }
@@ -81,10 +87,10 @@ public class EntityManager {
             if (bullet[entityID] != null) bullet[entityID] = null;
             if (pickupWeapon[entityID] != null) pickupWeapon[entityID] = null;
             if (damageable[entityID] != null) damageable[entityID] = null;
+            if (aiBehavior[entityID] != null) aiBehavior[entityID] = null;
 
         }
 
         destroyList.clear();
     }
-
 }
