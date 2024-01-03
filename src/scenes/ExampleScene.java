@@ -47,7 +47,7 @@ public class ExampleScene extends Scene {
             //Scene
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/scenes/room.obj", Color.GRAY);//"./src/objects/rock/rock64.png");
+                manager.rendering[id].mesh = new Mesh("./src/objects/scenes/GameRoom.obj", Color.GRAY);//"./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = new Vector3(0.0f, -1.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
