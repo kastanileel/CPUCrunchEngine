@@ -44,20 +44,21 @@ public class MusicPlayer {
             return path;
         }
     }
+
     private static volatile MusicPlayer instance;
     private ExecutorService threadPool;
     private HashMap<String, Clip> soundClips;
 
-    private MusicPlayer(){
+    private MusicPlayer() {
         threadPool = Executors.newCachedThreadPool();
         soundClips = new HashMap<>();
         // Initialize resources
     }
 
-    public static MusicPlayer getInstance(){
-        if(instance == null) {
-            synchronized(MusicPlayer.class) {
-                if(instance == null)
+    public static MusicPlayer getInstance() {
+        if (instance == null) {
+            synchronized (MusicPlayer.class) {
+                if (instance == null)
                     instance = new MusicPlayer();
             }
         }
@@ -102,10 +103,32 @@ public class MusicPlayer {
     public void loopMusic(String sound) {
         threadPool.execute(() -> {
             Clip clip = loadClip(sound); // Implement loadClip to load and return a Clip
-             soundClips.put(sound, clip);
-           clip.loop(Clip.LOOP_CONTINUOUSLY);
+            soundClips.put(sound, clip);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
 
         });
+
+    }
+
+    public void pauseResume(String sound) {
+        threadPool.execute(() -> {
+            Clip clip = soundClips.get(sound);
+            if (clip.isActive()) {
+                clip.stop();
+            } else {
+                clip.start();
+            }
+        });
+    }
+
+    public void stopGameMusic(){
+        for (Clip clip : soundClips.values()) {
+            if (clip.isRunning()) {
+                clip.stop(); // Stop the clip if it is running
+            }
+            clip.close(); // Close the clip to release resources
+        }
+        soundClips.clear();
     }
 
     // Additional methods to stop sounds, manage resources, etc.

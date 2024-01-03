@@ -3,14 +3,15 @@ package src.engine.core.gamemanagement;
 
 import src.engine.core.gamemanagement.gamelogic.EventSystem;
 import src.engine.core.gamemanagement.gamelogic.GameEventListener;
+import src.engine.core.tools.MKeyListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
 import src.scenes.ExampleScene;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameContainer implements GameEventListener {
-
 
 
     EntityManager manager;
@@ -29,7 +30,6 @@ public class GameContainer implements GameEventListener {
 
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
-
 
     GameContainer() throws Exception {
         scenes = new HashMap<>();
@@ -50,8 +50,8 @@ public class GameContainer implements GameEventListener {
         enemySystem = new GameSystems.EnemySystem();
 
 
-       Scene example = new ExampleScene(1000, "example");
-       scenes.put(example.getName(), example);
+        Scene example = new ExampleScene(1000, "example");
+        scenes.put(example.getName(), example);
 
         currentSceneName = "example";
 
@@ -68,15 +68,27 @@ public class GameContainer implements GameEventListener {
 
         MusicPlayer.getInstance().loopMusic("src/sound/music.wav");
 
+        MKeyListener keyListener = MKeyListener.getInstance();
 
-        while(true) {
+        boolean lastStateM = false;
+
+        boolean lastStatem = false;
+
+        while (true) {
             long currentSystemTime = System.nanoTime();
             float deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
+            //Stop or start gamemusic
+            if (keyListener.isKeyPressed('M') != lastStateM && keyListener.isKeyPressed('M') || keyListener.isKeyPressed('m') != lastStatem && keyListener.isKeyPressed('m')) {
+                MusicPlayer.getInstance().pauseResume("src/sound/music.wav");
+            }
+
+            lastStateM = keyListener.isKeyPressed('M');
+            lastStatem = keyListener.isKeyPressed('m');
 
             lastTime = currentSystemTime;
 
-            if(!currentSceneName.equals(activeSceneName)){
+            if (!currentSceneName.equals(activeSceneName)) {
                 Scene activeScene = scenes.get(currentSceneName);
 
                 activeScene.createScene();
@@ -105,10 +117,23 @@ public class GameContainer implements GameEventListener {
             MMouseListener.getInstance().update();
             manager.clearDestroyedEntities();
 
+            int playerid = 0;
+            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    playerid = i;
+                }
+            }
+            if (playerid == 0) {
+                onPlayerDeath();
+                break;
+            }
         }
-
+        MusicPlayer.getInstance().stopGameMusic();
+        startGameLoop();
         //System.out.println(System.nanoTime()/1000000 - lastTime);
     }
+
 
     @Override
     public void onFinishLevel(int level) {
@@ -117,9 +142,29 @@ public class GameContainer implements GameEventListener {
 
     }
 
+
     @Override
     public void onPlayerDeath() {
+        scenes = new HashMap<>();
+        manager = new EntityManager(2000);
 
+        rasterizer = new GameSystems.Renderer();
+        collisionSystem = new GameSystems.CollisionSystem();
+
+        physicsHandler = new GameSystems.PyhsicsHandler();
+        playerMovement = new GameSystems.PlayerMovement();
+
+        bulletSystem = new GameSystems.BulletSystem();
+
+        pickupWeapon = new GameSystems.PickupWeapon();
+
+        damageSystem = new GameSystems.DamageSystem();
+
+        enemySystem = new GameSystems.EnemySystem();
+
+
+        Scene example = new ExampleScene(1000, "example");
+        scenes.put(example.getName(), example);
     }
 
     public static void main(String[] args) throws Exception {

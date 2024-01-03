@@ -223,7 +223,7 @@ public class GameSystems {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     defaultMouseSpeed = manager.playerMovement[i].mouseSpeed;
                     defaultMoveSpeed = manager.playerMovement[i].moveSpeed;
-                    manager.damageable[i].health = 100;
+                    manager.damageable[i].health = 10;
                     DrawingWindow.playerHealth = manager.damageable[i].health;
                 }
             }
@@ -883,7 +883,6 @@ public class GameSystems {
                     manager.physicsBody[playerId].force.z = direction.z * 100.0f;
 
                     DamageSystem.damagedEntities.add(playerId);
-                    manager.damageable[playerId].health -= 5;
                     System.out.println("Playercollision " + manager.damageable[playerId].health);
                 }
 
@@ -900,7 +899,6 @@ public class GameSystems {
                     manager.physicsBody[otherId].force.z = direction.z * 100.0f;
 
                     DamageSystem.damagedEntities.add(playerId);
-                    manager.damageable[playerId].health -= 5;
                     System.out.println("Playercollision " + manager.damageable[playerId].health);
                 }
             }
