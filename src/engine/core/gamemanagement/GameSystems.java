@@ -1589,7 +1589,7 @@ public class GameSystems {
         }
     }
 
-    public static class MenuSystem extends GameSystem {
+    public static class hotkeyMenuSystem extends GameSystem {
         private MKeyListener keyListener;
 
         private boolean lastStateM = false;
@@ -1605,6 +1605,7 @@ public class GameSystems {
         @Override
         public void update(EntityManager manager, float deltaTime) throws Exception {
             checkMusicKey();
+            checkQuitKey();
 
         }
 
@@ -1617,6 +1618,12 @@ public class GameSystems {
             lastStateM = keyListener.isKeyPressed('M');
             lastStatem = keyListener.isKeyPressed('m');
 
+        }
+
+        private void checkQuitKey(){
+            if (keyListener.isKeyPressed('Q') != lastStateM && keyListener.isKeyPressed('Q') || keyListener.isKeyPressed('q') != lastStatem && keyListener.isKeyPressed('q')) {
+                System.exit(0);
+            }
         }
     }
 
