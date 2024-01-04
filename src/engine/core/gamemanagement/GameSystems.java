@@ -1049,9 +1049,7 @@ public class GameSystems {
                     playerPosition = manager.transform[i].pos;
                 }
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    manager.aiBehavior[i].spawnPoint = new Vector3(manager.transform[i].pos.x, manager.transform[i].pos.y, manager.transform[i].pos.z);
                     manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
-                    manager.aiBehavior[i].wanderingDirection = new Vector3(1f, 0f, 1f);
                     manager.collider[i].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
                     manager.collider[i].colliderType = GameComponents.Collider.ColliderType.SPHERE;
 
@@ -1305,6 +1303,7 @@ public class GameSystems {
             if (bulletId > -1) {
 
                 try {
+                    System.out.println(id + ": " + manager.aiBehavior[id].enemyType + " " + manager.transform[id].pos.x + "; "+ manager.transform[id].pos.y + "; "+ manager.transform[id].pos.z);
                     manager.bullet[bulletId].shooter = GameComponents.Bullet.ShooterType.ENEMY;
                     manager.transform[bulletId].pos = manager.transform[id].pos.clone();
                     manager.transform[bulletId].pos.y += yOffSet;
@@ -1501,15 +1500,17 @@ public class GameSystems {
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
 
+                            manager.aiBehavior[id].shootingCooldown = 6f;
                             manager.physicsBody[id].speed = 1f;
                             manager.damageable[id].health = 10 * level;
                             manager.aiBehavior[id].chasingDistance = 40;
                             manager.aiBehavior[id].attackingDistance = 30;
                             manager.aiBehavior[id].damage = 5 * level;
+                            manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(2f, 2f, 1f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
@@ -1528,15 +1529,17 @@ public class GameSystems {
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.transform[id].scale = new Vector3(.4f, .4f, .4f);
 
-                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
 
+                            manager.aiBehavior[id].shootingCooldown = 1f;
                             manager.physicsBody[id].speed = 4f;
                             manager.damageable[id].health = 5 * level;
                             manager.aiBehavior[id].chasingDistance = 30;
                             manager.aiBehavior[id].attackingDistance = 5;
                             manager.aiBehavior[id].damage = level;
+                            manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
@@ -1554,16 +1557,18 @@ public class GameSystems {
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
                             manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
                             manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
 
+                            manager.aiBehavior[id].shootingCooldown = 1f;
                             manager.physicsBody[id].speed = 0f;
                             manager.damageable[id].health = 5 * level;
                             manager.aiBehavior[id].chasingDistance = 40;
                             manager.aiBehavior[id].attackingDistance = 40;
                             manager.aiBehavior[id].damage = level;
+                            manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.rendering[id].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);

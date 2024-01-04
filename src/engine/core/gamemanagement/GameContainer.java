@@ -1,5 +1,6 @@
 package src.engine.core.gamemanagement;
 
+import src.engine.core.rendering.DrawingWindow;
 import src.engine.core.tools.MKeyListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
@@ -79,7 +80,7 @@ public class GameContainer {
 
         boolean lastStatem = false;
 
-        boolean pauseResume = true;
+        boolean pauseResume = false;
 
         while(true) {
             long currentSystemTime = System.nanoTime();
@@ -109,10 +110,12 @@ public class GameContainer {
             MKeyListener keyListener = MKeyListener.getInstance();
 
             if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
-                if (pauseResume)
+                if (pauseResume) {
                     pauseResume = false;
-                else
+                    DrawingWindow.onPause = true;
+                } else {
                     pauseResume = true;
+                }
             }
 
             lastStateM = keyListener.isKeyPressed('P');
@@ -120,16 +123,20 @@ public class GameContainer {
 
             rasterizer.update(manager, deltaTime);
             hotkeyMenuSystem.update(manager, deltaTime);
+
             if (pauseResume) {
-                collisionSystem.update(manager, deltaTime);
-                physicsHandler.update(manager, deltaTime);
-                playerMovement.update(manager, deltaTime);
-                bulletSystem.update(manager, deltaTime);
-                pickupWeapon.update(manager, deltaTime);
-                damageSystem.update(manager, deltaTime);
-                enemySystem.update(manager, deltaTime);
-                gameLogicSystem.update(manager, deltaTime);
+                deltaTime = 0;
             }
+
+            collisionSystem.update(manager, deltaTime);
+            physicsHandler.update(manager, deltaTime);
+            playerMovement.update(manager, deltaTime);
+            bulletSystem.update(manager, deltaTime);
+            pickupWeapon.update(manager, deltaTime);
+            damageSystem.update(manager, deltaTime);
+            enemySystem.update(manager, deltaTime);
+            gameLogicSystem.update(manager, deltaTime);
+
 
             MMouseListener.getInstance().update();
             manager.clearDestroyedEntities();
