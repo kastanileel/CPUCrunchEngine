@@ -397,7 +397,7 @@ public class SimpleAdvancedRenderPipeline {
                                 mesh = meshesToRender.get(triangle.meshIndex);
                                 drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
                             } catch (Exception e) {
-
+                                System.out.println(e);
                                 triangle.color = Color.RED;
                                 drawingWindow.drawTriangle(triangle);
                             }
@@ -415,9 +415,11 @@ public class SimpleAdvancedRenderPipeline {
                     }
                 }
                 catch (Exception e){
+                   // System.out.println(e);
                     if(triangle.renderType != null)
                         System.out.println(triangle.renderType.name());
-                   // triangle.color = Color.RED;
+                   if(triangle.color == null)
+                       triangle.color = Color.RED;
                     drawingWindow.drawTriangle(triangle);
                 }
 

@@ -9,9 +9,9 @@ import src.engine.core.tools.MusicPlayer;
 import src.scenes.ExampleScene;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameContainer implements GameEventListener {
+
 
 
     EntityManager manager;
@@ -28,8 +28,12 @@ public class GameContainer implements GameEventListener {
 
     GameSystems.EnemySystem enemySystem;
 
+
+    GameSystems.GameLogicSystem gameLogicSystem;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
+
 
     GameContainer() throws Exception {
         scenes = new HashMap<>();
@@ -49,13 +53,15 @@ public class GameContainer implements GameEventListener {
 
         enemySystem = new GameSystems.EnemySystem();
 
+        gameLogicSystem = new GameSystems.GameLogicSystem();
 
-        Scene example = new ExampleScene(1000, "example");
-        scenes.put(example.getName(), example);
+
+       Scene example = new ExampleScene(1000, "example");
+       scenes.put(example.getName(), example);
 
         currentSceneName = "example";
 
-        EventSystem.getInstance().addListener(this);
+
 
         startGameLoop();
     }
@@ -74,7 +80,7 @@ public class GameContainer implements GameEventListener {
 
         boolean lastStatem = false;
 
-        while (true) {
+        while(true) {
             long currentSystemTime = System.nanoTime();
             float deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
@@ -88,7 +94,7 @@ public class GameContainer implements GameEventListener {
 
             lastTime = currentSystemTime;
 
-            if (!currentSceneName.equals(activeSceneName)) {
+            if(!currentSceneName.equals(activeSceneName)){
                 Scene activeScene = scenes.get(currentSceneName);
 
                 activeScene.createScene();
@@ -102,6 +108,7 @@ public class GameContainer implements GameEventListener {
                 playerMovement.start(manager);
 
                 enemySystem.start(manager);
+                gameLogicSystem.start(manager);
             }
 
             collisionSystem.update(manager, deltaTime);
@@ -112,60 +119,17 @@ public class GameContainer implements GameEventListener {
             pickupWeapon.update(manager, deltaTime);
             damageSystem.update(manager, deltaTime);
             enemySystem.update(manager, deltaTime);
+           gameLogicSystem.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();
             manager.clearDestroyedEntities();
 
-            int playerid = 0;
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
-            for (int i = 0; i < manager.size; i++) {
-                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    playerid = i;
-                }
-            }
-            if (playerid == 0) {
-                onPlayerDeath();
-                break;
-            }
         }
-        MusicPlayer.getInstance().stopGameMusic();
-        startGameLoop();
+
         //System.out.println(System.nanoTime()/1000000 - lastTime);
     }
 
-
-    @Override
-    public void onFinishLevel(int level) {
-
-        // maybe switch active scenes here
-
-    }
-
-
-    @Override
-    public void onPlayerDeath() {
-        scenes = new HashMap<>();
-        manager = new EntityManager(2000);
-
-        rasterizer = new GameSystems.Renderer();
-        collisionSystem = new GameSystems.CollisionSystem();
-
-        physicsHandler = new GameSystems.PyhsicsHandler();
-        playerMovement = new GameSystems.PlayerMovement();
-
-        bulletSystem = new GameSystems.BulletSystem();
-
-        pickupWeapon = new GameSystems.PickupWeapon();
-
-        damageSystem = new GameSystems.DamageSystem();
-
-        enemySystem = new GameSystems.EnemySystem();
-
-
-        Scene example = new ExampleScene(1000, "example");
-        scenes.put(example.getName(), example);
-    }
 
     public static void main(String[] args) throws Exception {
         new GameContainer();
