@@ -1303,7 +1303,6 @@ public class GameSystems {
             if (bulletId > -1) {
 
                 try {
-                    System.out.println(id + ": " + manager.aiBehavior[id].enemyType + " " + manager.transform[id].pos.x + "; "+ manager.transform[id].pos.y + "; "+ manager.transform[id].pos.z);
                     manager.bullet[bulletId].shooter = GameComponents.Bullet.ShooterType.ENEMY;
                     manager.transform[bulletId].pos = manager.transform[id].pos.clone();
                     manager.transform[bulletId].pos.y += yOffSet;

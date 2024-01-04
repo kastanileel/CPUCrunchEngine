@@ -88,18 +88,22 @@ public class DrawingWindow extends JPanel {
             return;
         }
         if (onPause) {
-            /*clear();
-            this.setLayout(new FlowLayout());
-            JButton clearButton = new JButton("Clear Drawings");
-            clearButton.addActionListener(e -> clear());
-            this.add(clearButton);
-            this.revalidate();*/
             graphics.setColor(new Color(0, 0, 0, 128));
             graphics.fillRect(0, 0, getWidth(), getHeight());
             graphics.setColor(Color.WHITE);
             Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.03));
             graphics.setFont(font);
             graphics.drawString("Paused", getWidth() / 2 - (int)(this.getWidth() * 0.052), getHeight() / 2 - (int)(this.getWidth() * 0.05));
+            font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.022));
+            graphics.setFont(font);
+            graphics.drawString("Hotkeys:", (int) (getWidth() * 0.05), (int)(getHeight() * 0.1));
+            font = new Font("Arial", Font.PLAIN, (int)(this.getWidth() * 0.022));
+            graphics.setFont(font);
+            int i = 1;
+            graphics.drawString("Swap Weapons - 1, 2, 3 or 4", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ *this.getWidth() * 0.03));
+            graphics.drawString("Turn off/on music - m", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+            graphics.drawString("Quitgame - q", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+            graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
 
         } else if (onPause != lastOnPauseState){
             clear();
