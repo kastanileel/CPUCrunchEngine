@@ -37,6 +37,8 @@ public class DrawingWindow extends JPanel {
     public static int currentAmmo = 0;
 
     public static boolean playerDead = false;
+    public static boolean onPause = false;
+    private boolean lastOnPauseState;
 
     public int maxAccuracy;
     public int minAccuracy;
@@ -85,18 +87,39 @@ public class DrawingWindow extends JPanel {
 
             return;
         }
+        if (onPause) {
+            /*clear();
+            this.setLayout(new FlowLayout());
+            JButton clearButton = new JButton("Clear Drawings");
+            clearButton.addActionListener(e -> clear());
+            this.add(clearButton);
+            this.revalidate();*/
+            graphics.setColor(new Color(0, 0, 0, 128));
+            graphics.fillRect(0, 0, getWidth(), getHeight());
+            graphics.setColor(Color.WHITE);
+            Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.03));
+            graphics.setFont(font);
+            graphics.drawString("Paused", getWidth() / 2 - (int)(this.getWidth() * 0.052), getHeight() / 2 - (int)(this.getWidth() * 0.05));
+
+        } else if (onPause != lastOnPauseState){
+            clear();
+
+        }
+
+        lastOnPauseState = onPause;
 
         graphics.setColor(Color.red);
         //draw ammo count
-        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
-        graphics.drawString(Integer.toString(currentAmmo) + "/\u221E", (int)(this.getWidth() * 0.15),(int)(this.getHeight() * 0.855));
+        Font font = new Font("Arial", Font.PLAIN, (int)(this.getWidth() * 0.05));
+        graphics.setFont(font);
+        graphics.drawString(currentAmmo + "/\u221E", (int)(this.getWidth() * 0.15),(int)(this.getHeight() * 0.855));
 
         // draw crosshair
         graphics.setColor(Color.white);
         drawHealthBar(playerHealth);
         drawLevelCount();
-        graphics.setFont(font);
         graphics.setColor(Color.white);
+        graphics.setFont(font);
         graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));
 
         switch (weaponType)
@@ -411,3 +434,4 @@ public class DrawingWindow extends JPanel {
         graphics.drawString("Level: " + Integer.toString(level), this.getWidth() - 300, this.getHeight() - 150);
     }
 }
+

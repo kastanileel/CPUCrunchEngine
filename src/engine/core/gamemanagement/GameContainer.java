@@ -112,22 +112,23 @@ public class GameContainer {
             if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
                 if (pauseResume) {
                     pauseResume = false;
-                    DrawingWindow.onPause = true;
+                    DrawingWindow.onPause = false;
                 } else {
                     pauseResume = true;
+                    DrawingWindow.onPause = true;
                 }
             }
 
             lastStateM = keyListener.isKeyPressed('P');
             lastStatem = keyListener.isKeyPressed('p');
 
-            rasterizer.update(manager, deltaTime);
             hotkeyMenuSystem.update(manager, deltaTime);
 
             if (pauseResume) {
                 deltaTime = 0;
             }
 
+            rasterizer.update(manager, deltaTime);
             collisionSystem.update(manager, deltaTime);
             physicsHandler.update(manager, deltaTime);
             playerMovement.update(manager, deltaTime);
