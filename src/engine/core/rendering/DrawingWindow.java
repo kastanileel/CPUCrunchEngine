@@ -95,7 +95,6 @@ public class DrawingWindow extends JPanel {
         graphics.setColor(Color.white);
         drawHealthBar(playerHealth);
         drawLevelCount();
-        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
         graphics.setFont(font);
         graphics.setColor(Color.white);
         graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));

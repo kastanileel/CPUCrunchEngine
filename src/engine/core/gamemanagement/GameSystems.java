@@ -225,7 +225,7 @@ public class GameSystems {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     defaultMouseSpeed = manager.playerMovement[i].mouseSpeed;
                     defaultMoveSpeed = manager.playerMovement[i].moveSpeed;
-                    manager.damageable[i].health = 10;
+                    manager.damageable[i].health = 100;
                     DrawingWindow.playerHealth = manager.damageable[i].health;
                 }
             }
@@ -1585,6 +1585,37 @@ public class GameSystems {
                 }
             }
 
+
+        }
+    }
+
+    public static class MenuSystem extends GameSystem {
+        private MKeyListener keyListener;
+
+        private boolean lastStateM = false;
+
+        private boolean lastStatem = false;
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+            keyListener = MKeyListener.getInstance();
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+            checkMusicKey();
+
+        }
+
+        private void checkMusicKey(){
+            //Stop or start gamemusic
+            if (keyListener.isKeyPressed('M') != lastStateM && keyListener.isKeyPressed('M') || keyListener.isKeyPressed('m') != lastStatem && keyListener.isKeyPressed('m')) {
+                MusicPlayer.getInstance().pauseResume("src/sound/music.wav");
+            }
+
+            lastStateM = keyListener.isKeyPressed('M');
+            lastStatem = keyListener.isKeyPressed('m');
 
         }
     }

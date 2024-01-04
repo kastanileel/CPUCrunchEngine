@@ -1,8 +1,5 @@
 package src.engine.core.gamemanagement;
 
-
-import src.engine.core.gamemanagement.gamelogic.EventSystem;
-import src.engine.core.gamemanagement.gamelogic.GameEventListener;
 import src.engine.core.tools.MKeyListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
@@ -10,7 +7,7 @@ import src.scenes.ExampleScene;
 
 import java.util.HashMap;
 
-public class GameContainer implements GameEventListener {
+public class GameContainer {
 
 
 
@@ -30,6 +27,8 @@ public class GameContainer implements GameEventListener {
 
 
     GameSystems.GameLogicSystem gameLogicSystem;
+
+    GameSystems.MenuSystem menuSystem;
 
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
@@ -55,6 +54,8 @@ public class GameContainer implements GameEventListener {
 
         gameLogicSystem = new GameSystems.GameLogicSystem();
 
+        menuSystem = new GameSystems.MenuSystem();
+
 
        Scene example = new ExampleScene(1000, "example");
        scenes.put(example.getName(), example);
@@ -74,23 +75,10 @@ public class GameContainer implements GameEventListener {
 
         MusicPlayer.getInstance().loopMusic("src/sound/music.wav");
 
-        MKeyListener keyListener = MKeyListener.getInstance();
-
-        boolean lastStateM = false;
-
-        boolean lastStatem = false;
-
         while(true) {
             long currentSystemTime = System.nanoTime();
             float deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
-            //Stop or start gamemusic
-            if (keyListener.isKeyPressed('M') != lastStateM && keyListener.isKeyPressed('M') || keyListener.isKeyPressed('m') != lastStatem && keyListener.isKeyPressed('m')) {
-                MusicPlayer.getInstance().pauseResume("src/sound/music.wav");
-            }
-
-            lastStateM = keyListener.isKeyPressed('M');
-            lastStatem = keyListener.isKeyPressed('m');
 
             lastTime = currentSystemTime;
 
@@ -109,17 +97,19 @@ public class GameContainer implements GameEventListener {
 
                 enemySystem.start(manager);
                 gameLogicSystem.start(manager);
+                menuSystem.start(manager);
             }
 
-            collisionSystem.update(manager, deltaTime);
             rasterizer.update(manager, deltaTime);
+            menuSystem.update(manager, deltaTime);
+            collisionSystem.update(manager, deltaTime);
             physicsHandler.update(manager, deltaTime);
             playerMovement.update(manager, deltaTime);
             bulletSystem.update(manager, deltaTime);
             pickupWeapon.update(manager, deltaTime);
             damageSystem.update(manager, deltaTime);
             enemySystem.update(manager, deltaTime);
-           gameLogicSystem.update(manager, deltaTime);
+            gameLogicSystem.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();
