@@ -67,7 +67,6 @@ public class DrawingWindow extends JPanel {
 
         // draw ui elements
         this.applyUI();
-
         this.getGraphics().drawImage(imageBuffer, 0, 0, this);
     }
 
@@ -111,12 +110,15 @@ public class DrawingWindow extends JPanel {
 
         // draw crosshair
         graphics.setColor(Color.white);
+
         drawHealthBar(playerHealth);
+
         drawLevelCount();
         graphics.setColor(Color.white);
         graphics.setFont(font);
         graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));
 
+        // draw crosshair
         switch (weaponType)
 {
             case PISTOL:
@@ -408,10 +410,14 @@ public class DrawingWindow extends JPanel {
     }
 
     public void drawHealthBar(int playerHealth) {
-        int boxX = (int) (this.getWidth() * 0.05);
-        int boxY = (int) (this.getHeight() * 0.78);
-        int boxWidth = (int) (this.getWidth() * 0.085);
-        int boxHeight = 60;
+        //int boxX = (int) (this.getWidth() * 0.5);
+        int boxX = (100);
+        //int boxY = (int) (this.getHeight() * 0.78);
+        int boxY = (int) (this.getHeight() * 0.9);
+        //int boxWidth = (int) (this.getWidth() * 0.085);
+        int boxWidth = (int) (this.getWidth() * 0.15);
+        //int boxHeight = 60;
+        int boxHeight = 40;
 
         // Draw the health bar line
         graphics.setColor(Color.RED);

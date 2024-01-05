@@ -14,24 +14,24 @@ public class MusicPlayer {
         //Shoot("src/sound/shoot.wav"),
         //BIG_SHOOT("src/sound/destroy.wav"),
         //Pistol SFX
-        PICKUP_PISTOL("src/sound/pickupPistol.wav"),
-        SHOOT_PISTOL("src/sound/pistolShot.wav"),
-        RELOAD_PISTOL("src/sound/pistolReload.wav"),
+        PICKUP_PISTOL("src/sound/guns/pistol/pickupPistol.wav"),
+        SHOOT_PISTOL("src/sound/guns/pistol/pistolShot.wav"),
+        RELOAD_PISTOL("src/sound/guns/pistol/pistolReload.wav"),
         //Shotgun SFX
-        PICKUP_SHOTGUN("src/sound/pickupShotgun.wav"),
-        SHOOT_SHOTGUN("src/sound/shotgunShot.wav"),
-        RELOAD_SHOTGUN("src/sound/reloadShotgun.wav"),
+        PICKUP_SHOTGUN("src/sound/guns/shotgun/pickupShotgun.wav"),
+        SHOOT_SHOTGUN("src/sound/guns/shotgun/shotgunShot.wav"),
+        RELOAD_SHOTGUN("src/sound/guns/shotgun/reloadShotgun.wav"),
         //AK SFX
-        SHOOT_AK("src/sound/AKM_shoot.wav"),
-        PICKUP_AK("src/sound/AKM_rack.wav"),
-        RELOAD_AK("src/sound/AKM_reload.wav"),
+        SHOOT_AK("src/sound/guns/AKM/AKM_shoot.wav"),
+        PICKUP_AK("src/sound/guns/AKM/AKM_rack.wav"),
+        RELOAD_AK("src/sound/guns/AKM/AKM_reload.wav"),
         //Sniper SFX
-        SHOOT_SNIPER("src/sound/sniperShot.wav"),
-        PICKUP_SNIPER("src/sound/sniperPickup.wav"),
-        RELOAD_SNIPER("src/sound/sniperReload.wav"),
+        SHOOT_SNIPER("src/sound/guns/sniper/sniperShot.wav"),
+        PICKUP_SNIPER("src/sound/guns/sniper/sniperPickup.wav"),
+        RELOAD_SNIPER("src/sound/guns/sniper/sniperReload.wav"),
 
-        SCOPE("src/sound/scope.wav"),
-        Knife("src/sound/knife.wav");
+        SCOPE("src/sound/guns/sniper/scope.wav"),
+        Knife("src/sound/misc/knife.wav");
 
 
         private final String path;

@@ -74,7 +74,7 @@ public class GameContainer {
 
         long lastTime = System.nanoTime() / 1000000;
 
-        MusicPlayer.getInstance().loopMusic("src/sound/music.wav");
+        MusicPlayer.getInstance().loopMusic("src/sound/misc/music.wav");
 
         boolean lastStateM = false;
 
