@@ -40,7 +40,7 @@ public class MusicPlayer {
         GUNNER_DEATH("src/sound/enemies/gunTurret/gunTurret_death.wav"),
         //add attack and idle
 
-        SIGHTSEEKER_IDLE("src/sound/enemies/sightSeeker/hovering.wav"),
+        //SIGHTSEEKER_IDLE("src/sound/enemies/sightSeeker/hovering_sightseeker.wav"),
         SIGHSEEKER_ATTACK("src/sound/enemies/sightSeeker/laserShot.wav"),
         SIGHTSEEKER_DEATH("src/sound/enemies/sightSeeker/sightSeeker_death.wav");
 
