@@ -33,15 +33,20 @@ public class MusicPlayer {
         SCOPE("src/sound/guns/sniper/scope.wav"),
         Knife("src/sound/misc/knife.wav"),
 
+        //Round over SFX
+        LEVEL_FINISHED("src/sound/misc/newRound.wav"),
+        //player Death SFX
+        GAME_OVER("src/sound/misc/gameOver.wav"),
+
         //Enemy SFX
         GE_DEATH("src/sound/enemies/groundEnemy/groundEnemy_death.wav"),
-        //add attack and idle
+        //add attack
 
         GUNNER_DEATH("src/sound/enemies/gunTurret/gunTurret_death.wav"),
-        //add attack and idle
+        //add attack
 
-        //SIGHTSEEKER_IDLE("src/sound/enemies/sightSeeker/hovering_sightseeker.wav"),
-        SIGHSEEKER_ATTACK("src/sound/enemies/sightSeeker/laserShot.wav"),
+        //SIGHSEEKER_ATTACK("src/sound/enemies/sightSeeker/laserShot.wav"),
+        SIGHSEEKER_ATTACK("src/sound/misc/shoot.wav"),
         SIGHTSEEKER_DEATH("src/sound/enemies/sightSeeker/sightSeeker_death.wav");
 
 

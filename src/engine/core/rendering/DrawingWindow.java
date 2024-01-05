@@ -75,6 +75,7 @@ public class DrawingWindow extends JPanel {
         if(playerDead){
             // TODO: Death screen
 
+
             return;
         }
         if (onPause) {

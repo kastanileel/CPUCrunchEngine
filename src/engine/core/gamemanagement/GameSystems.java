@@ -1368,7 +1368,7 @@ public class GameSystems {
                     return;
                 }
                 finishedLevel = false;
-
+                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.LEVEL_FINISHED);
                 level += 1;
 
                 loadNextLevel(manager);
@@ -1381,7 +1381,6 @@ public class GameSystems {
             finishedLevel = true;
             finishTimer = cooldown;
             try {
-
                 spawnRandomWeapon(localManager);
             }
             catch (Exception e){
@@ -1392,6 +1391,7 @@ public class GameSystems {
         @Override
         public void onPlayerDeath() {
             DrawingWindow.playerDead = true;
+            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.GAME_OVER);
         }
 
         @Override
