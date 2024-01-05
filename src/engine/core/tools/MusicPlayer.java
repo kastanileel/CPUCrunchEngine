@@ -31,7 +31,18 @@ public class MusicPlayer {
         RELOAD_SNIPER("src/sound/guns/sniper/sniperReload.wav"),
 
         SCOPE("src/sound/guns/sniper/scope.wav"),
-        Knife("src/sound/misc/knife.wav");
+        Knife("src/sound/misc/knife.wav"),
+
+        //Enemy SFX
+        GE_DEATH("src/sound/enemies/groundEnemy/groundEnemy_death.wav"),
+        //add attack and idle
+
+        GUNNER_DEATH("src/sound/enemies/gunTurret/gunTurret_death.wav"),
+        //add attack and idle
+
+        SIGHTSEEKER_IDLE("src/sound/enemies/sightSeeker/hovering.wav"),
+        SIGHSEEKER_ATTACK("src/sound/enemies/sightSeeker/laserShot.wav"),
+        SIGHTSEEKER_DEATH("src/sound/enemies/sightSeeker/sightSeeker_death.wav");
 
 
         private final String path;
@@ -77,6 +88,24 @@ public class MusicPlayer {
         threadPool.execute(() -> {
             Clip clip = loadClip(sound.getPath()); // Implement loadClip to load and return a Clip
             soundClips.put(sound.getPath(), clip);
+            clip.start();
+        });
+    }
+
+    public void playRandomPlayerSound() {
+        String[] playerSounds = {"src/sound/player/player_damage_1.wav",
+                "src/sound/player/player_damage_2.wav",
+                "src/sound/player/player_damage_3.wav",
+                "src/sound/player/player_damage_4.wav",
+                "src/sound/player/player_damage_5.wav",
+                "src/sound/player/player_damage_6.wav",
+                "src/sound/player/player_damage_7.wav",
+                "src/sound/player/player_damage_8.wav"
+        };
+        threadPool.execute(() -> {
+            int random = (int) (Math.random() * playerSounds.length);
+            Clip clip = loadClip(playerSounds[random]); // Implement loadClip to load and return a Clip
+            soundClips.put(playerSounds[random], clip);
             clip.start();
         });
     }

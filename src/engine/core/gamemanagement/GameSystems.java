@@ -966,6 +966,7 @@ public class GameSystems {
 
                     manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
                     if (manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER) {
+                        MusicPlayer.getInstance().playRandomPlayerSound();
                         DrawingWindow.playerHealth = manager.damageable[otherID].health;
                     }
                     System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
@@ -1246,7 +1247,7 @@ public class GameSystems {
             );
 
 
-            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
+            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SIGHSEEKER_ATTACK, yOffSet);
 
         }
 
@@ -1482,13 +1483,14 @@ public class GameSystems {
             for(int i  = 0; i < livingEnemies; i++){
 
                 int enemyType = rand.nextInt(3);
-                float spawnX = rand.nextFloat(15.0f) * 2.0f - 15.0f;
-                float spawnZ = rand.nextFloat(15.0f) * 2.0f - 15.0f;
+                float spawnX =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
+                float spawnZ =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
 
                 switch (enemyType){
                     case 0 -> {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
+
                             // Set up the transformation component
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
