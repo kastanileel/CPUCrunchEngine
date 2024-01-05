@@ -885,7 +885,6 @@ public class GameSystems {
                     manager.physicsBody[playerId].force.z = direction.z * 100.0f;
 
                     DamageSystem.damagedEntities.add(playerId);
-                    manager.damageable[playerId].health -= 5;
                     System.out.println("Playercollision " + manager.damageable[playerId].health);
                 }
 
@@ -902,7 +901,6 @@ public class GameSystems {
                     manager.physicsBody[otherId].force.z = direction.z * 100.0f;
 
                     DamageSystem.damagedEntities.add(playerId);
-                    manager.damageable[playerId].health -= 5;
                     System.out.println("Playercollision " + manager.damageable[playerId].health);
                 }
             }
@@ -1042,7 +1040,6 @@ public class GameSystems {
         private Vector3 playerPosition = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private Vector3 distanceVectorPlayerEnemy = new Vector3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         private final Random random = new Random();
-        private int levelVariable = 1;
 
         @Override
         public void start(EntityManager manager) throws Exception {
@@ -1052,36 +1049,23 @@ public class GameSystems {
                     playerPosition = manager.transform[i].pos;
                 }
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    manager.aiBehavior[i].spawnPoint = new Vector3(manager.transform[i].pos.x, manager.transform[i].pos.y, manager.transform[i].pos.z);
                     manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
-                    manager.aiBehavior[i].wanderingDirection = new Vector3(1f, 0f, 1f);
                     manager.collider[i].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
                     manager.collider[i].colliderType = GameComponents.Collider.ColliderType.SPHERE;
 
                     switch (manager.aiBehavior[i].enemyType) {
                         case SIGHTSEEKER -> {
-                            manager.physicsBody[i].speed = 4f;
-                            manager.damageable[i].health = 30;
-                            manager.aiBehavior[i].chasingDistance = 30;
-                            manager.aiBehavior[i].attackingDistance = 5;
-                            manager.collider[i].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+
+                            manager.collider[i].colliderSize = new Vector3(0.4f, 1f, 1f);
                             manager.collider[i].center = manager.transform[i].pos;
                         }
                         case GUNTURRED -> {
-                            manager.physicsBody[i].speed = 0f;
-                            manager.damageable[i].health = 5;
-                            manager.aiBehavior[i].chasingDistance = 40;
-                            manager.aiBehavior[i].attackingDistance = 40;
                             manager.collider[i].colliderSize = new Vector3(1f, 1f, 1f);
                             manager.collider[i].center = manager.transform[i].pos;
-                            manager.rendering[i].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
+                            manager.rendering[i].modelTranslation = new Vector3(1.5f, 1.0f, 1.0f);
                         }
                         case GROUNDENEMY -> {
-                            manager.physicsBody[i].speed = 1f;
-                            manager.damageable[i].health = 10;
-                            manager.aiBehavior[i].chasingDistance = 40;
-                            manager.aiBehavior[i].attackingDistance = 30;
-                            manager.collider[i].colliderSize = new Vector3(2f, 2f, 1f);
+                            manager.collider[i].colliderSize = new Vector3(2.2f, 1f, 1f);
                             manager.collider[i].center = manager.transform[i].pos;
                         }
                     }
@@ -1108,7 +1092,6 @@ public class GameSystems {
                         manager.aiBehavior[i].currentState = GameComponents.State.ATTACKING;
 
                     }
-                    //System.out.println(i + ": " + manager.aiBehavior[i].currentState);
                     updateAI(manager, i, deltaTime);
                 }
             }
@@ -1165,7 +1148,6 @@ public class GameSystems {
             if (manager.aiBehavior[entityId].chooseWanderingCounter < random.nextInt(2)) {
                 manager.aiBehavior[entityId].chooseWanderingCounter++;
                 float angle = (float) (Math.random() * 2 * Math.PI);
-                System.out.println(entityId + ":Cos/Sin: " + Math.cos(angle) + "; " + Math.sin(angle));
                 manager.aiBehavior[entityId].wanderingDirection = new Vector3(
                         (float) Math.cos(angle) * manager.physicsBody[entityId].speed * 0.25f,
                         0.0f,
@@ -1264,7 +1246,7 @@ public class GameSystems {
             );
 
 
-            shoot(manager, direction, id, 150.0f, 2.0f, 1 * levelVariable, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
+            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
 
         }
 
@@ -1272,7 +1254,7 @@ public class GameSystems {
             // 1. set cooldown
             manager.aiBehavior[id].shootingCooldown = 1f;
             //Bullet Spawnpoint adaption
-            float yOffSet = 1f;
+            float yOffSet = 0f;
             //Scattering factor
             float factor = 0.4f;
             // generate random, small offset
@@ -1288,7 +1270,7 @@ public class GameSystems {
             );
 
 
-            shoot(manager, direction, id, 150.0f, 2.0f, 2 * levelVariable, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
+            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
 
         }
 
@@ -1311,7 +1293,7 @@ public class GameSystems {
                     normalizeVector.z + z * factor
             );
 
-            shoot(manager, direction, id, 150.0f, 2.0f, 5 * levelVariable, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
+            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
 
         }
 
@@ -1517,14 +1499,17 @@ public class GameSystems {
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
 
+                            manager.aiBehavior[id].shootingCooldown = 6f;
                             manager.physicsBody[id].speed = 1f;
-                            manager.damageable[id].health = 10;
+                            manager.damageable[id].health = 10 * level;
                             manager.aiBehavior[id].chasingDistance = 40;
                             manager.aiBehavior[id].attackingDistance = 30;
+                            manager.aiBehavior[id].damage = 5 * level;
+                            manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(2f, 2f, 1f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
@@ -1543,14 +1528,17 @@ public class GameSystems {
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.transform[id].scale = new Vector3(.4f, .4f, .4f);
 
-                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
 
+                            manager.aiBehavior[id].shootingCooldown = 1f;
                             manager.physicsBody[id].speed = 4f;
-                            manager.damageable[id].health = 30;
+                            manager.damageable[id].health = 5 * level;
                             manager.aiBehavior[id].chasingDistance = 30;
                             manager.aiBehavior[id].attackingDistance = 5;
+                            manager.aiBehavior[id].damage = level;
+                            manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
@@ -1568,15 +1556,18 @@ public class GameSystems {
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
                             manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
-                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
                             manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
 
+                            manager.aiBehavior[id].shootingCooldown = 1f;
                             manager.physicsBody[id].speed = 0f;
-                            manager.damageable[id].health = 5;
+                            manager.damageable[id].health = 5 * level;
                             manager.aiBehavior[id].chasingDistance = 40;
                             manager.aiBehavior[id].attackingDistance = 40;
+                            manager.aiBehavior[id].damage = level;
+                            manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.rendering[id].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
@@ -1590,6 +1581,44 @@ public class GameSystems {
             }
 
 
+        }
+    }
+
+    public static class hotkeyMenuSystem extends GameSystem {
+        private MKeyListener keyListener;
+
+        private boolean lastStateM = false;
+
+        private boolean lastStatem = false;
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+            keyListener = MKeyListener.getInstance();
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+            checkMusicKey();
+            checkQuitKey();
+
+        }
+
+        private void checkMusicKey(){
+            //Stop or start gamemusic
+            if (keyListener.isKeyPressed('M') != lastStateM && keyListener.isKeyPressed('M') || keyListener.isKeyPressed('m') != lastStatem && keyListener.isKeyPressed('m')) {
+                MusicPlayer.getInstance().pauseResume("src/sound/music.wav");
+            }
+
+            lastStateM = keyListener.isKeyPressed('M');
+            lastStatem = keyListener.isKeyPressed('m');
+
+        }
+
+        private void checkQuitKey(){
+            if (keyListener.isKeyPressed('Q') != lastStateM && keyListener.isKeyPressed('Q') || keyListener.isKeyPressed('q') != lastStatem && keyListener.isKeyPressed('q')) {
+                System.exit(0);
+            }
         }
     }
 

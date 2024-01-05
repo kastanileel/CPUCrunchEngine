@@ -1,9 +1,7 @@
 package src.engine.core.gamemanagement;
 
-
-import src.engine.core.gamemanagement.gamelogic.EventSystem;
-import src.engine.core.gamemanagement.gamelogic.GameEventListener;
 import src.engine.core.rendering.DrawingWindow;
+import src.engine.core.tools.MKeyListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
 import src.scenes.ExampleScene;
@@ -11,6 +9,7 @@ import src.scenes.ExampleScene;
 import java.util.HashMap;
 
 public class GameContainer {
+
 
 
     EntityManager manager;
@@ -29,6 +28,8 @@ public class GameContainer {
 
 
     GameSystems.GameLogicSystem gameLogicSystem;
+
+    GameSystems.hotkeyMenuSystem hotkeyMenuSystem;
 
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
@@ -54,6 +55,8 @@ public class GameContainer {
 
         gameLogicSystem = new GameSystems.GameLogicSystem();
 
+        hotkeyMenuSystem = new GameSystems.hotkeyMenuSystem();
+
 
        Scene example = new ExampleScene(1000, "example");
        scenes.put(example.getName(), example);
@@ -73,6 +76,11 @@ public class GameContainer {
 
         MusicPlayer.getInstance().loopMusic("src/sound/misc/music.wav");
 
+        boolean lastStateM = false;
+
+        boolean lastStatem = false;
+
+        boolean pauseResume = false;
 
         while(true) {
             long currentSystemTime = System.nanoTime();
@@ -89,23 +97,46 @@ public class GameContainer {
 
                 activeSceneName = currentSceneName;
 
-
                 rasterizer.start(manager);
+
                 collisionSystem.start(manager);
                 playerMovement.start(manager);
+
                 enemySystem.start(manager);
                 gameLogicSystem.start(manager);
+                hotkeyMenuSystem.start(manager);
             }
 
-            collisionSystem.update(manager, deltaTime);
+            MKeyListener keyListener = MKeyListener.getInstance();
+
+            if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
+                if (pauseResume) {
+                    pauseResume = false;
+                    DrawingWindow.onPause = false;
+                } else {
+                    pauseResume = true;
+                    DrawingWindow.onPause = true;
+                }
+            }
+
+            lastStateM = keyListener.isKeyPressed('P');
+            lastStatem = keyListener.isKeyPressed('p');
+
+            hotkeyMenuSystem.update(manager, deltaTime);
+
+            if (pauseResume) {
+                deltaTime = 0;
+            }
+
             rasterizer.update(manager, deltaTime);
+            collisionSystem.update(manager, deltaTime);
             physicsHandler.update(manager, deltaTime);
             playerMovement.update(manager, deltaTime);
             bulletSystem.update(manager, deltaTime);
             pickupWeapon.update(manager, deltaTime);
             damageSystem.update(manager, deltaTime);
             enemySystem.update(manager, deltaTime);
-           gameLogicSystem.update(manager, deltaTime);
+            gameLogicSystem.update(manager, deltaTime);
 
 
             MMouseListener.getInstance().update();

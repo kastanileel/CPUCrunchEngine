@@ -152,6 +152,7 @@ public class GameComponents {
         public float attackingDistance;
         public float shootingCooldown;
         public int chooseWanderingCounter;
+        public int damage;
 
     }
 

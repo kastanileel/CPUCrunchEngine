@@ -5,19 +5,10 @@ import  src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
 import src.engine.core.matutils.Vector3;
-import src.engine.core.tools.MusicPlayer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.PathIterator;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Random;
 
 /**
  * This class is the drawing window.
@@ -37,6 +28,8 @@ public class DrawingWindow extends JPanel {
     public static int currentAmmo = 0;
 
     public static boolean playerDead = false;
+    public static boolean onPause = false;
+    private boolean lastOnPauseState;
 
     public int maxAccuracy;
     public int minAccuracy;
@@ -84,24 +77,50 @@ public class DrawingWindow extends JPanel {
 
             return;
         }
+        if (onPause) {
+            graphics.setColor(new Color(0, 0, 0, 128));
+            graphics.fillRect(0, 0, getWidth(), getHeight());
+            graphics.setColor(Color.WHITE);
+            Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.03));
+            graphics.setFont(font);
+            graphics.drawString("Paused", getWidth() / 2 - (int)(this.getWidth() * 0.052), getHeight() / 2 - (int)(this.getWidth() * 0.05));
+            font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.022));
+            graphics.setFont(font);
+            graphics.drawString("Hotkeys:", (int) (getWidth() * 0.05), (int)(getHeight() * 0.1));
+            font = new Font("Arial", Font.PLAIN, (int)(this.getWidth() * 0.022));
+            graphics.setFont(font);
+            int i = 1;
+            graphics.drawString("Swap Weapons - 1, 2, 3 or 4", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ *this.getWidth() * 0.03));
+            graphics.drawString("Turn off/on music - m", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+            graphics.drawString("Quitgame - q", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+            graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+
+        } else if (onPause != lastOnPauseState){
+            clear();
+
+        }
+
+        lastOnPauseState = onPause;
 
         graphics.setColor(Color.red);
         //draw ammo count
-        graphics.setColor(Color.red);
-        graphics.setFont(new Font("TimesRoman", Font.BOLD, (int)(this.getWidth() * 0.05)));
-        graphics.drawString(Integer.toString(currentAmmo), 150,(int)(this.getHeight() * 0.855));
-        //draw health bar
+        Font font = new Font("Arial", Font.PLAIN, (int)(this.getWidth() * 0.05));
+        graphics.setFont(font);
+        graphics.drawString(currentAmmo + "/\u221E", (int)(this.getWidth() * 0.15),(int)(this.getHeight() * 0.855));
+
+        // draw crosshair
+        graphics.setColor(Color.white);
+
         drawHealthBar(playerHealth);
 
         drawLevelCount();
-        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
-        graphics.setFont(font);
         graphics.setColor(Color.white);
-        //graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.503),(int)(this.getHeight() * 0.855));
+        graphics.setFont(font);
+        graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));
 
         // draw crosshair
         switch (weaponType)
-        {
+{
             case PISTOL:
                 graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
                 graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
@@ -416,3 +435,4 @@ public class DrawingWindow extends JPanel {
         graphics.drawString("Level: " + Integer.toString(level), this.getWidth() - 300, this.getHeight() - 150);
     }
 }
+

@@ -1,7 +1,6 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.core.dataContainers.CollisionInformation;
-import src.engine.core.matutils.Vector3;
 
 import java.util.HashMap;
 import java.util.LinkedList;
