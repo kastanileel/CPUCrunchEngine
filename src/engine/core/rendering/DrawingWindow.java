@@ -36,8 +36,11 @@ public class DrawingWindow extends JPanel {
 
     public static int currentAmmo = 0;
 
+    public static boolean playerDead = false;
+
     public int maxAccuracy;
     public int minAccuracy;
+    public static int level;
 
     public DrawingWindow(int width, int height, int textureMaxAccuracy, int textureMinAccuracy) {
 
@@ -75,12 +78,24 @@ public class DrawingWindow extends JPanel {
     }
 
     private void applyUI(){
+
+        if(playerDead){
+            // TODO: Death screen
+
+            return;
+        }
+
+        graphics.setColor(Color.red);
         //draw ammo count
         graphics.setColor(Color.red);
         graphics.setFont(new Font("TimesRoman", Font.BOLD, (int)(this.getWidth() * 0.05)));
         graphics.drawString(Integer.toString(currentAmmo), 150,(int)(this.getHeight() * 0.855));
         //draw health bar
         drawHealthBar(playerHealth);
+
+        drawLevelCount();
+        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
+        graphics.setFont(font);
         graphics.setColor(Color.white);
         //graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.503),(int)(this.getHeight() * 0.855));
 
@@ -393,5 +408,11 @@ public class DrawingWindow extends JPanel {
         // Draw the box
         graphics.setColor(Color.black);
         drawBox(boxX, boxY, boxWidth, boxHeight);
+    }
+
+    public void drawLevelCount(){
+        graphics.setColor(Color.white);
+        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+        graphics.drawString("Level: " + Integer.toString(level), this.getWidth() - 300, this.getHeight() - 150);
     }
 }

@@ -5,6 +5,8 @@ import src.engine.configuration.Configurator;
 
 import src.engine.core.dataContainers.BoundingBox;
 import src.engine.core.dataContainers.CollisionInformation;
+import src.engine.core.gamemanagement.gamelogic.EventSystem;
+import src.engine.core.gamemanagement.gamelogic.GameEventListener;
 import src.engine.core.matutils.Vector3;
 import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 
@@ -191,6 +193,7 @@ public class GameSystems {
         Vector3 knifeDir = new Vector3();
 
         int knife;
+        private GameComponents.Rendering.RenderType weaponRenderType;
 
         float defaultMoveSpeed, defaultMouseSpeed;
 
@@ -199,7 +202,7 @@ public class GameSystems {
             // create knife
             knife = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
             if (knife > -1) {
-                manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
+                manager.transform[knife].pos = new Vector3(0.0f, -3.1f, 0.0f);
                 manager.transform[knife].pos.y += 0.065f;
                 manager.transform[knife].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[knife].scale = new Vector3(0.05f, 0.05f, 0.05f);
@@ -503,7 +506,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 300.0f, 2.0f, 15, MusicPlayer.SoundEffect.SHOOT_PISTOL);
+            shoot(manager, id, direction, 150.0f, 2.0f, 15, MusicPlayer.SoundEffect.SHOOT_PISTOL);
 
         }
 
@@ -525,7 +528,7 @@ public class GameSystems {
             float y = (float) Math.random() * 0.1f - 0.01f;
             float z = (float) Math.random() * 0.1f - 0.01f;
 
-            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 400.0f, 1.5f, 20, MusicPlayer.SoundEffect.SHOOT_AK);
+            shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 175.0f, 1.5f, 20, MusicPlayer.SoundEffect.SHOOT_AK);
 
 
         }
@@ -541,7 +544,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 600.0f, 1.5f, 80, MusicPlayer.SoundEffect.SHOOT_SNIPER);
+            shoot(manager, id, direction, 200.0f, 1.5f, 80, MusicPlayer.SoundEffect.SHOOT_SNIPER);
 
         }
 
@@ -555,7 +558,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 150.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
             for (int i = 0; i < 4; i++) {
                 float factor = 0.4f;
@@ -563,7 +566,7 @@ public class GameSystems {
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
                 float z = (float) Math.random() * 0.1f - 0.05f;
-                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 150.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
             }
         }
 
@@ -579,8 +582,8 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
             //initial two pellets
-            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
-            shoot(manager, id, direction, 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 150.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+            shoot(manager, id, direction, 150.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
 
             //remaining 8 pellets
             for (int i = 0; i < 8; i++) {
@@ -589,7 +592,7 @@ public class GameSystems {
                 float x = (float) Math.random() * 0.1f - 0.05f;
                 float y = (float) Math.random() * 0.1f - 0.05f;
                 float z = (float) Math.random() * 0.1f - 0.05f;
-                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 250.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
+                shoot(manager, id, RenderMaths.addVectors(direction, new Vector3(x * factor, y * factor, z * factor)), 150.0f, 2.0f, 20, MusicPlayer.SoundEffect.SHOOT_SHOTGUN);
             }
         }
 
@@ -597,6 +600,7 @@ public class GameSystems {
             if (knifing)
                 return;
             if (knifeCooldown <= 0.0f) {
+                weaponRenderType = manager.rendering[id].renderType;
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Hide;
                 manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Hide);
                 knifing = true;
@@ -634,11 +638,11 @@ public class GameSystems {
                 knifing = false;
                 manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
                 manager.rendering[knife].modelPosition = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[id].renderType = weaponRenderType;
                 manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.Hide;
 
                 manager.rendering[knife].mesh.updateRenderType(GameComponents.Rendering.RenderType.Hide);
-                manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
+                manager.rendering[id].mesh.updateRenderType(weaponRenderType);
                 return;
             }
 
@@ -995,6 +999,13 @@ public class GameSystems {
                             manager.destroyEntity(id);
                         }
                         break;
+                    case ENEMY:
+                        System.out.println("Enemy got hit");
+                        if (manager.damageable[id].health <= 0) {
+                            manager.destroyEntity(id);
+                            EventSystem.getInstance().onKillEnemy();
+                        }
+                        break;
                     default:
                         if (manager.damageable[id].health <= 0) {
                             manager.destroyEntity(id);
@@ -1035,7 +1046,7 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            int required_GameComponents = GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.AIBEHAVIOR;
+            int required_GameComponents =  GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if (manager.playerMovement[i] != null) {
                     playerPosition = manager.transform[i].pos;
@@ -1050,10 +1061,10 @@ public class GameSystems {
                     switch (manager.aiBehavior[i].enemyType) {
                         case SIGHTSEEKER -> {
                             manager.physicsBody[i].speed = 4f;
-                            manager.damageable[i].health = 1;
+                            manager.damageable[i].health = 30;
                             manager.aiBehavior[i].chasingDistance = 30;
                             manager.aiBehavior[i].attackingDistance = 5;
-                            manager.collider[i].colliderSize = new Vector3(0.75f, 0.75f, 0.75f);
+                            manager.collider[i].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                             manager.collider[i].center = manager.transform[i].pos;
                         }
                         case GUNTURRED -> {
@@ -1063,6 +1074,7 @@ public class GameSystems {
                             manager.aiBehavior[i].attackingDistance = 40;
                             manager.collider[i].colliderSize = new Vector3(1f, 1f, 1f);
                             manager.collider[i].center = manager.transform[i].pos;
+                            manager.rendering[i].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
                         }
                         case GROUNDENEMY -> {
                             manager.physicsBody[i].speed = 1f;
@@ -1339,4 +1351,246 @@ public class GameSystems {
             }
         }
     }
+
+
+    public static class GameLogicSystem extends GameSystem implements GameEventListener {
+
+        EntityManager localManager;
+
+        int level = 0;
+        int score = 0;
+        int livingEnemies = 0;
+        boolean finishedLevel;
+
+        float finishTimer = 0.0f;
+        float cooldown = 7.0f;
+
+        Vector3 weaponSpawn = new Vector3(0.0f, -0.5f, 0.0f);
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+            EventSystem.getInstance().addListener(this);
+            level = 1;
+            loadNextLevel(manager);
+
+            localManager = manager;
+
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+            if(finishedLevel){
+                if(finishTimer > 0.0f) {
+                    finishTimer -= deltaTime;
+                    return;
+                }
+                finishedLevel = false;
+
+                level += 1;
+
+                loadNextLevel(manager);
+
+            }
+        }
+
+        @Override
+        public void onFinishLevel(int level) {
+            finishedLevel = true;
+            finishTimer = cooldown;
+            try {
+
+                spawnRandomWeapon(localManager);
+            }
+            catch (Exception e){
+                System.out.println("AAAAAAA benis aaa");
+            }
+        }
+
+        @Override
+        public void onPlayerDeath() {
+            DrawingWindow.playerDead = true;
+        }
+
+        @Override
+        public void onKillEnemy() {
+            livingEnemies -= 1;
+
+            if(livingEnemies == 0){
+                onFinishLevel(level);
+            }
+        }
+
+        private void spawnRandomWeapon(EntityManager manager) throws IOException {
+            Random rand = new Random();
+            int type = rand.nextInt(3);
+
+            switch (type){
+                case 0 -> spawnShotgun(manager);
+                case 1 -> spawnMachinegun(manager);
+                case 2 -> spawnSniper(manager);
+            }
+
+        }
+
+        private void spawnShotgun(EntityManager manager) throws IOException {
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.CYAN);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = weaponSpawn.clone();
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.025f, .025f, .025f);
+
+                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
+
+            }
+        }
+
+        private void spawnMachinegun(EntityManager manager) throws IOException {
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.CYAN);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = weaponSpawn.clone();
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.025f, .025f, .025f);
+
+                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
+
+            }
+        }
+
+        private void spawnSniper(EntityManager manager) throws IOException {
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.CYAN);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.transform[id].pos = weaponSpawn.clone();
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.015f, .015f, .015f);
+
+                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
+
+            }
+        }
+
+        private void loadNextLevel(EntityManager manager) throws IOException {
+
+            DrawingWindow.level = level;
+
+            livingEnemies = level;
+
+            Random rand = new Random();
+
+            for(int i  = 0; i < livingEnemies; i++){
+
+                int enemyType = rand.nextInt(3);
+                float spawnX = rand.nextFloat(15.0f) * 2.0f - 15.0f;
+                float spawnZ = rand.nextFloat(15.0f) * 2.0f - 15.0f;
+
+                switch (enemyType){
+                    case 0 -> {
+                        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                        if (id > -1) {
+                            // Set up the transformation component
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+
+
+
+                            manager.transform[id].pos = new Vector3(spawnX, -0.9f, spawnZ);
+                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                            manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+
+                            manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
+
+                            manager.physicsBody[id].speed = 1f;
+                            manager.damageable[id].health = 10;
+                            manager.aiBehavior[id].chasingDistance = 40;
+                            manager.aiBehavior[id].attackingDistance = 30;
+                            manager.collider[id].colliderSize = new Vector3(2f, 2f, 1f);
+                            manager.collider[id].center = manager.transform[id].pos;
+                            manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                            manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                        }
+                    }
+                    case 1 ->{
+                        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                        if (id > -1) {
+                            // Set up the transformation component
+                            manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+
+                            manager.transform[id].pos = new Vector3(spawnX, 0f, spawnZ);
+                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                            manager.transform[id].scale = new Vector3(.4f, .4f, .4f);
+
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+
+                            manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
+
+                            manager.physicsBody[id].speed = 4f;
+                            manager.damageable[id].health = 30;
+                            manager.aiBehavior[id].chasingDistance = 30;
+                            manager.aiBehavior[id].attackingDistance = 5;
+                            manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                            manager.collider[id].center = manager.transform[id].pos;
+                            manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                            manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                        }
+
+                    }
+                    case 2 ->{
+                        int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                        if (id > -1) {
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+
+                            manager.transform[id].pos = new Vector3(spawnX, 0.0f, spawnZ);
+                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
+                            manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+
+                            manager.aiBehavior[id].spawnPoint = manager.transform[id].pos;
+
+                            manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
+                            manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
+
+                            manager.physicsBody[id].speed = 0f;
+                            manager.damageable[id].health = 5;
+                            manager.aiBehavior[id].chasingDistance = 40;
+                            manager.aiBehavior[id].attackingDistance = 40;
+                            manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
+                            manager.collider[id].center = manager.transform[id].pos;
+                            manager.rendering[id].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
+                            manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                            manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                        }
+                    }
+
+
+                }
+            }
+
+
+        }
+    }
+
 }
