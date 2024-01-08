@@ -35,4 +35,8 @@ public class MKeyListener extends KeyAdapter {
     public void attachToFrame(Frame frame){
         frame.addKeyListener(this);
     }
+
+    public boolean[] getKeyList(){
+        return keyList;
+    }
 }

@@ -59,11 +59,11 @@ public class GameContainer {
 
 
        Scene example = new ExampleScene(1000, "example");
+       Scene start = new ExampleScene(1000, "start");
        scenes.put(example.getName(), example);
+       scenes.put(start.getName(), start);
 
-        currentSceneName = "example";
-
-
+       currentSceneName = "start";
 
         startGameLoop();
     }
@@ -81,6 +81,8 @@ public class GameContainer {
         boolean lastStatem = false;
 
         boolean pauseResume = false;
+
+        boolean waitingForStart = true;
 
         while(true) {
             long currentSystemTime = System.nanoTime();
@@ -109,43 +111,56 @@ public class GameContainer {
 
             MKeyListener keyListener = MKeyListener.getInstance();
 
-            if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
-                if (pauseResume) {
-                    pauseResume = false;
-                    DrawingWindow.onPause = false;
-                } else {
-                    pauseResume = true;
-                    DrawingWindow.onPause = true;
-                }
-            }
-
-            lastStateM = keyListener.isKeyPressed('P');
-            lastStatem = keyListener.isKeyPressed('p');
-
-            hotkeyMenuSystem.update(manager, deltaTime);
-
-            if (pauseResume) {
+            if (waitingForStart) {
+                hotkeyMenuSystem.update(manager, deltaTime);
                 deltaTime = 0;
+                rasterizer.update(manager, deltaTime);
+                for (boolean key : keyListener.getKeyList()) {
+                    if (key) {
+                        waitingForStart = false;
+                        currentSceneName = "example";
+                    }
+                }
+
+            } else {
+                if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
+                    if (pauseResume) {
+                        pauseResume = false;
+                        DrawingWindow.onPause = false;
+                    } else {
+                        pauseResume = true;
+                        DrawingWindow.onPause = true;
+                    }
+                }
+
+                lastStateM = keyListener.isKeyPressed('P');
+                lastStatem = keyListener.isKeyPressed('p');
+
+
+                if (pauseResume) {
+                    deltaTime = 0;
+                }
+
+                collisionSystem.update(manager, deltaTime);
+                physicsHandler.update(manager, deltaTime);
+                playerMovement.update(manager, deltaTime);
+                bulletSystem.update(manager, deltaTime);
+                pickupWeapon.update(manager, deltaTime);
+                damageSystem.update(manager, deltaTime);
+                enemySystem.update(manager, deltaTime);
+                gameLogicSystem.update(manager, deltaTime);
+                rasterizer.update(manager, deltaTime);
+                hotkeyMenuSystem.update(manager, deltaTime);
+
+                MMouseListener.getInstance().update();
+                manager.clearDestroyedEntities();
             }
-
-            rasterizer.update(manager, deltaTime);
-            collisionSystem.update(manager, deltaTime);
-            physicsHandler.update(manager, deltaTime);
-            playerMovement.update(manager, deltaTime);
-            bulletSystem.update(manager, deltaTime);
-            pickupWeapon.update(manager, deltaTime);
-            damageSystem.update(manager, deltaTime);
-            enemySystem.update(manager, deltaTime);
-            gameLogicSystem.update(manager, deltaTime);
-
-
-            MMouseListener.getInstance().update();
-            manager.clearDestroyedEntities();
-
         }
 
         //System.out.println(System.nanoTime()/1000000 - lastTime);
     }
+
+
 
 
     public static void main(String[] args) throws Exception {
