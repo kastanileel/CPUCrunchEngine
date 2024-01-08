@@ -1351,27 +1351,35 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            EventSystem.getInstance().addListener(this);
-            level = 1;
-            loadNextLevel(manager);
+            int required_GameComponents = GameComponents.GAMELOGIC;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    EventSystem.getInstance().addListener(this);
+                    level = 1;
+                    loadNextLevel(manager);
 
-            localManager = manager;
-
+                    localManager = manager;
+                }
+            }
         }
 
         @Override
         public void update(EntityManager manager, float deltaTime) throws Exception {
-            if(finishedLevel){
-                if(finishTimer > 0.0f) {
-                    finishTimer -= deltaTime;
-                    return;
+            int required_GameComponents = GameComponents.GAMELOGIC;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    if (finishedLevel) {
+                        if (finishTimer > 0.0f) {
+                            finishTimer -= deltaTime;
+                            return;
+                        }
+                        finishedLevel = false;
+
+                        level += 1;
+
+                        loadNextLevel(manager);
+                    }
                 }
-                finishedLevel = false;
-
-                level += 1;
-
-                loadNextLevel(manager);
-
             }
         }
 
@@ -1390,7 +1398,7 @@ public class GameSystems {
 
         @Override
         public void onPlayerDeath() {
-            DrawingWindow.playerDead = true;
+            DrawingWindow.windowState = DrawingWindow.WindowStates.DEATHSCREEN;
         }
 
         @Override

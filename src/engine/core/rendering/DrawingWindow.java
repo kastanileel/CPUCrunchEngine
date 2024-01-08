@@ -14,30 +14,21 @@ import java.awt.image.BufferedImage;
  * This class is the drawing window.
  * It contains the image buffer and offers methods for drawing textured and untextured triangles.
  */
-enum WindowStates {
-    DEATHSCREEN, PAUSESCREEN, STARTSCREEN, INGAMESCREEN
-}
 public class DrawingWindow extends JPanel {
+
+    public enum WindowStates {
+        DEATHSCREEN, PAUSESCREEN, STARTSCREEN, INGAMESCREEN
+    }
     private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     private BufferedImage imageBuffer;
     private Graphics graphics;
-
-
     public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
-
     public static boolean snipe = false;
     public static int playerHealth;
-
     public static int currentAmmo = 0;
-
-    public static boolean playerDead = false;
-    public static boolean onPause = false;
-    private boolean lastOnPauseState;
-
     public int maxAccuracy;
     public int minAccuracy;
     public static int level;
-
     public static WindowStates windowState = WindowStates.STARTSCREEN;
 
     public DrawingWindow(int width, int height, int textureMaxAccuracy, int textureMinAccuracy) {
@@ -95,16 +86,9 @@ public class DrawingWindow extends JPanel {
                 font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.022));
                 graphics.setFont(font);
                 int i = 1;
-                graphics.drawString("Swap Weapons - 1, 2, 3 or 4", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
                 graphics.drawString("Turn off/on music - m", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
                 graphics.drawString("Quitgame - q", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
                 graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
-
-            /*} else if (onPause != lastOnPauseState) {
-                clear();
-
-            }
-                lastOnPauseState = onPause*/
             case INGAMESCREEN:
                 graphics.setColor(Color.red);
                 //draw ammo count
@@ -153,6 +137,7 @@ public class DrawingWindow extends JPanel {
                         }
                         break;
             }
+                break;
             case STARTSCREEN:
                 break;
         }
@@ -430,7 +415,7 @@ public class DrawingWindow extends JPanel {
         drawBox(boxX, boxY, boxWidth, boxHeight);
     }
 
-    public void drawLevelCount(){
+    public void drawLevelCount() {
         graphics.setColor(Color.white);
         graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
         graphics.drawString("Level: " + level, this.getWidth() - 300, this.getHeight() - 150);

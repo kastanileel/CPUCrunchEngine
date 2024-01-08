@@ -16,7 +16,9 @@ public class GameComponents {
             BULLET = 1 << 6,
             PICKUPWEAPON = 1 << 7,
             DAMAGEABLE = 1 << 8,
-            AIBEHAVIOR = 1 << 9;
+            AIBEHAVIOR = 1 << 9,
+
+            GAMELOGIC = 1 << 10;
 
 
     public static class Transform {

@@ -39,15 +39,7 @@ public class ExampleScene extends Scene {
                 }
             }
 
-
-
-
-            int id;
-
-
-
-
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
             if (id > -1) {
                 manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.CYAN);//"./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OutlineOnly;
@@ -56,8 +48,6 @@ public class ExampleScene extends Scene {
                 manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
 
             }
-
-
 
          /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
@@ -151,6 +141,8 @@ public class ExampleScene extends Scene {
 
 
             }
+
+            manager.createEntity(GameComponents.GAMELOGIC);
 
           /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
