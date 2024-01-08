@@ -18,7 +18,9 @@ public class GameComponents {
             DAMAGEABLE = 1 << 8,
             AIBEHAVIOR = 1 << 9,
 
-            GAMELOGIC = 1 << 10;
+            GAMELOGIC = 1 << 10,
+
+            STARTSCENE = 1 << 11;
 
 
     public static class Transform {
@@ -90,7 +92,7 @@ public class GameComponents {
 
         public Quaternion colliderRotation;
 
-        public static enum ColliderTag{
+        public enum ColliderTag{
             PLAYER,
             ENEMY,
             BULLET,

@@ -35,6 +35,8 @@ public class GameContainer {
 
     GameSystems.hotkeyMenuSystem hotkeyMenuSystem;
 
+    GameSystems.startSceneSystem startSceneSystem;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
@@ -60,6 +62,8 @@ public class GameContainer {
         gameLogicSystem = new GameSystems.GameLogicSystem();
 
         hotkeyMenuSystem = new GameSystems.hotkeyMenuSystem();
+
+        startSceneSystem = new GameSystems.startSceneSystem();
 
 
        Scene example = new ExampleScene(1000, "example");
@@ -109,6 +113,8 @@ public class GameContainer {
                 enemySystem.start(manager);
                 gameLogicSystem.start(manager);
                 hotkeyMenuSystem.start(manager);
+
+                startSceneSystem.start(manager);
             }
 
             MKeyListener keyListener = MKeyListener.getInstance();
@@ -153,6 +159,7 @@ public class GameContainer {
             gameLogicSystem.update(manager, deltaTime);
             rasterizer.update(manager, deltaTime);
             hotkeyMenuSystem.update(manager, deltaTime);
+            startSceneSystem.update(manager, deltaTime);
 
             MMouseListener.getInstance().update();
             manager.clearDestroyedEntities();

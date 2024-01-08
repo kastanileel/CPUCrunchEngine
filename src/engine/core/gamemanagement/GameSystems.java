@@ -284,7 +284,7 @@ public class GameSystems {
 
         private void doCameraRotation(EntityManager manager, int id, float deltaTime) {
 
-
+            System.out.println(manager.transform[id].pos.x + ", " + manager.transform[id].pos.y + ", " + manager.transform[id].pos.z);
             Camera cam = Camera.getInstance();
             cam.rotation.y += MMouseListener.getInstance().getMouseDeltaX() * manager.playerMovement[id].mouseSpeed * deltaTime;
 
@@ -1630,4 +1630,101 @@ public class GameSystems {
         }
     }
 
+    public static class startSceneSystem extends GameSystem {
+        private Camera cam = Camera.getInstance();
+
+        @Override
+        public void start(EntityManager manager) throws Exception {
+            int required_GameComponents = GameComponents.STARTSCENE | GameComponents.RENDER | GameComponents.TRANSFORM;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    cam.position = new Vector3(0.0f, 0.0f, 0.0f);
+                    cam.rotation = new Vector3(0.0f, 0.0f, 0.0f);
+                }
+            }
+        }
+
+        @Override
+        public void update(EntityManager manager, float deltaTime) throws Exception {
+            int required_GameComponents = GameComponents.STARTSCENE | GameComponents.RENDER | GameComponents.TRANSFORM;
+            for (int i = 0; i < manager.size; i++) {
+                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+                    cameraGoesBrr();
+                    Vector3 focusPosition = new Vector3(0, 0, 0);
+                    //cameraFocus(focusPosition);
+                    doPlayerMovement(manager, i, deltaTime);
+                    doShooting(manager, i, deltaTime);
+
+                }
+            }
+        }
+
+        private void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
+            MKeyListener keyListener = MKeyListener.getInstance();
+
+
+            float moveSpeed = manager.playerMovement[id].moveSpeed;
+            float forward = 0.0f;
+            float right = 0.0f;
+
+            if (keyListener.isKeyPressed('W') || keyListener.isKeyPressed('w')) {
+                forward = moveSpeed;
+            }
+            if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
+                forward = -moveSpeed / 2.0f;
+            }
+            if (keyListener.isKeyPressed('A') || keyListener.isKeyPressed('a')) {
+                right = moveSpeed / 1.7f;
+            }
+            if (keyListener.isKeyPressed('D') || keyListener.isKeyPressed('d')) {
+                right = -moveSpeed / 1.7f;
+            }
+
+
+            // calculate the forward vector
+            Camera cam = Camera.getInstance();
+            float cosY = (float) Math.cos(cam.rotation.y);
+            float sinY = (float) Math.sin(cam.rotation.y);
+
+            manager.physicsBody[id].force.z = (forward * cosY + right * sinY) * moveSpeed * manager.physicsBody[id].mass;
+            manager.physicsBody[id].force.x = (-sinY * forward + right * cosY) * moveSpeed * manager.physicsBody[id].mass;
+
+
+            // set and offset camera position
+            cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
+        }
+
+        private void cameraGoesBrr() {
+
+        }
+
+        private void cameraFocus(Vector3 focusPosition) {
+            float currentAngleY = cam.rotation.y;
+            Vector3 direction = cam.position.subtract(focusPosition);
+
+            Vector3 normalizedDirection = RenderMaths.normalizeVector(direction);
+
+            float desiredAngleY = (float) Math.atan2(normalizedDirection.z, normalizedDirection.x);
+            desiredAngleY = (desiredAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
+
+            currentAngleY = (currentAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
+
+            float angleDifference = desiredAngleY - currentAngleY;
+            angleDifference = (angleDifference + (float) Math.PI) % ((float) Math.PI * 2) - (float) Math.PI;
+
+            float rotationAmount = angleDifference;
+
+            currentAngleY += rotationAmount;
+
+            cam.rotation.y = currentAngleY + (float) Math.PI;
+        }
+
+        private void doShooting(EntityManager manager, int id, float deltaTime) {
+            SimpleAdvancedRenderPipeline.fFov = 120.0f;
+
+
+        }
+    }
+
 }
+
