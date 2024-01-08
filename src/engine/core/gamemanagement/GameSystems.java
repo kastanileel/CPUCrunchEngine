@@ -225,6 +225,7 @@ public class GameSystems {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     defaultMouseSpeed = manager.playerMovement[i].mouseSpeed;
                     defaultMoveSpeed = manager.playerMovement[i].moveSpeed;
+                    //modify player health for testing here
                     manager.damageable[i].health = 100;
                     DrawingWindow.playerHealth = manager.damageable[i].health;
                 }
@@ -995,6 +996,7 @@ public class GameSystems {
                         System.out.println("Player got hit");
                         if (manager.damageable[id].health <= 0) {
                             DrawingWindow.playerHealth = 0;
+                            EventSystem.getInstance().onPlayerDeath();
                             manager.destroyEntity(id);
                         }
                         break;
@@ -1391,6 +1393,8 @@ public class GameSystems {
         @Override
         public void onPlayerDeath() {
             DrawingWindow.playerDead = true;
+            MusicPlayer.getInstance().stopGameMusic();
+            System.out.println("Player died");
             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.GAME_OVER);
         }
 
@@ -1609,12 +1613,10 @@ public class GameSystems {
         private void checkMusicKey(){
             //Stop or start gamemusic
             if (keyListener.isKeyPressed('M') != lastStateM && keyListener.isKeyPressed('M') || keyListener.isKeyPressed('m') != lastStatem && keyListener.isKeyPressed('m')) {
-                MusicPlayer.getInstance().pauseResume("src/sound/music.wav");
+                MusicPlayer.getInstance().pauseResume("src/sound/misc/music.wav");
             }
-
             lastStateM = keyListener.isKeyPressed('M');
             lastStatem = keyListener.isKeyPressed('m');
-
         }
 
         private void checkQuitKey(){

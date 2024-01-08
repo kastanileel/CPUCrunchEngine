@@ -74,9 +74,16 @@ public class DrawingWindow extends JPanel {
 
         if(playerDead){
             // TODO: Death screen
-
-
-            return;
+            //clear all Ui elements and draw death screen
+            graphics.setColor(new Color(0,0,0,235));
+            graphics.fillRect(0,0,this.getWidth(), this.getHeight());
+            graphics.setColor(Color.RED);
+            Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.07));
+            graphics.setFont(font);
+            graphics.drawString("YOU DIED", getWidth() / 2 - (int)(this.getWidth() * 0.15), getHeight() / 2 + (int)(this.getWidth() * 0.05));
+            //font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.022));
+            //graphics.setFont(font);
+            //graphics.drawString("Press r to restart", (int) (getWidth() * 0.05), (int)(getHeight() * 0.1));
         }
         if (onPause) {
             graphics.setColor(new Color(0, 0, 0, 128));
@@ -103,55 +110,23 @@ public class DrawingWindow extends JPanel {
 
         lastOnPauseState = onPause;
 
+        if(!playerDead) {
         graphics.setColor(Color.red);
         //draw ammo count
         Font font = new Font("Arial", Font.PLAIN, (int)(this.getWidth() * 0.05));
         graphics.setFont(font);
         graphics.drawString(currentAmmo + "/\u221E", (int)(this.getWidth() * 0.15),(int)(this.getHeight() * 0.855));
 
-        // draw crosshair
         graphics.setColor(Color.white);
-
         drawHealthBar(playerHealth);
 
         drawLevelCount();
         graphics.setColor(Color.white);
         graphics.setFont(font);
-        graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));
+        graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.055),(int)(this.getHeight() * 0.855));
 
-        // draw crosshair
-        switch (weaponType)
-{
-            case PISTOL:
-                graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
-                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
-                break;
-            case SHOTGUN:
-                //draw holow circle crosshair to indicate random pellet spread
-                graphics.drawOval(this.getWidth() / 2 - 40, this.getHeight() / 2 -40, 80, 80);
-                break;
-            case MACHINE_GUN:
-                //draw hollow crosshair to indicate slight random bullet spread
-                graphics.drawLine(this.getWidth() / 2 - 25, this.getHeight() / 2, this.getWidth() / 2 - 10, this.getHeight() / 2);
-                graphics.drawLine(this.getWidth() / 2 + 25, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
-                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 25, this.getWidth() / 2, this.getHeight() / 2 - 10);
-                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 + 25, this.getWidth() / 2, this.getHeight() / 2 + 10);
-                break;
-            case SNIPER:
-                if (snipe){
-                    //draw crosshair
-                    graphics.drawLine(0, this.getHeight() / 2, this.getWidth() , this.getHeight() / 2);
-                    graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight() );
-                    //draw scope circle
-                    graphics.drawOval(this.getWidth() / 2 - 350, this.getHeight() / 2 - 350, 700, 700);
-                    //limit FOV to simulate scope
-                    graphics.setColor(Color.black);
-                    graphics.fillRect(0, 0, this.getWidth() / 2 - 350, this.getHeight());
-                    graphics.fillRect(this.getWidth() / 2 + 350, 0, this.getWidth() / 2 - 350, this.getHeight());
-                }
-                break;
+        drawCrosshair();
         }
-
     }
 
     /***
@@ -168,6 +143,41 @@ public class DrawingWindow extends JPanel {
     public void clear() {
         graphics.setColor(Color.black);
         graphics.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    public void drawCrosshair() {
+        graphics.setColor(Color.white);
+        switch (weaponType) {
+
+            case PISTOL:
+                graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
+                break;
+            case SHOTGUN:
+                //draw holow circle crosshair to indicate random pellet spread
+                graphics.drawOval(this.getWidth() / 2 - 40, this.getHeight() / 2 - 40, 80, 80);
+                break;
+            case MACHINE_GUN:
+                //draw hollow crosshair to indicate slight random bullet spread
+                graphics.drawLine(this.getWidth() / 2 - 25, this.getHeight() / 2, this.getWidth() / 2 - 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2 + 25, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 25, this.getWidth() / 2, this.getHeight() / 2 - 10);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 + 25, this.getWidth() / 2, this.getHeight() / 2 + 10);
+                break;
+            case SNIPER:
+                if (snipe) {
+                    //draw crosshair
+                    graphics.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
+                    graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
+                    //draw scope circle
+                    graphics.drawOval(this.getWidth() / 2 - 350, this.getHeight() / 2 - 350, 700, 700);
+                    //limit FOV to simulate scope
+                    graphics.setColor(Color.black);
+                    graphics.fillRect(0, 0, this.getWidth() / 2 - 350, this.getHeight());
+                    graphics.fillRect(this.getWidth() / 2 + 350, 0, this.getWidth() / 2 - 350, this.getHeight());
+                }
+                break;
+        }
     }
 
     public synchronized void drawTriangleNoLighting(Triangle triangle) {
@@ -432,8 +442,8 @@ public class DrawingWindow extends JPanel {
 
     public void drawLevelCount(){
         graphics.setColor(Color.white);
-        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
-        graphics.drawString("Level: " + Integer.toString(level), this.getWidth() - 300, this.getHeight() - 150);
+        graphics.setFont(new Font("Arial", Font.PLAIN, 50));
+        graphics.drawString("Level: " + Integer.toString(level), this.getWidth() - 280, this.getHeight() - 150);
     }
 }
 
