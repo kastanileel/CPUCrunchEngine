@@ -435,6 +435,10 @@ public class DrawingWindow extends JPanel {
         int lineX2 = boxX + (int) (boxWidth * playerHealth / 100.0);
         drawThickLine(boxX, boxY, lineX2, boxY, boxHeight);
 
+        // Draw the screen redness
+        graphics.setColor(new Color(255,0,0,100 -  playerHealth));
+        graphics.fillRect(0,0,this.getWidth(), this.getHeight());
+
         // Draw the box
         graphics.setColor(Color.black);
         drawBox(boxX, boxY, boxWidth, boxHeight);
@@ -443,7 +447,7 @@ public class DrawingWindow extends JPanel {
     public void drawLevelCount(){
         graphics.setColor(Color.white);
         graphics.setFont(new Font("Arial", Font.PLAIN, 50));
-        graphics.drawString("Level: " + Integer.toString(level), this.getWidth() - 280, this.getHeight() - 150);
+        graphics.drawString("Level: " + level, this.getWidth() - 280, this.getHeight() - 150);
     }
 }
 
