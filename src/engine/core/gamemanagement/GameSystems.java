@@ -1642,37 +1642,27 @@ public class GameSystems {
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     cameraGoesBrr();
-                    Vector3 focusPosition = new Vector3(0f, 1f, 10.0f);
-                    cameraFocus(focusPosition);
 
                 }
             }
         }
 
         private void cameraGoesBrr() {
+            Vector3 focusPosition = new Vector3(0f, 8f, 10.0f);
+            calculateRotation(focusPosition);
 
         }
 
-        private void cameraFocus(Vector3 focusPosition) {
-            Vector3 direction = focusPosition.subtract(cam.position);
-            calculateRotation(direction);
-        }
-
-        public void calculateRotation(Vector3 direction){
+        public void calculateRotation(Vector3 focusPosition){
+            Vector3 direction = cam.position.subtract(focusPosition);
             float currentAngleY = cam.rotation.y;
-
-            System.out.println(cam.rotation.x + "; " + cam.rotation.y + "; " + cam.rotation.z);
 
             float desiredAngleY = (float) Math.atan2(direction.z, direction.x);
             desiredAngleY = (desiredAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
-
             currentAngleY = (currentAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
-
             float angleDifference = desiredAngleY - currentAngleY;
             angleDifference = (angleDifference + (float) Math.PI) % ((float) Math.PI * 2) - (float) Math.PI;
-
             float rotationAmount = angleDifference;
-
             currentAngleY += rotationAmount;
 
             cam.rotation.y = currentAngleY + (float) (Math.PI / 2);
@@ -1680,19 +1670,13 @@ public class GameSystems {
             direction = direction.rotateY(cam.rotation.y);
 
             float currentAngleX = cam.rotation.x;
-            // Calculate the desired pitch angle
             float desiredAngleX = (float) Math.atan2(direction.y, -direction.z);
             desiredAngleX = (desiredAngleX + (float) Math.PI * 2) % ((float) Math.PI * 2);
-
             currentAngleX = (currentAngleX + (float) Math.PI * 2) % ((float) Math.PI * 2);
-
-            // Calculate the difference in angle for the pitch
             float angleDifferenceX = desiredAngleX - currentAngleX;
             angleDifferenceX = (angleDifferenceX + (float) Math.PI) % ((float) Math.PI * 2) - (float) Math.PI;
 
-            // Apply the pitch rotation
             cam.rotation.x = currentAngleX + angleDifferenceX;
-
         }
     }
 }

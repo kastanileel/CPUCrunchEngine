@@ -139,6 +139,13 @@ public class DrawingWindow extends JPanel {
             }
                 break;
             case STARTSCREEN:
+                graphics.setColor(new Color(0, 0, 0, 128));
+                graphics.fillRect(0, 0, getWidth(), getHeight());
+                graphics.setColor(Color.WHITE);
+                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
+                graphics.setFont(font);
+                graphics.drawString("If you skip this amazing startscreen by", getWidth() / 2 - (int) (this.getWidth() * 0.24), getHeight() / 2 - (int) (this.getHeight() * 0.05));
+                graphics.drawString("pressing a key im go to fucking murder you :)", getWidth() / 2 - (int) (this.getWidth() * 0.3), getHeight() / 2 - (int) (this.getHeight() * 0.05 - this.getHeight() * 0.05));
                 break;
         }
     }
