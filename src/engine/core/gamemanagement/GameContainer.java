@@ -70,6 +70,8 @@ public class GameContainer {
 
     void startGameLoop() throws Exception {
 
+
+
         String activeSceneName = "";
 
         long lastTime = System.nanoTime() / 1000000;
@@ -81,11 +83,14 @@ public class GameContainer {
         boolean lastStatem = false;
 
         boolean pauseResume = false;
+        long currentSystemTime = System.nanoTime();
+        lastTime = currentSystemTime;
+        float deltaTime;
 
         while(true) {
-            long currentSystemTime = System.nanoTime();
-            float deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
+            currentSystemTime = System.nanoTime();
+            deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
             lastTime = currentSystemTime;
 
@@ -139,8 +144,9 @@ public class GameContainer {
             gameLogicSystem.update(manager, deltaTime);
 
 
-            MMouseListener.getInstance().update();
+            MMouseListener.getInstance().update(deltaTime);
             manager.clearDestroyedEntities();
+
 
         }
 
