@@ -70,5 +70,17 @@ public class Vector3 {
 
         return new Vector3(newX, newY, newZ);
     }
+
+    public boolean close(Vector3 vector3) {
+        return Math.abs(x - vector3.x) <= 1.0f &&
+                Math.abs(y - vector3.y) <= 1.0f &&
+                Math.abs(z - vector3.z) <= 1.0f;
+    }
+
+    @Override
+    public String toString() {
+        return "Vector3{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+    }
+
 }
 

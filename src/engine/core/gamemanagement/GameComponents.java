@@ -4,6 +4,7 @@ import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.Quaternion;
 import src.engine.core.matutils.Vector3;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameComponents {
@@ -173,8 +174,10 @@ public class GameComponents {
     }
 
     public static class cameraElement {
+
+        public int listCounter;
         public cameraElementTypes cameraElementType;
-        public List<Vector3> checkpointList;
+        public ArrayList<Vector3> checkpointList;
 
     }
 

@@ -39,28 +39,6 @@ public class startScene extends Scene {
 
             manager.createEntity(GameComponents.STARTSCENE);
 
-
-            int id = manager.createEntity(GameComponents.CAMERAELEMENT | GameComponents.PHYSICSBODY | GameComponents.TRANSFORM);
-            if (id > -1) {
-                manager.cameraElement[id].cameraElementType = GameComponents.cameraElementTypes.CAMERAROUTE;
-                manager.cameraElement[id].checkpointList = new LinkedList<>();
-                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(0.0f, 0.0f, 0.0f);
-
-            }
-
-            id = manager.createEntity(GameComponents.CAMERAELEMENT | GameComponents.PHYSICSBODY | GameComponents.TRANSFORM);
-            if (id > -1) {
-                manager.cameraElement[id].cameraElementType = GameComponents.cameraElementTypes.CAMERAFOCUSROUTE;
-                manager.cameraElement[id].checkpointList = new LinkedList<>();
-                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(0.0f, 0.0f, 0.0f);
-
-            }
-
-
         } catch (Exception e){
             throw new RuntimeException(e);
 
