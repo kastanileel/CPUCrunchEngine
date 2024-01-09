@@ -7,6 +7,7 @@ import src.engine.core.matutils.Quaternion;
 import src.engine.core.matutils.Vector3;
 
 import java.awt.*;
+import java.util.LinkedList;
 
 public class startScene extends Scene {
     public startScene(int size, String name) {
@@ -36,26 +37,28 @@ public class startScene extends Scene {
                 }
             }
 
-            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
-            if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.CYAN);//"./src/objects/rock/rock64.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OutlineOnly;
-                manager.transform[id].pos = new Vector3(0.0f, 8.0f, 10.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
-
-            }
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
-            if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.RED);//"./src/objects/rock/rock64.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OutlineOnly;
-                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 10.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
-
-            }
-
             manager.createEntity(GameComponents.STARTSCENE);
+
+
+            int id = manager.createEntity(GameComponents.CAMERAELEMENT | GameComponents.PHYSICSBODY | GameComponents.TRANSFORM);
+            if (id > -1) {
+                manager.cameraElement[id].cameraElementType = GameComponents.cameraElementTypes.CAMERAROUTE;
+                manager.cameraElement[id].checkpointList = new LinkedList<>();
+                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(0.0f, 0.0f, 0.0f);
+
+            }
+
+            id = manager.createEntity(GameComponents.CAMERAELEMENT | GameComponents.PHYSICSBODY | GameComponents.TRANSFORM);
+            if (id > -1) {
+                manager.cameraElement[id].cameraElementType = GameComponents.cameraElementTypes.CAMERAFOCUSROUTE;
+                manager.cameraElement[id].checkpointList = new LinkedList<>();
+                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(0.0f, 0.0f, 0.0f);
+
+            }
 
 
         } catch (Exception e){

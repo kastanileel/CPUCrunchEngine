@@ -1036,32 +1036,9 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            int required_GameComponents = GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if (manager.playerMovement[i] != null) {
                     playerPosition = manager.transform[i].pos;
-                }
-                if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
-                    manager.collider[i].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
-                    manager.collider[i].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-
-                    switch (manager.aiBehavior[i].enemyType) {
-                        case SIGHTSEEKER -> {
-
-                            manager.collider[i].colliderSize = new Vector3(0.4f, 1f, 1f);
-                            manager.collider[i].center = manager.transform[i].pos;
-                        }
-                        case GUNTURRED -> {
-                            manager.collider[i].colliderSize = new Vector3(1f, 1f, 1f);
-                            manager.collider[i].center = manager.transform[i].pos;
-                            manager.rendering[i].modelTranslation = new Vector3(1.5f, 1.0f, 1.0f);
-                        }
-                        case GROUNDENEMY -> {
-                            manager.collider[i].colliderSize = new Vector3(2.2f, 1f, 1f);
-                            manager.collider[i].center = manager.transform[i].pos;
-                        }
-                    }
                 }
             }
         }
@@ -1074,18 +1051,20 @@ public class GameSystems {
                     playerPosition = manager.transform[i].pos;
                 }
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    distanceVectorPlayerEnemy = playerPosition.subtract(manager.transform[i].pos);
+                    if (!(manager.aiBehavior[i].currentState == GameComponents.State.DEACTIVATED)) {
+                        distanceVectorPlayerEnemy = playerPosition.subtract(manager.transform[i].pos);
 
-                    float distancePlayerEnemy = distanceVectorPlayerEnemy.length();
-                    if (distancePlayerEnemy > manager.aiBehavior[i].chasingDistance) {
-                        manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
-                    } else if (distancePlayerEnemy > manager.aiBehavior[i].attackingDistance) {
-                        manager.aiBehavior[i].currentState = GameComponents.State.CHASING;
-                    } else {
-                        manager.aiBehavior[i].currentState = GameComponents.State.ATTACKING;
+                        float distancePlayerEnemy = distanceVectorPlayerEnemy.length();
+                        if (distancePlayerEnemy > manager.aiBehavior[i].chasingDistance) {
+                            manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
+                        } else if (distancePlayerEnemy > manager.aiBehavior[i].attackingDistance) {
+                            manager.aiBehavior[i].currentState = GameComponents.State.CHASING;
+                        } else {
+                            manager.aiBehavior[i].currentState = GameComponents.State.ATTACKING;
 
+                        }
+                        updateAI(manager, i, deltaTime);
                     }
-                    updateAI(manager, i, deltaTime);
                 }
             }
         }
@@ -1631,6 +1610,7 @@ public class GameSystems {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     cam.position = new Vector3(0.0f, 0.0f, 0.0f);
                     cam.rotation = new Vector3(0.0f, 0.0f, 0.0f);
+                    createDisplay(manager);
 
                 }
             }
@@ -1648,7 +1628,7 @@ public class GameSystems {
         }
 
         private void cameraGoesBrr() {
-            Vector3 focusPosition = new Vector3(0f, 8f, 10.0f);
+            Vector3 focusPosition = new Vector3(-0.5f, 0.5f, 15.0f);
             calculateRotation(focusPosition);
 
         }
@@ -1677,6 +1657,110 @@ public class GameSystems {
             angleDifferenceX = (angleDifferenceX + (float) Math.PI) % ((float) Math.PI * 2) - (float) Math.PI;
 
             cam.rotation.x = currentAngleX + angleDifferenceX;
+        }
+
+        public void createDisplay(EntityManager manager){
+            try {
+                int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
+                if (id > -1) {
+                    manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.CYAN);//"./src/objects/rock/rock64.png");
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OutlineOnly;
+                    manager.transform[id].pos = new Vector3(-0.5f, 0.0f, 18.0f);
+                    manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                    manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
+
+                }
+
+                id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                if (id > -1) {
+                    manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+
+
+                    manager.transform[id].pos = new Vector3(-0.5f, -0.9f, 10.0f);
+                    manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                    manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+
+                    manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
+
+                    manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
+
+                    manager.aiBehavior[id].shootingCooldown = 6f;
+                    manager.aiBehavior[id].currentState = GameComponents.State.DEACTIVATED;
+                    manager.physicsBody[id].speed = 1f;
+                    manager.damageable[id].health = 10;
+                    manager.aiBehavior[id].chasingDistance = 40;
+                    manager.aiBehavior[id].attackingDistance = 30;
+                    manager.aiBehavior[id].damage = 5;
+                    manager.aiBehavior[id].wanderingDirection = new Vector3(0f, 0f, -1f);
+                    manager.collider[id].colliderSize = new Vector3(2f, 2f, 1f);
+                    manager.collider[id].center = manager.transform[id].pos;
+                    manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                    manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                }
+
+                id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                if (id > -1) {
+                    manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+
+                    manager.transform[id].pos = new Vector3(-2.5f, 0.5f, 12.0f);
+                    manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
+                    manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+
+                    manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
+
+                    manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
+                    manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
+
+                    manager.aiBehavior[id].shootingCooldown = 1f;
+                    manager.aiBehavior[id].currentState = GameComponents.State.DEACTIVATED;
+                    manager.physicsBody[id].speed = 0f;
+                    manager.damageable[id].health = 5 ;
+                    manager.aiBehavior[id].chasingDistance = 40;
+                    manager.aiBehavior[id].attackingDistance = 40;
+                    manager.aiBehavior[id].damage = 1;
+                    manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
+                    manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
+                    manager.collider[id].center = manager.transform[id].pos;
+                    manager.rendering[id].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
+                    manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                    manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                }
+
+                id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                if (id > -1) {
+                    // Set up the transformation component
+                    manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+                    manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+
+                    manager.transform[id].pos = new Vector3(1f, 0.2f, 10.0f);
+                    manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                    manager.transform[id].scale = new Vector3(.4f, .4f, .4f);
+
+                    manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
+
+                    manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
+
+                    manager.aiBehavior[id].shootingCooldown = 1f;
+                    manager.aiBehavior[id].currentState = GameComponents.State.DEACTIVATED;
+                    manager.physicsBody[id].speed = 4f;
+                    manager.damageable[id].health = 5;
+                    manager.aiBehavior[id].chasingDistance = 30;
+                    manager.aiBehavior[id].attackingDistance = 5;
+                    manager.aiBehavior[id].damage = 1;
+                    manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
+                    manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                    manager.collider[id].center = manager.transform[id].pos;
+                    manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                    manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                }
+
+
+            } catch (Exception e){
+                System.out.println(e);
+            }
         }
     }
 }

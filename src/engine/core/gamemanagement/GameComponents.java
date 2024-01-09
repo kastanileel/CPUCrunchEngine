@@ -4,6 +4,8 @@ import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.Quaternion;
 import src.engine.core.matutils.Vector3;
 
+import java.util.List;
+
 public class GameComponents {
 
     public final static int
@@ -20,7 +22,9 @@ public class GameComponents {
 
             GAMELOGIC = 1 << 10,
 
-            STARTSCENE = 1 << 11;
+            STARTSCENE = 1 << 11,
+
+            CAMERAELEMENT = 1 << 12;
 
 
     public static class Transform {
@@ -136,6 +140,8 @@ public class GameComponents {
         WANDERING,
         CHASING,
         ATTACKING,
+
+        DEACTIVATED
     }
 
     public enum EnemyType {
@@ -146,7 +152,7 @@ public class GameComponents {
     }
 
     public static class AIBEHAVIOR {
-        public State currentState;
+        public State currentState = State.WANDERING;
         public EnemyType enemyType;
         public float timeSinceLastDirectionChange;
         public float wanderingDuration;
@@ -157,6 +163,17 @@ public class GameComponents {
         public float shootingCooldown;
         public int chooseWanderingCounter;
         public int damage;
+
+    }
+
+    public enum cameraElementTypes {
+        CAMERAFOCUSROUTE, CAMERAROUTE
+
+    }
+
+    public static class cameraElement {
+        public cameraElementTypes cameraElementType;
+        public List<Vector3> checkpointList;
 
     }
 
