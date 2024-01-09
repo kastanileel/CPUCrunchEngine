@@ -1393,6 +1393,7 @@ public class GameSystems {
         @Override
         public void onPlayerDeath() {
             DrawingWindow.playerDead = true;
+            GameContainer.playerDeath = true;
             MusicPlayer.getInstance().stopGameMusic();
             System.out.println("Player died");
             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.GAME_OVER);

@@ -34,6 +34,8 @@ public class GameContainer {
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
+    static boolean playerDeath = false;
+
 
     GameContainer() throws Exception {
         scenes = new HashMap<>();
@@ -129,7 +131,7 @@ public class GameContainer {
 
             hotkeyMenuSystem.update(manager, deltaTime);
 
-            if (pauseResume) {
+            if (pauseResume || playerDeath) {
                 deltaTime = 0;
             }
 
