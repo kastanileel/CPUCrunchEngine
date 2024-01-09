@@ -284,7 +284,6 @@ public class GameSystems {
 
         private void doCameraRotation(EntityManager manager, int id, float deltaTime) {
 
-            System.out.println(manager.transform[id].pos.x + ", " + manager.transform[id].pos.y + ", " + manager.transform[id].pos.z);
             Camera cam = Camera.getInstance();
             cam.rotation.y += MMouseListener.getInstance().getMouseDeltaX() * manager.playerMovement[id].mouseSpeed * deltaTime;
 
@@ -382,36 +381,34 @@ public class GameSystems {
                             pistol(manager, id, deltaTime);
                             magazinePistol--;
                             return;
-                        }
-                        else if (magazinePistol == 0){
+                        } else if (magazinePistol == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Pistol!");
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_PISTOL);
                             magazinePistol = 10;
                         }
                     }
-                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                    if (MMouseListener.getInstance().isRightButtonPressed()) {
 
                         knife(manager, id);
                     }
                 }
                 case MACHINE_GUN -> {
                     DrawingWindow.currentAmmo = magazineMachineGun;
-                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
                         if (shootingCooldown <= 0.0f && magazineMachineGun > 0) {
 
                             machineGun(manager, id, deltaTime);
                             magazineMachineGun--;
                             return;
-                        }
-                        else if (magazineMachineGun == 0){
+                        } else if (magazineMachineGun == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Machine Gun!");
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_AK);
                             magazineMachineGun = 30;
                         }
                     }
-                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                    if (MMouseListener.getInstance().isRightButtonPressed()) {
 
                         knife(manager, id);
                     }
@@ -419,14 +416,13 @@ public class GameSystems {
                 }
                 case SHOTGUN -> {
                     DrawingWindow.currentAmmo = magazineShotgun;
-                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
                         if (shootingCooldown <= 0.0f && magazineShotgun > 0) {
 
                             shotgun(manager, id, deltaTime);
                             magazineShotgun--;
                             return;
-                        }
-                        else if (magazineShotgun == 0){
+                        } else if (magazineShotgun == 0) {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
@@ -434,15 +430,14 @@ public class GameSystems {
                         }
                     }
 
-                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                    if (MMouseListener.getInstance().isRightButtonPressed()) {
                         if (shootingCooldown <= 0.0f && magazineShotgun > 1) {
 
                             shotgunDouble(manager, id, deltaTime);
                             magazineShotgun--;
                             magazineShotgun--;
                             return;
-                        }
-                        else if (magazineShotgun == 0){
+                        } else if (magazineShotgun == 0) {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
@@ -451,15 +446,14 @@ public class GameSystems {
                     }
 
                 }
-                case SNIPER ->{
+                case SNIPER -> {
                     DrawingWindow.currentAmmo = magazineSniper;
-                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
                         if (shootingCooldown <= 0.0f && magazineSniper > 0) {
 
                             snipe(manager, id, deltaTime);
                             magazineSniper--;
-                        }
-                        else if (magazineSniper == 0){
+                        } else if (magazineSniper == 0) {
                             shootingCooldown = 6.0f;
                             System.out.println("Reloading Sniper!");
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
@@ -468,17 +462,16 @@ public class GameSystems {
                     }
 
 
-                    if(MMouseListener.getInstance().isRightButtonPressed()){
-                        if (!scopedIn){
+                    if (MMouseListener.getInstance().isRightButtonPressed()) {
+                        if (!scopedIn) {
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SCOPE);
                             scopedIn = true;
                         }
                         SimpleAdvancedRenderPipeline.fFov = 40.0f;
                         DrawingWindow.snipe = true;
-                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed/2.0f;
-                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed/2.0f;
-                    }
-                    else {
+                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed / 2.0f;
+                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed / 2.0f;
+                    } else {
                         scopedIn = false;
 
                         SimpleAdvancedRenderPipeline.fFov = 120.0f;
@@ -548,7 +541,7 @@ public class GameSystems {
 
         }
 
-        private void shotgun(EntityManager manager, int id, float deltaTime){
+        private void shotgun(EntityManager manager, int id, float deltaTime) {
             shootingCooldown = 0.8f;
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
@@ -570,7 +563,7 @@ public class GameSystems {
             }
         }
 
-        private void shotgunDouble(EntityManager manager, int id, float deltaTime){
+        private void shotgunDouble(EntityManager manager, int id, float deltaTime) {
             shootingCooldown = 3.5f;
 
             //Add Double Shot
@@ -1043,7 +1036,7 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            int required_GameComponents =  GameComponents.AIBEHAVIOR;
+            int required_GameComponents = GameComponents.AIBEHAVIOR;
             for (int i = 0; i < manager.size; i++) {
                 if (manager.playerMovement[i] != null) {
                     playerPosition = manager.transform[i].pos;
@@ -1238,7 +1231,7 @@ public class GameSystems {
             float y = (float) Math.random() * 0.1f - 0.01f;
             float z = (float) Math.random() * 0.1f - 0.01f;
 
-            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x,manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
+            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x, manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
             Vector3 direction = new Vector3(
                     normalizeVector.x + x * factor,
                     normalizeVector.y + y * factor,
@@ -1262,7 +1255,7 @@ public class GameSystems {
             float y = (float) Math.random() * 0.1f - 0.01f;
             float z = (float) Math.random() * 0.1f - 0.01f;
 
-            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x,manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
+            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x, manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
             Vector3 direction = new Vector3(
                     normalizeVector.x + x * factor,
                     normalizeVector.y + y * factor,
@@ -1286,7 +1279,7 @@ public class GameSystems {
             float y = (float) Math.random() * 0.1f - 0.01f;
             float z = (float) Math.random() * 0.1f - 0.01f;
 
-            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x,manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
+            Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x, manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
             Vector3 direction = new Vector3(
                     normalizeVector.x + x * factor,
                     normalizeVector.y + y * factor,
@@ -1390,8 +1383,7 @@ public class GameSystems {
             try {
 
                 spawnRandomWeapon(localManager);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("AAAAAAA benis aaa");
             }
         }
@@ -1405,7 +1397,7 @@ public class GameSystems {
         public void onKillEnemy() {
             livingEnemies -= 1;
 
-            if(livingEnemies == 0){
+            if (livingEnemies == 0) {
                 onFinishLevel(level);
             }
         }
@@ -1414,7 +1406,7 @@ public class GameSystems {
             Random rand = new Random();
             int type = rand.nextInt(3);
 
-            switch (type){
+            switch (type) {
                 case 0 -> spawnShotgun(manager);
                 case 1 -> spawnMachinegun(manager);
                 case 2 -> spawnSniper(manager);
@@ -1487,20 +1479,19 @@ public class GameSystems {
 
             Random rand = new Random();
 
-            for(int i  = 0; i < livingEnemies; i++){
+            for (int i = 0; i < livingEnemies; i++) {
 
                 int enemyType = rand.nextInt(3);
                 float spawnX = rand.nextFloat(15.0f) * 2.0f - 15.0f;
                 float spawnZ = rand.nextFloat(15.0f) * 2.0f - 15.0f;
 
-                switch (enemyType){
+                switch (enemyType) {
                     case 0 -> {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
-
 
 
                             manager.transform[id].pos = new Vector3(spawnX, -0.9f, spawnZ);
@@ -1524,7 +1515,7 @@ public class GameSystems {
                             manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                         }
                     }
-                    case 1 ->{
+                    case 1 -> {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
@@ -1554,7 +1545,7 @@ public class GameSystems {
                         }
 
                     }
-                    case 2 ->{
+                    case 2 -> {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
@@ -1612,7 +1603,7 @@ public class GameSystems {
 
         }
 
-        private void checkMusicKey(){
+        private void checkMusicKey() {
             //Stop or start gamemusic
             if (keyListener.isKeyPressed('M') != lastStateM && keyListener.isKeyPressed('M') || keyListener.isKeyPressed('m') != lastStatem && keyListener.isKeyPressed('m')) {
                 MusicPlayer.getInstance().pauseResume("src/sound/music.wav");
@@ -1623,7 +1614,7 @@ public class GameSystems {
 
         }
 
-        private void checkQuitKey(){
+        private void checkQuitKey() {
             if (keyListener.isKeyPressed('Q') != lastStateM && keyListener.isKeyPressed('Q') || keyListener.isKeyPressed('q') != lastStatem && keyListener.isKeyPressed('q')) {
                 System.exit(0);
             }
@@ -1635,63 +1626,27 @@ public class GameSystems {
 
         @Override
         public void start(EntityManager manager) throws Exception {
-            int required_GameComponents = GameComponents.STARTSCENE | GameComponents.RENDER | GameComponents.TRANSFORM;
+            int required_GameComponents = GameComponents.STARTSCENE;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     cam.position = new Vector3(0.0f, 0.0f, 0.0f);
                     cam.rotation = new Vector3(0.0f, 0.0f, 0.0f);
+
                 }
             }
         }
 
         @Override
         public void update(EntityManager manager, float deltaTime) throws Exception {
-            int required_GameComponents = GameComponents.STARTSCENE | GameComponents.RENDER | GameComponents.TRANSFORM;
+            int required_GameComponents = GameComponents.STARTSCENE;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     cameraGoesBrr();
-                    Vector3 focusPosition = new Vector3(0, 0, 0);
-                    //cameraFocus(focusPosition);
-                    doPlayerMovement(manager, i, deltaTime);
-                    doShooting(manager, i, deltaTime);
+                    Vector3 focusPosition = new Vector3(0f, 1f, 10.0f);
+                    cameraFocus(focusPosition);
 
                 }
             }
-        }
-
-        private void doPlayerMovement(EntityManager manager, int id, float deltaTime) {
-            MKeyListener keyListener = MKeyListener.getInstance();
-
-
-            float moveSpeed = manager.playerMovement[id].moveSpeed;
-            float forward = 0.0f;
-            float right = 0.0f;
-
-            if (keyListener.isKeyPressed('W') || keyListener.isKeyPressed('w')) {
-                forward = moveSpeed;
-            }
-            if (keyListener.isKeyPressed('S') || keyListener.isKeyPressed('s')) {
-                forward = -moveSpeed / 2.0f;
-            }
-            if (keyListener.isKeyPressed('A') || keyListener.isKeyPressed('a')) {
-                right = moveSpeed / 1.7f;
-            }
-            if (keyListener.isKeyPressed('D') || keyListener.isKeyPressed('d')) {
-                right = -moveSpeed / 1.7f;
-            }
-
-
-            // calculate the forward vector
-            Camera cam = Camera.getInstance();
-            float cosY = (float) Math.cos(cam.rotation.y);
-            float sinY = (float) Math.sin(cam.rotation.y);
-
-            manager.physicsBody[id].force.z = (forward * cosY + right * sinY) * moveSpeed * manager.physicsBody[id].mass;
-            manager.physicsBody[id].force.x = (-sinY * forward + right * cosY) * moveSpeed * manager.physicsBody[id].mass;
-
-
-            // set and offset camera position
-            cam.position = RenderMaths.addVectors(manager.transform[id].pos, manager.playerMovement[id].cameraOffset);
         }
 
         private void cameraGoesBrr() {
@@ -1699,12 +1654,16 @@ public class GameSystems {
         }
 
         private void cameraFocus(Vector3 focusPosition) {
+            Vector3 direction = focusPosition.subtract(cam.position);
+            calculateRotation(direction);
+        }
+
+        public void calculateRotation(Vector3 direction){
             float currentAngleY = cam.rotation.y;
-            Vector3 direction = cam.position.subtract(focusPosition);
 
-            Vector3 normalizedDirection = RenderMaths.normalizeVector(direction);
+            System.out.println(cam.rotation.x + "; " + cam.rotation.y + "; " + cam.rotation.z);
 
-            float desiredAngleY = (float) Math.atan2(normalizedDirection.z, normalizedDirection.x);
+            float desiredAngleY = (float) Math.atan2(direction.z, direction.x);
             desiredAngleY = (desiredAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
 
             currentAngleY = (currentAngleY + (float) Math.PI * 2) % ((float) Math.PI * 2);
@@ -1716,15 +1675,24 @@ public class GameSystems {
 
             currentAngleY += rotationAmount;
 
-            cam.rotation.y = currentAngleY + (float) Math.PI;
-        }
+            cam.rotation.y = currentAngleY + (float) (Math.PI / 2);
 
-        private void doShooting(EntityManager manager, int id, float deltaTime) {
-            SimpleAdvancedRenderPipeline.fFov = 120.0f;
+            direction = direction.rotateY(cam.rotation.y);
 
+            float currentAngleX = cam.rotation.x;
+            // Calculate the desired pitch angle
+            float desiredAngleX = (float) Math.atan2(direction.y, -direction.z);
+            desiredAngleX = (desiredAngleX + (float) Math.PI * 2) % ((float) Math.PI * 2);
+
+            currentAngleX = (currentAngleX + (float) Math.PI * 2) % ((float) Math.PI * 2);
+
+            // Calculate the difference in angle for the pitch
+            float angleDifferenceX = desiredAngleX - currentAngleX;
+            angleDifferenceX = (angleDifferenceX + (float) Math.PI) % ((float) Math.PI * 2) - (float) Math.PI;
+
+            // Apply the pitch rotation
+            cam.rotation.x = currentAngleX + angleDifferenceX;
 
         }
     }
-
 }
-

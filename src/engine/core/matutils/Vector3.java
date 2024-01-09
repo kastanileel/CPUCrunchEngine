@@ -59,5 +59,16 @@ public class Vector3 {
     public float distance(Vector3 center) {
         return (float) Math.sqrt(distanceSquared(center));
     }
+
+    public Vector3 rotateY(float angle) {
+        float cosTheta = (float) Math.cos(angle);
+        float sinTheta = (float) Math.sin(angle);
+
+        float newX = x * cosTheta + z * sinTheta;
+        float newY = y; // Y remains the same
+        float newZ = -x * sinTheta + z * cosTheta;
+
+        return new Vector3(newX, newY, newZ);
+    }
 }
 
