@@ -225,6 +225,7 @@ public class GameSystems {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     defaultMouseSpeed = manager.playerMovement[i].mouseSpeed;
                     defaultMoveSpeed = manager.playerMovement[i].moveSpeed;
+                    //modify player health for testing here
                     manager.damageable[i].health = 100;
                     DrawingWindow.playerHealth = manager.damageable[i].health;
                 }
@@ -966,6 +967,7 @@ public class GameSystems {
 
                     manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
                     if (manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER) {
+                        MusicPlayer.getInstance().playRandomPlayerSound();
                         DrawingWindow.playerHealth = manager.damageable[otherID].health;
                     }
                     System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
@@ -994,6 +996,7 @@ public class GameSystems {
                         System.out.println("Player got hit");
                         if (manager.damageable[id].health <= 0) {
                             DrawingWindow.playerHealth = 0;
+                            EventSystem.getInstance().onPlayerDeath();
                             manager.destroyEntity(id);
                         }
                         break;
@@ -1246,7 +1249,7 @@ public class GameSystems {
             );
 
 
-            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
+            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SIGHSEEKER_ATTACK, yOffSet);
 
         }
 
@@ -1367,7 +1370,7 @@ public class GameSystems {
                     return;
                 }
                 finishedLevel = false;
-
+                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.LEVEL_FINISHED);
                 level += 1;
 
                 loadNextLevel(manager);
@@ -1380,7 +1383,6 @@ public class GameSystems {
             finishedLevel = true;
             finishTimer = cooldown;
             try {
-
                 spawnRandomWeapon(localManager);
             }
             catch (Exception e){
@@ -1391,6 +1393,9 @@ public class GameSystems {
         @Override
         public void onPlayerDeath() {
             DrawingWindow.playerDead = true;
+            MusicPlayer.getInstance().stopGameMusic();
+            System.out.println("Player died");
+            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.GAME_OVER);
         }
 
         @Override
@@ -1482,13 +1487,14 @@ public class GameSystems {
             for(int i  = 0; i < livingEnemies; i++){
 
                 int enemyType = rand.nextInt(3);
-                float spawnX = rand.nextFloat(15.0f) * 2.0f - 15.0f;
-                float spawnZ = rand.nextFloat(15.0f) * 2.0f - 15.0f;
+                float spawnX =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
+                float spawnZ =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
 
                 switch (enemyType){
                     case 0 -> {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
+
                             // Set up the transformation component
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
@@ -1607,12 +1613,10 @@ public class GameSystems {
         private void checkMusicKey(){
             //Stop or start gamemusic
             if (keyListener.isKeyPressed('M') != lastStateM && keyListener.isKeyPressed('M') || keyListener.isKeyPressed('m') != lastStatem && keyListener.isKeyPressed('m')) {
-                MusicPlayer.getInstance().pauseResume("src/sound/music.wav");
+                MusicPlayer.getInstance().pauseResume("src/sound/misc/music.wav");
             }
-
             lastStateM = keyListener.isKeyPressed('M');
             lastStatem = keyListener.isKeyPressed('m');
-
         }
 
         private void checkQuitKey(){
