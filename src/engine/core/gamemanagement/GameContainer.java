@@ -90,14 +90,18 @@ public class GameContainer {
 
         boolean lastStatem = false;
 
-        while(true) {
-            long currentSystemTime = System.nanoTime();
-            float deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
+        boolean pauseResume = false;
+        long currentSystemTime = System.nanoTime();
+        lastTime = currentSystemTime;
+        float deltaTime;
 
+        while(true) {
+            currentSystemTime = System.nanoTime();
+            deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
             lastTime = currentSystemTime;
 
-            if (!currentSceneName.equals(activeSceneName)) {
+            if(!currentSceneName.equals(activeSceneName)){
                 Scene activeScene = scenes.get(currentSceneName);
 
                 activeScene.createScene();
@@ -161,14 +165,13 @@ public class GameContainer {
             hotkeyMenuSystem.update(manager, deltaTime);
             startSceneSystem.update(manager, deltaTime);
 
-            MMouseListener.getInstance().update();
+            MMouseListener.getInstance().update(deltaTime);
             manager.clearDestroyedEntities();
+
         }
 
         //System.out.println(System.nanoTime()/1000000 - lastTime);
     }
-
-
 
 
     public static void main(String[] args) throws Exception {

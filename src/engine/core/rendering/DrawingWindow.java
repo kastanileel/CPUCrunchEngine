@@ -70,14 +70,18 @@ public class DrawingWindow extends JPanel {
 
         switch (windowState) {
             case DEATHSCREEN:
-                // TODO: Death screen
-
+                graphics.setColor(new Color(0,0,0,235));
+                graphics.fillRect(0,0,this.getWidth(), this.getHeight());
+                graphics.setColor(Color.RED);
+                Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.07));
+                graphics.setFont(font);
+                graphics.drawString("YOU DIED", getWidth() / 2 - (int)(this.getWidth() * 0.15), getHeight() / 2 + (int)(this.getWidth() * 0.05));
                 break;
             case PAUSESCREEN:
                 graphics.setColor(new Color(0, 0, 0, 128));
                 graphics.fillRect(0, 0, getWidth(), getHeight());
                 graphics.setColor(Color.WHITE);
-                Font font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
+                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
                 graphics.setFont(font);
                 graphics.drawString("Paused", getWidth() / 2 - (int) (this.getWidth() * 0.052), getHeight() / 2 - (int) (this.getWidth() * 0.05));
                 font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.022));
@@ -96,47 +100,15 @@ public class DrawingWindow extends JPanel {
                 graphics.setFont(font);
                 graphics.drawString(currentAmmo + "/\u221E", (int) (this.getWidth() * 0.15), (int) (this.getHeight() * 0.855));
 
-                // draw crosshair
                 graphics.setColor(Color.white);
-
                 drawHealthBar(playerHealth);
 
                 drawLevelCount();
                 graphics.setColor(Color.white);
                 graphics.setFont(font);
-                graphics.drawString(Integer.toString(playerHealth), (int) (this.getWidth() * 0.053), (int) (this.getHeight() * 0.855));
+                graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.055),(int)(this.getHeight() * 0.855));
 
-                // draw crosshair
-                switch (weaponType) {
-                    case PISTOL:
-                        graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
-                        graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
-                        break;
-                    case SHOTGUN:
-                        //draw holow circle crosshair to indicate random pellet spread
-                        graphics.drawOval(this.getWidth() / 2 - 40, this.getHeight() / 2 - 40, 80, 80);
-                        break;
-                    case MACHINE_GUN:
-                        //draw hollow crosshair to indicate slight random bullet spread
-                        graphics.drawLine(this.getWidth() / 2 - 25, this.getHeight() / 2, this.getWidth() / 2 - 10, this.getHeight() / 2);
-                        graphics.drawLine(this.getWidth() / 2 + 25, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
-                        graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 25, this.getWidth() / 2, this.getHeight() / 2 - 10);
-                        graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 + 25, this.getWidth() / 2, this.getHeight() / 2 + 10);
-                        break;
-                    case SNIPER:
-                        if (snipe) {
-                            //draw crosshair
-                            graphics.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
-                            graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
-                            //draw scope circle
-                            graphics.drawOval(this.getWidth() / 2 - 350, this.getHeight() / 2 - 350, 700, 700);
-                            //limit FOV to simulate scope
-                            graphics.setColor(Color.black);
-                            graphics.fillRect(0, 0, this.getWidth() / 2 - 350, this.getHeight());
-                            graphics.fillRect(this.getWidth() / 2 + 350, 0, this.getWidth() / 2 - 350, this.getHeight());
-                        }
-                        break;
-            }
+                drawCrosshair();
                 break;
             case STARTSCREEN:
                 graphics.setColor(new Color(0, 0, 0, 128));
@@ -150,20 +122,44 @@ public class DrawingWindow extends JPanel {
         }
     }
 
-    /***
-     * This method draws a triangle on the image buffer.
-     *
-     * This method is used for untextured triangles.
-     * @param triangle The projected triangle to draw.
-     */
-
-
-    /***
-     * This method clears the image buffer before every render cycle.
-     */
     public void clear() {
         graphics.setColor(Color.black);
         graphics.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    public void drawCrosshair() {
+        graphics.setColor(Color.white);
+        switch (weaponType) {
+
+            case PISTOL:
+                graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
+                break;
+            case SHOTGUN:
+                //draw holow circle crosshair to indicate random pellet spread
+                graphics.drawOval(this.getWidth() / 2 - 40, this.getHeight() / 2 - 40, 80, 80);
+                break;
+            case MACHINE_GUN:
+                //draw hollow crosshair to indicate slight random bullet spread
+                graphics.drawLine(this.getWidth() / 2 - 25, this.getHeight() / 2, this.getWidth() / 2 - 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2 + 25, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 25, this.getWidth() / 2, this.getHeight() / 2 - 10);
+                graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 + 25, this.getWidth() / 2, this.getHeight() / 2 + 10);
+                break;
+            case SNIPER:
+                if (snipe) {
+                    //draw crosshair
+                    graphics.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
+                    graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
+                    //draw scope circle
+                    graphics.drawOval(this.getWidth() / 2 - 350, this.getHeight() / 2 - 350, 700, 700);
+                    //limit FOV to simulate scope
+                    graphics.setColor(Color.black);
+                    graphics.fillRect(0, 0, this.getWidth() / 2 - 350, this.getHeight());
+                    graphics.fillRect(this.getWidth() / 2 + 350, 0, this.getWidth() / 2 - 350, this.getHeight());
+                }
+                break;
+        }
     }
 
     public synchronized void drawTriangleNoLighting(Triangle triangle) {
@@ -417,15 +413,19 @@ public class DrawingWindow extends JPanel {
         int lineX2 = boxX + (int) (boxWidth * playerHealth / 100.0);
         drawThickLine(boxX, boxY, lineX2, boxY, boxHeight);
 
+        // Draw the screen redness
+        graphics.setColor(new Color(255,0,0,100 -  playerHealth));
+        graphics.fillRect(0,0,this.getWidth(), this.getHeight());
+
         // Draw the box
         graphics.setColor(Color.black);
         drawBox(boxX, boxY, boxWidth, boxHeight);
     }
 
-    public void drawLevelCount() {
+    public void drawLevelCount(){
         graphics.setColor(Color.white);
-        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
-        graphics.drawString("Level: " + level, this.getWidth() - 300, this.getHeight() - 150);
+        graphics.setFont(new Font("Arial", Font.PLAIN, 50));
+        graphics.drawString("Level: " + level, this.getWidth() - 280, this.getHeight() - 150);
     }
 }
 
