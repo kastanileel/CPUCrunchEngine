@@ -192,7 +192,7 @@ public class GameSystems {
 
         Vector3 knifeDir = new Vector3();
 
-        int knife;
+        static int knife;
         private GameComponents.Rendering.RenderType weaponRenderType;
 
         float defaultMoveSpeed, defaultMouseSpeed;
@@ -215,8 +215,8 @@ public class GameSystems {
 
                 manager.collider[knife].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                 manager.collider[knife].center = manager.transform[knife].pos;
-                manager.collider[knife].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
-                manager.collider[knife].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
+                manager.collider[knife].colliderSize = new Vector3(2.0f, 3.0f, 2.0f);
+                manager.collider[knife].colliderTag = GameComponents.Collider.ColliderTag.KNIFE;
 
             }
 
@@ -242,6 +242,8 @@ public class GameSystems {
                     doPlayerMovement(manager, i, deltaTime);
                     doShooting(manager, i, deltaTime);
                     handleCollision(manager, i);
+                    if(knifing)
+                        handleKnife(manager, i);
 
                     if (MKeyListener.getInstance().isKeyPressed('1')) {
                         try {
@@ -607,6 +609,7 @@ public class GameSystems {
                 knifing = true;
                 knifeCooldown = knifeTime;
                 manager.transform[knife].pos = Camera.getInstance().position.clone();
+                manager.collider[knife].center = manager.transform[knife].pos;
                 manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.rendering[knife].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
 
@@ -615,6 +618,7 @@ public class GameSystems {
 
                 // offset the knife
                 manager.transform[knife].pos = RenderMaths.addVectors(Camera.getInstance().position.clone(), direction);
+                manager.collider[knife].center = manager.transform[knife].pos;
                 manager.transform[knife].pos.y -= 0.13f;
 
 
@@ -626,9 +630,36 @@ public class GameSystems {
                 direction = RenderMaths.multiplyVector(direction, 0.3f);
                 //offset the knife 0.5f to the right
                 manager.transform[knife].pos = RenderMaths.addVectors(manager.transform[knife].pos, direction);
+                manager.collider[knife].center = manager.transform[knife].pos;
                 knifeDir = direction;
 
                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Knife);
+            }
+        }
+
+        private void handleKnife(EntityManager manager, int id){
+            // check if knife is colliding with enemy
+            for (CollisionInformation.CollisionEvent event : manager.collisionList.get(knife).collisionEvents) {
+               // System.out.println("Collision with: " + event.entityIDs.getFirst() + " " + event.entityIDs.getSecond());
+                if (event.entityIDs.getFirst() == knife) {
+                    reactToKnifeCollision(manager, knife, event.entityIDs.getSecond());
+
+                } else if (event.entityIDs.getSecond() == knife) {
+
+                    reactToKnifeCollision(manager, knife, event.entityIDs.getFirst());
+                }
+            }
+        }
+
+        private void reactToKnifeCollision(EntityManager manager, int knife, int otherId){
+            GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
+            switch (tag) {
+                case ENEMY -> {
+                    manager.damageable[otherId].health -= 50;
+                    System.out.println("Enemy health: " + manager.damageable[otherId].health);
+
+                    DamageSystem.damagedEntities.add(otherId);
+                }
             }
         }
 
@@ -638,6 +669,7 @@ public class GameSystems {
             if (knifeCooldown < 0.0f) {
                 knifing = false;
                 manager.transform[knife].pos = new Vector3(0.0f, 0.1f, 0.0f);
+                manager.collider[knife].center = manager.transform[knife].pos;
                 manager.rendering[knife].modelPosition = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.rendering[id].renderType = weaponRenderType;
                 manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.Hide;

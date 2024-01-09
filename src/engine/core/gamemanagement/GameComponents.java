@@ -96,6 +96,7 @@ public class GameComponents {
             GROUND,
             WALL,
             PICKUPWEAPON,
+            KNIFE,
             NONE
         }
 
