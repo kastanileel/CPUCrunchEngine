@@ -5,39 +5,35 @@ import  src.engine.core.gamemanagement.GameComponents;
 import src.engine.core.matutils.RenderMaths;
 import src.engine.core.matutils.Triangle;
 import src.engine.core.matutils.Vector3;
-import src.engine.core.tools.MusicPlayer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.PathIterator;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Random;
 
 /**
  * This class is the drawing window.
  * It contains the image buffer and offers methods for drawing textured and untextured triangles.
  */
 public class DrawingWindow extends JPanel {
+
+    public enum WindowStates {
+        DEATHSCREEN, PAUSESCREEN, STARTSCREEN, INGAMESCREEN
+    }
     private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     private BufferedImage imageBuffer;
     private Graphics graphics;
-
-
     public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
-
     public static boolean snipe = false;
     public static int playerHealth;
-
     public static int currentAmmo = 0;
-
     public int maxAccuracy;
     public int minAccuracy;
+    public static int level;
+    public static WindowStates windowState = WindowStates.STARTSCREEN;
+
+    private static boolean colorFade = true;
+    private static float colorSwitchCooldown;
+    private static Color arenaColor = new Color(130, 0, 255);
 
     public DrawingWindow(int width, int height, int textureMaxAccuracy, int textureMinAccuracy) {
 
@@ -71,33 +67,81 @@ public class DrawingWindow extends JPanel {
 
         // draw ui elements
         this.applyUI();
-
         this.getGraphics().drawImage(imageBuffer, 0, 0, this);
     }
 
     private void applyUI(){
-        graphics.setColor(Color.red);
-        //draw ammo count
-        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
-        graphics.drawString(Integer.toString(currentAmmo), 150,this.getHeight() -150);
 
-        // draw crosshair
-        graphics.setColor(Color.white);
-        drawHealthBar(playerHealth);
-        Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.05));
-        graphics.setFont(font);
-        graphics.setColor(Color.white);
-        graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.053),(int)(this.getHeight() * 0.855));
+        switch (windowState) {
+            case DEATHSCREEN:
+                graphics.setColor(new Color(0,0,0,235));
+                graphics.fillRect(0,0,this.getWidth(), this.getHeight());
+                graphics.setColor(Color.RED);
+                Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.07));
+                graphics.setFont(font);
+                graphics.drawString("YOU DIED", getWidth() / 2 - (int)(this.getWidth() * 0.15), getHeight() / 2 + (int)(this.getWidth() * 0.05));
+                break;
+            case PAUSESCREEN:
+                graphics.setColor(new Color(0, 0, 0, 128));
+                graphics.fillRect(0, 0, getWidth(), getHeight());
+                graphics.setColor(Color.WHITE);
+                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
+                graphics.setFont(font);
+                graphics.drawString("Paused", getWidth() / 2 - (int) (this.getWidth() * 0.052), getHeight() / 2 - (int) (this.getWidth() * 0.05));
+                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.022));
+                graphics.setFont(font);
+                graphics.drawString("Hotkeys:", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1));
+                font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.022));
+                graphics.setFont(font);
+                int i = 1;
+                graphics.drawString("Turn off/on music - m", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                graphics.drawString("Quitgame - q", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+            case INGAMESCREEN:
+                graphics.setColor(Color.red);
+                //draw ammo count
+                font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.05));
+                graphics.setFont(font);
+                graphics.drawString(currentAmmo + "/\u221E", (int) (this.getWidth() * 0.15), (int) (this.getHeight() * 0.855));
 
-        switch (weaponType)
-{
+                graphics.setColor(Color.white);
+                drawHealthBar(playerHealth);
+
+                drawLevelCount();
+                graphics.setColor(Color.white);
+                graphics.setFont(font);
+                graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.055),(int)(this.getHeight() * 0.855));
+
+                drawCrosshair();
+                break;
+            case STARTSCREEN:
+                graphics.setColor(new Color(0, 0, 0, 128));
+                graphics.fillRect(0, 0, getWidth(), getHeight());
+                graphics.setColor(Color.WHITE);
+                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
+                graphics.setFont(font);
+                graphics.drawString("If you skip this amazing startscreen by", getWidth() / 2 - (int) (this.getWidth() * 0.24), getHeight() / 2 - (int) (this.getHeight() * 0.05));
+                graphics.drawString("pressing a key im go to fucking murder you :)", getWidth() / 2 - (int) (this.getWidth() * 0.3), getHeight() / 2 - (int) (this.getHeight() * 0.05 - this.getHeight() * 0.05));
+                break;
+        }
+    }
+
+    public void clear() {
+        graphics.setColor(Color.black);
+        graphics.fillRect(0, 0, getWidth(), getHeight());
+    }
+
+    public void drawCrosshair() {
+        graphics.setColor(Color.white);
+        switch (weaponType) {
+
             case PISTOL:
                 graphics.drawLine(this.getWidth() / 2 - 10, this.getHeight() / 2, this.getWidth() / 2 + 10, this.getHeight() / 2);
                 graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 - 10, this.getWidth() / 2, this.getHeight() / 2 + 10);
                 break;
             case SHOTGUN:
                 //draw holow circle crosshair to indicate random pellet spread
-                graphics.drawOval(this.getWidth() / 2 - 40, this.getHeight() / 2 -40, 80, 80);
+                graphics.drawOval(this.getWidth() / 2 - 40, this.getHeight() / 2 - 40, 80, 80);
                 break;
             case MACHINE_GUN:
                 //draw hollow crosshair to indicate slight random bullet spread
@@ -107,10 +151,10 @@ public class DrawingWindow extends JPanel {
                 graphics.drawLine(this.getWidth() / 2, this.getHeight() / 2 + 25, this.getWidth() / 2, this.getHeight() / 2 + 10);
                 break;
             case SNIPER:
-                if (snipe){
+                if (snipe) {
                     //draw crosshair
-                    graphics.drawLine(0, this.getHeight() / 2, this.getWidth() , this.getHeight() / 2);
-                    graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight() );
+                    graphics.drawLine(0, this.getHeight() / 2, this.getWidth(), this.getHeight() / 2);
+                    graphics.drawLine(this.getWidth() / 2, 0, this.getWidth() / 2, this.getHeight());
                     //draw scope circle
                     graphics.drawOval(this.getWidth() / 2 - 350, this.getHeight() / 2 - 350, 700, 700);
                     //limit FOV to simulate scope
@@ -120,23 +164,6 @@ public class DrawingWindow extends JPanel {
                 }
                 break;
         }
-
-    }
-
-    /***
-     * This method draws a triangle on the image buffer.
-     *
-     * This method is used for untextured triangles.
-     * @param triangle The projected triangle to draw.
-     */
-
-
-    /***
-     * This method clears the image buffer before every render cycle.
-     */
-    public void clear() {
-        graphics.setColor(Color.black);
-        graphics.fillRect(0, 0, getWidth(), getHeight());
     }
 
     public synchronized void drawTriangleNoLighting(Triangle triangle) {
@@ -346,10 +373,9 @@ public class DrawingWindow extends JPanel {
 
 
     private void drawTriangleOutline(Triangle triangle, Color color, int stroke) {
-        graphics.setColor(color);
+        float colorDarken = Math.max(Math.min(1.0f, triangle.brightness * 1.2f), 0.05f);
 
-        // set stroke
-        ((Graphics2D) graphics).setStroke(new BasicStroke(stroke));
+        graphics.setColor(new Color((int) (color.getRed() * colorDarken), (int) (color.getGreen() * colorDarken), (int) (color.getBlue() * colorDarken)));
 
         graphics.drawPolygon(new Polygon(
                 new int[]{(int) triangle.vertices[0].x, (int) triangle.vertices[1].x, (int) triangle.vertices[2].x},
@@ -381,17 +407,85 @@ public class DrawingWindow extends JPanel {
 
     public void drawHealthBar(int playerHealth) {
         int boxX = (int) (this.getWidth() * 0.05);
-        int boxY = (int) (this.getHeight() * 0.78);
+        int boxY = (int) (this.getHeight() * 0.782);
         int boxWidth = (int) (this.getWidth() * 0.085);
-        int boxHeight = 60;
+        int boxHeight = (int) (this.getHeight() * 0.08);
 
         // Draw the health bar line
         graphics.setColor(Color.RED);
         int lineX2 = boxX + (int) (boxWidth * playerHealth / 100.0);
         drawThickLine(boxX, boxY, lineX2, boxY, boxHeight);
 
+        // Draw the screen redness
+        graphics.setColor(new Color(255,0,0,100 -  playerHealth));
+        graphics.fillRect(0,0,this.getWidth(), this.getHeight());
+
         // Draw the box
         graphics.setColor(Color.black);
         drawBox(boxX, boxY, boxWidth, boxHeight);
     }
+
+    public void drawLevelCount(){
+        graphics.setColor(Color.white);
+        graphics.setFont(new Font("Arial", Font.PLAIN, 50));
+        graphics.drawString("Level: " + level, this.getWidth() - 280, this.getHeight() - 150);
+    }
+
+    public void  drawTriangleCustomArena(Triangle triangle){
+
+       triangle.color =  new Color(arenaColor.getRed(), arenaColor.getGreen(), arenaColor.getBlue());
+
+
+        drawTriangle(triangle);
+        // set stroke
+        ((Graphics2D) graphics).setStroke(new BasicStroke(3));
+        drawTriangleOutline(triangle, triangle.color, 3);
+    }
+
+    public static void fadeColor(float deltaTime){
+        if(colorSwitchCooldown <= 0.0f) {
+            arenaColor = changeColorOneStep(arenaColor);
+            colorSwitchCooldown = 0.1f;
+        }
+        colorSwitchCooldown -= deltaTime;
+    }
+
+    private static Color changeColorOneStep(Color color){
+        int blueMax = 255;
+        int blueMin = 30;
+        int redMax = 220;
+        int redMin = 0;
+
+        if(colorFade){
+            if(color.getRed() == redMax  && color.getBlue() < blueMax){
+                // increment blue
+                color = new Color(color.getRed(), color.getGreen(), color.getBlue() + 1);
+            }
+            else if(color.getBlue() == blueMax && color.getRed() > redMin){
+                // decrement red
+                color = new Color(color.getRed() - 1, color.getGreen(), color.getBlue());
+            }
+            else if(color.getBlue() == blueMax && color.getRed() == redMin){
+                colorFade = false;
+            }
+        }
+        else{
+            if(color.getBlue() == blueMax && color.getRed() < redMax){
+                // increment blue
+                color = new Color(color.getRed() + 1, color.getGreen(), color.getBlue());
+            }
+            else if(color.getRed() == redMax && color.getBlue() > blueMin){
+                // decrement red
+                color = new Color(color.getRed() , color.getGreen(), color.getBlue() -1);
+            }
+            else if(color.getRed() == redMax && color.getBlue() == blueMin){
+                colorFade = true;
+            }
+        }
+
+
+
+        return color;
+    }
 }
+

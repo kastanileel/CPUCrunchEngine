@@ -1,17 +1,20 @@
 package src.engine.core.gamemanagement;
 
-
-import src.engine.core.gamemanagement.gamelogic.EventSystem;
-import src.engine.core.gamemanagement.gamelogic.GameEventListener;
+import src.engine.core.rendering.DrawingWindow;
+import src.engine.core.tools.MKeyListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
 import src.scenes.ExampleScene;
+import src.scenes.startScene;
 
 import java.util.HashMap;
 
-public class GameContainer implements GameEventListener {
+public class GameContainer {
 
+    public enum Phases {
+        START, PAUSE, GAME
 
+    }
 
     EntityManager manager;
     GameSystems.Renderer rasterizer;
@@ -27,8 +30,17 @@ public class GameContainer implements GameEventListener {
 
     GameSystems.EnemySystem enemySystem;
 
+
+    GameSystems.GameLogicSystem gameLogicSystem;
+
+    GameSystems.hotkeyMenuSystem hotkeyMenuSystem;
+
+    GameSystems.startSceneSystem startSceneSystem;
+
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
+
+    static boolean playerDeath = false;
 
 
     GameContainer() throws Exception {
@@ -49,13 +61,19 @@ public class GameContainer implements GameEventListener {
 
         enemySystem = new GameSystems.EnemySystem();
 
+        gameLogicSystem = new GameSystems.GameLogicSystem();
 
-       Scene example = new ExampleScene(1000, "example");
-       scenes.put(example.getName(), example);
+        hotkeyMenuSystem = new GameSystems.hotkeyMenuSystem();
 
-        currentSceneName = "example";
+        startSceneSystem = new GameSystems.startSceneSystem();
 
-        EventSystem.getInstance().addListener(this);
+
+        Scene example = new ExampleScene(1000, "example");
+        Scene start = new startScene(1000, "start");
+        scenes.put(example.getName(), example);
+        scenes.put(start.getName(), start);
+
+        currentSceneName = "start";
 
         startGameLoop();
     }
@@ -66,17 +84,26 @@ public class GameContainer implements GameEventListener {
 
         long lastTime = System.nanoTime() / 1000000;
 
-        MusicPlayer.getInstance().loopMusic("src/sound/music.wav");
+        MusicPlayer.getInstance().loopMusic("src/sound/misc/music.wav");
 
+        Phases currentGamePhase = Phases.START;
 
-        while(true) {
-            long currentSystemTime = System.nanoTime();
-            float deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
+        boolean lastStateM = false;
 
+        boolean lastStatem = false;
+
+        boolean pauseResume = false;
+        long currentSystemTime = System.nanoTime();
+        lastTime = currentSystemTime;
+        float deltaTime;
+
+        while (true) {
+            currentSystemTime = System.nanoTime();
+            deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
             lastTime = currentSystemTime;
 
-            if(!currentSceneName.equals(activeSceneName)){
+            if (!currentSceneName.equals(activeSceneName)) {
                 Scene activeScene = scenes.get(currentSceneName);
 
                 activeScene.createScene();
@@ -90,40 +117,71 @@ public class GameContainer implements GameEventListener {
                 playerMovement.start(manager);
 
                 enemySystem.start(manager);
+                gameLogicSystem.start(manager);
+                hotkeyMenuSystem.start(manager);
+
+                startSceneSystem.start(manager);
             }
 
-            collisionSystem.update(manager, deltaTime);
-            rasterizer.update(manager, deltaTime);
-            physicsHandler.update(manager, deltaTime);
-            playerMovement.update(manager, deltaTime);
-            bulletSystem.update(manager, deltaTime);
-            pickupWeapon.update(manager, deltaTime);
-            damageSystem.update(manager, deltaTime);
-            enemySystem.update(manager, deltaTime);
+            MKeyListener keyListener = MKeyListener.getInstance();
 
 
-            MMouseListener.getInstance().update();
-            manager.clearDestroyedEntities();
+            if (playerDeath) {
+                deltaTime = 0;
+            }
 
-        }
+                switch (currentGamePhase) {
+                    case START:
+                        for (boolean key : keyListener.getKeyList()) {
+                            if (key) {
+                                DrawingWindow.windowState = DrawingWindow.WindowStates.INGAMESCREEN;
+                                currentSceneName = "example";
+                                currentGamePhase = Phases.GAME;
+                            }
+                        }
+                        break;
+                    case GAME:
+                        if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
+                            currentGamePhase = Phases.PAUSE;
+                            DrawingWindow.windowState = DrawingWindow.WindowStates.PAUSESCREEN;
+                        }
 
-        //System.out.println(System.nanoTime()/1000000 - lastTime);
-    }
+                        lastStateM = keyListener.isKeyPressed('P');
+                        lastStatem = keyListener.isKeyPressed('p');
+                        break;
+                    case PAUSE:
+                        deltaTime = 0;
+                        if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
+                            currentGamePhase = Phases.GAME;
+                            DrawingWindow.windowState = DrawingWindow.WindowStates.INGAMESCREEN;
+                        }
 
-    @Override
-    public void onFinishLevel(int level) {
+                        lastStateM = keyListener.isKeyPressed('P');
+                        lastStatem = keyListener.isKeyPressed('p');
+                        break;
+                }
+                collisionSystem.update(manager, deltaTime);
+                physicsHandler.update(manager, deltaTime);
+                playerMovement.update(manager, deltaTime);
+                bulletSystem.update(manager, deltaTime);
+                pickupWeapon.update(manager, deltaTime);
+                damageSystem.update(manager, deltaTime);
+                enemySystem.update(manager, deltaTime);
+                gameLogicSystem.update(manager, deltaTime);
+                rasterizer.update(manager, deltaTime);
+                hotkeyMenuSystem.update(manager, deltaTime);
+                startSceneSystem.update(manager, deltaTime);
 
-        // maybe switch active scenes here
+                MMouseListener.getInstance().update(deltaTime);
+                manager.clearDestroyedEntities();
 
-    }
+            }
 
-    @Override
-    public void onPlayerDeath() {
-
+            //System.out.println(System.nanoTime()/1000000 - lastTime);
     }
 
     public static void main(String[] args) throws Exception {
-        new GameContainer();
+            new GameContainer();
     }
 }
 

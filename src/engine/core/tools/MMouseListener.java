@@ -22,6 +22,10 @@ public class MMouseListener extends MouseAdapter {
 
     int width, height, x, y, maxEdgeDistance;
 
+    float cooldown = 0.7f;
+
+    float lastTimeMouseMoved = 0.0f;
+
     public static MMouseListener getInstance( ) {
         if (instance == null) instance = new MMouseListener();
         return instance;
@@ -41,6 +45,18 @@ public class MMouseListener extends MouseAdapter {
         frame.addMouseListener(this);
         frame.addMouseMotionListener(this);
         frame.addMouseWheelListener(this);
+
+        hideCursor();
+
+//mouseX = frame.getX() + width/2;
+        //mouseY = frame.getY() + height/2;
+       // lastMouseX = mouseX;
+       // lastMouseY = mouseY;
+
+        mouseX = width;
+        mouseY = height;
+        lastMouseX = 0;
+        lastMouseY = 0;
     }
 
     @Override
@@ -73,6 +89,8 @@ public class MMouseListener extends MouseAdapter {
         mouseX = e.getX();
         mouseY = e.getY();
 
+        lastTimeMouseMoved = 0.0f;
+
         doScreenEdgeCheck(e);
 
     }
@@ -82,17 +100,39 @@ public class MMouseListener extends MouseAdapter {
         mouseX = e.getX();
         mouseY = e.getY();
 
+        lastTimeMouseMoved = 0.0f;
+
         doScreenEdgeCheck(e);
 
     }
 
 
-    public void update() {
+    public void update(float deltaTime) {
         lastMouseX = mouseX;
         lastMouseY = mouseY;
 
         x = frame.getX();
         y = frame.getY();
+
+        cooldown -= deltaTime;
+
+        lastTimeMouseMoved += deltaTime;
+
+        if(lastTimeMouseMoved > 0.3f){
+
+            mouseX = x + width/2;
+            mouseY = y + height/2;
+            try {
+                Robot robot = new Robot();
+                robot.mouseMove(mouseX, mouseY);
+                lastMouseY = mouseY;
+                lastMouseX = mouseX;
+
+                hideCursor();
+            } catch (AWTException awtException) {
+                awtException.printStackTrace();
+            }
+        }
     }
 
     private void doScreenEdgeCheck(MouseEvent e) {
@@ -129,7 +169,7 @@ public class MMouseListener extends MouseAdapter {
 
     public void hideCursor() {
         frame.setCursor(frame.getToolkit().createCustomCursor(
-                new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "null"));
+               new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "null"));
     }
 
     // Getter methods to access the mouse state
@@ -142,10 +182,14 @@ public class MMouseListener extends MouseAdapter {
     }
 
     public int getMouseDeltaX() {
-        return mouseX - lastMouseX;
+        if (cooldown <= 0)
+            return mouseX - lastMouseX;
+        return 0;
     }
 
     public int getMouseDeltaY() {
-        return mouseY - lastMouseY;
+        if (cooldown <= 0)
+            return mouseY - lastMouseY;
+        return 0;
     }
 }

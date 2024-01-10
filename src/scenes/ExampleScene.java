@@ -24,7 +24,8 @@ public class ExampleScene extends Scene {
                     int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER);
                     if (id > -1) {
                         manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj", Color.blue);
-                        manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Hide;
+                        manager.rendering[id].renderType = GameComponents.Rendering.RenderType.CustomArena;
+                        manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.CustomArena);
                         manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
                         manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                         manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
@@ -39,100 +40,24 @@ public class ExampleScene extends Scene {
                 }
             }
 
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
 
-
-
-            int id;
-
-            //Scene
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/scenes/GameRoom.obj", Color.GRAY);//"./src/objects/rock/rock64.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(0.0f, -1.0f, 0.0f);
+                manager.rendering[id].mesh = new Mesh("src/objects/guns/knife/combatKnife.obj", "src/objects/guns/knife/combatKnife128.png");//"./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
+                manager.transform[id].pos = new Vector3(-0.5f, - 0.1f, 10.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+                manager.transform[id].scale = new Vector3(.1f, .1f, .1f);
 
-            }
-
-
-
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
-            if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/rock/rock.obj", Color.CYAN);//"./src/objects/rock/rock64.png");
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OutlineOnly;
-                manager.transform[id].pos = new Vector3(-0.5f, 0.5f, 15.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.7f, .7f, .7f);
-
-            }
-
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
-            if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.YELLOW);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(-10.0f, -0.5f, -10.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.15f, .15f, .15f);
-
-                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
 
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
+                manager.collider[id].colliderSize = new Vector3(3.0f, 3.0f, 3.0f);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
-
-            }
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
-            if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.GREEN);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(-5.0f, -0.5f, -10.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.025f, .025f, .025f);
-
-                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
-
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
-                manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
-
-            }
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
-            if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.RED);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(0.0f, -0.5f, -10.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.025f, .025f, .025f);
-
-                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
-
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
-                manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
-
-            }
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
-            if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.BLUE);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.transform[id].pos = new Vector3(5.0f, -0.5f, -10.0f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(.015f, .015f, .015f);
-
-                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
-
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(2.0f, 2.0f, 2.0f);
-                manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
-
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
             }
 
-         /*   id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+         /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
@@ -143,9 +68,9 @@ public class ExampleScene extends Scene {
 
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
-            } */
+            }*/
 
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+           /* id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
                 // Set up the transformation component
                 manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
@@ -169,7 +94,7 @@ public class ExampleScene extends Scene {
                 manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
                 manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
-            }
+            }*/
 
 
 
@@ -212,7 +137,7 @@ public class ExampleScene extends Scene {
 
                 manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
 
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", "./src/objects/guns/machineGun/AKM_texture.png");
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", "./src/objects/guns/machineGun/AKM128.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                 manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 3.0f);
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
@@ -224,6 +149,8 @@ public class ExampleScene extends Scene {
 
 
             }
+
+            manager.createEntity(GameComponents.GAMELOGIC);
 
           /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
@@ -251,7 +178,7 @@ public class ExampleScene extends Scene {
             }*/
 
            /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
-                    | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
+                    | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER| GameComponents.DAMAGEABLE);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -264,8 +191,8 @@ public class ExampleScene extends Scene {
 
                 manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
 
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.GRAY);
-                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", "./src/objects/guns/sniper/Sniper128.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                 manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 4.2f);
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
 

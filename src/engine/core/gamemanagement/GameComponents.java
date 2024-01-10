@@ -4,6 +4,9 @@ import src.engine.core.matutils.Mesh;
 import src.engine.core.matutils.Quaternion;
 import src.engine.core.matutils.Vector3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameComponents {
 
     public final static int
@@ -16,7 +19,13 @@ public class GameComponents {
             BULLET = 1 << 6,
             PICKUPWEAPON = 1 << 7,
             DAMAGEABLE = 1 << 8,
-            AIBEHAVIOR = 1 << 9;
+            AIBEHAVIOR = 1 << 9,
+
+            GAMELOGIC = 1 << 10,
+
+            STARTSCENE = 1 << 11,
+
+            CAMERAELEMENT = 1 << 12;
 
 
     public static class Transform {
@@ -33,6 +42,7 @@ public class GameComponents {
             TexturedAndOutline,
             Emissive,
             Hide,
+            CustomArena
             //OneColorAndOutline,
             //OneColorDerivedFromTexture,
 
@@ -88,7 +98,7 @@ public class GameComponents {
 
         public Quaternion colliderRotation;
 
-        public static enum ColliderTag{
+        public enum ColliderTag{
             PLAYER,
             ENEMY,
             BULLET,
@@ -96,6 +106,7 @@ public class GameComponents {
             GROUND,
             WALL,
             PICKUPWEAPON,
+            KNIFE,
             NONE
         }
 
@@ -132,6 +143,8 @@ public class GameComponents {
         WANDERING,
         CHASING,
         ATTACKING,
+
+        DEACTIVATED
     }
 
     public enum EnemyType {
@@ -142,7 +155,7 @@ public class GameComponents {
     }
 
     public static class AIBEHAVIOR {
-        public State currentState;
+        public State currentState = State.WANDERING;
         public EnemyType enemyType;
         public float timeSinceLastDirectionChange;
         public float wanderingDuration;
@@ -152,6 +165,20 @@ public class GameComponents {
         public float attackingDistance;
         public float shootingCooldown;
         public int chooseWanderingCounter;
+        public int damage;
+
+    }
+
+    public enum cameraElementTypes {
+        CAMERAFOCUSROUTE, CAMERAROUTE
+
+    }
+
+    public static class cameraElement {
+
+        public int listCounter;
+        public cameraElementTypes cameraElementType;
+        public ArrayList<Vector3> checkpointList;
 
     }
 

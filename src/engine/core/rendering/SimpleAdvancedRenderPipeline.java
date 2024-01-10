@@ -33,7 +33,7 @@ public class SimpleAdvancedRenderPipeline {
     private DrawingWindow drawingWindow;
     private Frame frame;
 
-    public static float fFov;
+    public static float fFov = 120.0f;
 
     private boolean finishedStepTwo;
 
@@ -285,7 +285,7 @@ public class SimpleAdvancedRenderPipeline {
         }
 
     }
-    public void stepTwo(){
+    public void stepTwo(float deltaTime){
 
         // depth sorting => triangles further away from the camera are drawn first
         trianglesToRender.sort((o1, o2) -> {
@@ -397,7 +397,7 @@ public class SimpleAdvancedRenderPipeline {
                                 mesh = meshesToRender.get(triangle.meshIndex);
                                 drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
                             } catch (Exception e) {
-
+                                System.out.println(e);
                                 triangle.color = Color.RED;
                                 drawingWindow.drawTriangle(triangle);
                             }
@@ -412,12 +412,17 @@ public class SimpleAdvancedRenderPipeline {
                         case Hide -> {
                            // do nothing
                         }
+                        case CustomArena -> {
+                            drawingWindow.drawTriangleCustomArena(triangle);
+                        }
                     }
                 }
                 catch (Exception e){
+                   // System.out.println(e);
                     if(triangle.renderType != null)
                         System.out.println(triangle.renderType.name());
-                   // triangle.color = Color.RED;
+                   if(triangle.color == null)
+                       triangle.color = Color.RED;
                     drawingWindow.drawTriangle(triangle);
                 }
 
