@@ -45,7 +45,7 @@ public class ExampleScene extends Scene {
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY);
 
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("src/objects/guns/pistol/startPistol.obj", "src/objects/guns/pistol/startPistol128.png");//"./src/objects/rock/rock64.png");
+                manager.rendering[id].mesh = new Mesh("src/objects/guns/knife/combatKnife.obj", "src/objects/guns/knife/combatKnife128.png");//"./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                 manager.transform[id].pos = new Vector3(-0.5f, - 0.1f, 10.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
