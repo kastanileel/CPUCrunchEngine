@@ -31,6 +31,10 @@ public class DrawingWindow extends JPanel {
     public static int level;
     public static WindowStates windowState = WindowStates.STARTSCREEN;
 
+    private boolean colorFade = true;
+    private float colorSwitchCooldown;
+    private Color arenaColor = new Color(130, 0, 255);
+
     public DrawingWindow(int width, int height, int textureMaxAccuracy, int textureMinAccuracy) {
 
         this.setSize(width, height);
@@ -369,10 +373,15 @@ public class DrawingWindow extends JPanel {
 
 
     private void drawTriangleOutline(Triangle triangle, Color color, int stroke) {
-        graphics.setColor(color);
+        float colorDarken = Math.max(Math.min(1.0f, triangle.brightness * 1.2f), 0.05f);
+
+        graphics.setColor(new Color((int) (color.getRed() * colorDarken), (int) (color.getGreen() * colorDarken), (int) (color.getBlue() * colorDarken)));
+
 
         // set stroke
         ((Graphics2D) graphics).setStroke(new BasicStroke(stroke));
+
+
 
         graphics.drawPolygon(new Polygon(
                 new int[]{(int) triangle.vertices[0].x, (int) triangle.vertices[1].x, (int) triangle.vertices[2].x},
@@ -426,6 +435,64 @@ public class DrawingWindow extends JPanel {
         graphics.setColor(Color.white);
         graphics.setFont(new Font("Arial", Font.PLAIN, 50));
         graphics.drawString("Level: " + level, this.getWidth() - 280, this.getHeight() - 150);
+    }
+
+    public void  drawTriangleCustomArena(Triangle triangle, float deltaTime){
+
+        //System.out.println("arenaRender");
+        //float brightness = triangle.brightness;
+        // i want to interpolate the color from purple to cyan over blue
+
+
+        // interpolate the color
+        if(colorSwitchCooldown <= 0.0f) {
+            arenaColor = changeColorOneStep(arenaColor);
+            colorSwitchCooldown = 30.0f;
+        }
+        colorSwitchCooldown -= deltaTime;
+       triangle.color =  new Color(arenaColor.getRed(), arenaColor.getGreen(), arenaColor.getBlue());
+
+
+        drawTriangle(triangle);
+        drawTriangleOutline(triangle, triangle.color, 3);
+    }
+
+    private Color changeColorOneStep(Color color){
+        int blueMax = 255;
+        int blueMin = 30;
+        int redMax = 220;
+        int redMin = 0;
+
+        if(colorFade){
+            if(color.getRed() == redMax  && color.getBlue() < blueMax){
+                // increment blue
+                color = new Color(color.getRed(), color.getGreen(), color.getBlue() + 1);
+            }
+            else if(color.getBlue() == blueMax && color.getRed() > redMin){
+                // decrement red
+                color = new Color(color.getRed() - 1, color.getGreen(), color.getBlue());
+            }
+            else if(color.getBlue() == blueMax && color.getRed() == redMin){
+                colorFade = false;
+            }
+        }
+        else{
+            if(color.getBlue() == blueMax && color.getRed() < redMax){
+                // increment blue
+                color = new Color(color.getRed() + 1, color.getGreen(), color.getBlue());
+            }
+            else if(color.getRed() == redMax && color.getBlue() > blueMin){
+                // decrement red
+                color = new Color(color.getRed() , color.getGreen(), color.getBlue() -1);
+            }
+            else if(color.getRed() == redMax && color.getBlue() == blueMin){
+                colorFade = true;
+            }
+        }
+
+
+
+        return color;
     }
 }
 

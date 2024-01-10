@@ -285,7 +285,7 @@ public class SimpleAdvancedRenderPipeline {
         }
 
     }
-    public void stepTwo(){
+    public void stepTwo(float deltaTime){
 
         // depth sorting => triangles further away from the camera are drawn first
         trianglesToRender.sort((o1, o2) -> {
@@ -411,6 +411,9 @@ public class SimpleAdvancedRenderPipeline {
                         }
                         case Hide -> {
                            // do nothing
+                        }
+                        case CustomArena -> {
+                            drawingWindow.drawTriangleCustomArena(triangle, deltaTime);
                         }
                     }
                 }
