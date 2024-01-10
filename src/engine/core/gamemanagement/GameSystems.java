@@ -1319,9 +1319,9 @@ public class GameSystems {
             //Scattering factor
             float factor = 0.4f;
             // generate random, small offset
-            float x = (float) Math.random() * 0.1f - 0.01f;
-            float y = (float) Math.random() * 0.1f - 0.01f;
-            float z = (float) Math.random() * 0.1f - 0.01f;
+            float x = (float) Math.random() * 0.01f - 0.005f;
+            float y = (float) Math.random() * 0.01f - 0.005f;
+            float z = (float) Math.random() * 0.01f - 0.005f;
 
             Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x, manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
             Vector3 direction = new Vector3(
@@ -1341,11 +1341,11 @@ public class GameSystems {
             //Bullet Spawnpoint adaption
             float yOffSet = 1f;
             //Scattering factor
-            float factor = 0.01f;
+            float factor = 0.1f;
             // generate random, small offset
-            float x = (float) Math.random() * 0.1f - 0.01f;
-            float y = (float) Math.random() * 0.1f - 0.01f;
-            float z = (float) Math.random() * 0.1f - 0.01f;
+            float x = (float) Math.random() * 0.4f - 0.2f;
+            float y = (float) Math.random() * 0.4f - 0.2f;
+            float z = (float) Math.random() * 0.4f - 0.2f;
 
             Vector3 normalizeVector = RenderMaths.normalizeVector(playerPosition.subtract(new Vector3(manager.transform[id].pos.x, manager.transform[id].pos.y + yOffSet, manager.transform[id].pos.z)));
             Vector3 direction = new Vector3(
@@ -1581,7 +1581,7 @@ public class GameSystems {
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
 
                             manager.aiBehavior[id].shootingCooldown = 0.8f;
-                            manager.physicsBody[id].speed = 1.0f;
+                            manager.physicsBody[id].speed = 0.5f;
                             manager.damageable[id].health = 10 * level;
                             manager.aiBehavior[id].chasingDistance = 40;
                             manager.aiBehavior[id].attackingDistance = 10;
