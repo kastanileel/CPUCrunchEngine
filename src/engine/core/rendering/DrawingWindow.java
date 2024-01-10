@@ -15,25 +15,21 @@ import java.awt.image.BufferedImage;
  * It contains the image buffer and offers methods for drawing textured and untextured triangles.
  */
 public class DrawingWindow extends JPanel {
+
+    public enum WindowStates {
+        DEATHSCREEN, PAUSESCREEN, STARTSCREEN, INGAMESCREEN
+    }
     private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     private BufferedImage imageBuffer;
     private Graphics graphics;
-
-
     public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
-
     public static boolean snipe = false;
     public static int playerHealth;
-
     public static int currentAmmo = 0;
-
-    public static boolean playerDead = false;
-    public static boolean onPause = false;
-    private boolean lastOnPauseState;
-
     public int maxAccuracy;
     public int minAccuracy;
     public static int level;
+    public static WindowStates windowState = WindowStates.STARTSCREEN;
 
     public DrawingWindow(int width, int height, int textureMaxAccuracy, int textureMinAccuracy) {
 
@@ -72,74 +68,60 @@ public class DrawingWindow extends JPanel {
 
     private void applyUI(){
 
-        if(playerDead){
-            // TODO: Death screen
-            //clear all Ui elements and draw death screen
-            graphics.setColor(new Color(0,0,0,235));
-            graphics.fillRect(0,0,this.getWidth(), this.getHeight());
-            graphics.setColor(Color.RED);
-            Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.07));
-            graphics.setFont(font);
-            graphics.drawString("YOU DIED", getWidth() / 2 - (int)(this.getWidth() * 0.15), getHeight() / 2 + (int)(this.getWidth() * 0.05));
-            //font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.022));
-            //graphics.setFont(font);
-            //graphics.drawString("Press r to restart", (int) (getWidth() * 0.05), (int)(getHeight() * 0.1));
-        }
-        if (onPause) {
-            graphics.setColor(new Color(0, 0, 0, 128));
-            graphics.fillRect(0, 0, getWidth(), getHeight());
-            graphics.setColor(Color.WHITE);
-            Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.03));
-            graphics.setFont(font);
-            graphics.drawString("Paused", getWidth() / 2 - (int)(this.getWidth() * 0.052), getHeight() / 2 - (int)(this.getWidth() * 0.05));
-            font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.022));
-            graphics.setFont(font);
-            graphics.drawString("Hotkeys:", (int) (getWidth() * 0.05), (int)(getHeight() * 0.1));
-            font = new Font("Arial", Font.PLAIN, (int)(this.getWidth() * 0.022));
-            graphics.setFont(font);
-            int i = 1;
-            graphics.drawString("Swap Weapons - 1, 2, 3 or 4", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ *this.getWidth() * 0.03));
-            graphics.drawString("Turn off/on music - m", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
-            graphics.drawString("Quitgame - q", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
-            graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+        switch (windowState) {
+            case DEATHSCREEN:
+                graphics.setColor(new Color(0,0,0,235));
+                graphics.fillRect(0,0,this.getWidth(), this.getHeight());
+                graphics.setColor(Color.RED);
+                Font font = new Font("Arial", Font.BOLD, (int)(this.getWidth() * 0.07));
+                graphics.setFont(font);
+                graphics.drawString("YOU DIED", getWidth() / 2 - (int)(this.getWidth() * 0.15), getHeight() / 2 + (int)(this.getWidth() * 0.05));
+                break;
+            case PAUSESCREEN:
+                graphics.setColor(new Color(0, 0, 0, 128));
+                graphics.fillRect(0, 0, getWidth(), getHeight());
+                graphics.setColor(Color.WHITE);
+                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
+                graphics.setFont(font);
+                graphics.drawString("Paused", getWidth() / 2 - (int) (this.getWidth() * 0.052), getHeight() / 2 - (int) (this.getWidth() * 0.05));
+                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.022));
+                graphics.setFont(font);
+                graphics.drawString("Hotkeys:", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1));
+                font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.022));
+                graphics.setFont(font);
+                int i = 1;
+                graphics.drawString("Turn off/on music - m", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                graphics.drawString("Quitgame - q", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+            case INGAMESCREEN:
+                graphics.setColor(Color.red);
+                //draw ammo count
+                font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.05));
+                graphics.setFont(font);
+                graphics.drawString(currentAmmo + "/\u221E", (int) (this.getWidth() * 0.15), (int) (this.getHeight() * 0.855));
 
-        } else if (onPause != lastOnPauseState){
-            clear();
+                graphics.setColor(Color.white);
+                drawHealthBar(playerHealth);
 
-        }
+                drawLevelCount();
+                graphics.setColor(Color.white);
+                graphics.setFont(font);
+                graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.055),(int)(this.getHeight() * 0.855));
 
-        lastOnPauseState = onPause;
-
-        if(!playerDead) {
-        graphics.setColor(Color.red);
-        //draw ammo count
-        Font font = new Font("Arial", Font.PLAIN, (int)(this.getWidth() * 0.05));
-        graphics.setFont(font);
-        graphics.drawString(currentAmmo + "/\u221E", (int)(this.getWidth() * 0.15),(int)(this.getHeight() * 0.855));
-
-        graphics.setColor(Color.white);
-        drawHealthBar(playerHealth);
-
-        drawLevelCount();
-        graphics.setColor(Color.white);
-        graphics.setFont(font);
-        graphics.drawString(Integer.toString(playerHealth), (int)(this.getWidth() * 0.055),(int)(this.getHeight() * 0.855));
-
-        drawCrosshair();
+                drawCrosshair();
+                break;
+            case STARTSCREEN:
+                graphics.setColor(new Color(0, 0, 0, 128));
+                graphics.fillRect(0, 0, getWidth(), getHeight());
+                graphics.setColor(Color.WHITE);
+                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
+                graphics.setFont(font);
+                graphics.drawString("If you skip this amazing startscreen by", getWidth() / 2 - (int) (this.getWidth() * 0.24), getHeight() / 2 - (int) (this.getHeight() * 0.05));
+                graphics.drawString("pressing a key im go to fucking murder you :)", getWidth() / 2 - (int) (this.getWidth() * 0.3), getHeight() / 2 - (int) (this.getHeight() * 0.05 - this.getHeight() * 0.05));
+                break;
         }
     }
 
-    /***
-     * This method draws a triangle on the image buffer.
-     *
-     * This method is used for untextured triangles.
-     * @param triangle The projected triangle to draw.
-     */
-
-
-    /***
-     * This method clears the image buffer before every render cycle.
-     */
     public void clear() {
         graphics.setColor(Color.black);
         graphics.fillRect(0, 0, getWidth(), getHeight());
@@ -421,14 +403,10 @@ public class DrawingWindow extends JPanel {
     }
 
     public void drawHealthBar(int playerHealth) {
-        //int boxX = (int) (this.getWidth() * 0.5);
-        int boxX = (100);
-        //int boxY = (int) (this.getHeight() * 0.78);
-        int boxY = (int) (this.getHeight() * 0.9);
-        //int boxWidth = (int) (this.getWidth() * 0.085);
-        int boxWidth = (int) (this.getWidth() * 0.15);
-        //int boxHeight = 60;
-        int boxHeight = 40;
+        int boxX = (int) (this.getWidth() * 0.05);
+        int boxY = (int) (this.getHeight() * 0.782);
+        int boxWidth = (int) (this.getWidth() * 0.085);
+        int boxHeight = (int) (this.getHeight() * 0.08);
 
         // Draw the health bar line
         graphics.setColor(Color.RED);

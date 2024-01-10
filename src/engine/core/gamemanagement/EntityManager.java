@@ -21,6 +21,8 @@ public class EntityManager {
 
     public GameComponents.AIBEHAVIOR[] aiBehavior;
 
+    public GameComponents.cameraElement[] cameraElement;
+
     public final int size;
 
     public HashMap<Integer, CollisionInformation> collisionList = new HashMap<>();
@@ -41,6 +43,8 @@ public class EntityManager {
         damageable = new GameComponents.Damageable[size];
 
         aiBehavior = new GameComponents.AIBEHAVIOR[size];
+
+        cameraElement = new GameComponents.cameraElement[size];
 
         flag = new int[size];
 
@@ -63,6 +67,7 @@ public class EntityManager {
                 if((flag & GameComponents.PICKUPWEAPON)>0) pickupWeapon[i] = new GameComponents.PickupWeapon();
                 if((flag & GameComponents.DAMAGEABLE)>0) damageable[i] = new GameComponents.Damageable();
                 if((flag & GameComponents.AIBEHAVIOR)>0) aiBehavior[i] = new GameComponents.AIBEHAVIOR();
+                if((flag & GameComponents.CAMERAELEMENT)>0) cameraElement[i] = new GameComponents.cameraElement();
 
                 return i;
             }
@@ -87,6 +92,7 @@ public class EntityManager {
             if (pickupWeapon[entityID] != null) pickupWeapon[entityID] = null;
             if (damageable[entityID] != null) damageable[entityID] = null;
             if (aiBehavior[entityID] != null) aiBehavior[entityID] = null;
+            if (cameraElement[entityID] != null) cameraElement[entityID] = null;
 
         }
 
