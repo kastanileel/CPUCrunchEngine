@@ -31,9 +31,9 @@ public class DrawingWindow extends JPanel {
     public static int level;
     public static WindowStates windowState = WindowStates.STARTSCREEN;
 
-    private boolean colorFade = true;
-    private float colorSwitchCooldown;
-    private Color arenaColor = new Color(130, 0, 255);
+    private static boolean colorFade = true;
+    private static float colorSwitchCooldown;
+    private static Color arenaColor = new Color(130, 0, 255);
 
     public DrawingWindow(int width, int height, int textureMaxAccuracy, int textureMinAccuracy) {
 
@@ -377,12 +377,6 @@ public class DrawingWindow extends JPanel {
 
         graphics.setColor(new Color((int) (color.getRed() * colorDarken), (int) (color.getGreen() * colorDarken), (int) (color.getBlue() * colorDarken)));
 
-
-        // set stroke
-        ((Graphics2D) graphics).setStroke(new BasicStroke(stroke));
-
-
-
         graphics.drawPolygon(new Polygon(
                 new int[]{(int) triangle.vertices[0].x, (int) triangle.vertices[1].x, (int) triangle.vertices[2].x},
                 new int[]{(int) triangle.vertices[0].y, (int) triangle.vertices[1].y, (int) triangle.vertices[2].y},
@@ -437,27 +431,26 @@ public class DrawingWindow extends JPanel {
         graphics.drawString("Level: " + level, this.getWidth() - 280, this.getHeight() - 150);
     }
 
-    public void  drawTriangleCustomArena(Triangle triangle, float deltaTime){
+    public void  drawTriangleCustomArena(Triangle triangle){
 
-        //System.out.println("arenaRender");
-        //float brightness = triangle.brightness;
-        // i want to interpolate the color from purple to cyan over blue
-
-
-        // interpolate the color
-        if(colorSwitchCooldown <= 0.0f) {
-            arenaColor = changeColorOneStep(arenaColor);
-            colorSwitchCooldown = 30.0f;
-        }
-        colorSwitchCooldown -= deltaTime;
        triangle.color =  new Color(arenaColor.getRed(), arenaColor.getGreen(), arenaColor.getBlue());
 
 
         drawTriangle(triangle);
+        // set stroke
+        ((Graphics2D) graphics).setStroke(new BasicStroke(3));
         drawTriangleOutline(triangle, triangle.color, 3);
     }
 
-    private Color changeColorOneStep(Color color){
+    public static void fadeColor(float deltaTime){
+        if(colorSwitchCooldown <= 0.0f) {
+            arenaColor = changeColorOneStep(arenaColor);
+            colorSwitchCooldown = 0.1f;
+        }
+        colorSwitchCooldown -= deltaTime;
+    }
+
+    private static Color changeColorOneStep(Color color){
         int blueMax = 255;
         int blueMin = 30;
         int redMax = 220;

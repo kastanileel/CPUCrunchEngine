@@ -413,7 +413,7 @@ public class SimpleAdvancedRenderPipeline {
                            // do nothing
                         }
                         case CustomArena -> {
-                            drawingWindow.drawTriangleCustomArena(triangle, deltaTime);
+                            drawingWindow.drawTriangleCustomArena(triangle);
                         }
                     }
                 }

@@ -166,6 +166,8 @@ public class GameSystems {
             renderPip.stepTwo(deltaTime);
             renderPip.draw();
 
+            DrawingWindow.fadeColor(deltaTime);
+
         }
 
     }
