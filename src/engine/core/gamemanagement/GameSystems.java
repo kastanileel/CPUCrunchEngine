@@ -246,7 +246,7 @@ public class GameSystems {
                     if(knifing)
                         handleKnife(manager, i);
 
-                    if (MKeyListener.getInstance().isKeyPressed('1')) {
+                    /*if (MKeyListener.getInstance().isKeyPressed('1')) {
                         try {
                             changeWeapon(GameComponents.PlayerMovement.WeaponType.PISTOL, manager, i);
 
@@ -278,7 +278,7 @@ public class GameSystems {
                         } catch (Exception e) {
 
                         }
-                    }
+                    }*/
 
 
                 }
@@ -755,8 +755,9 @@ public class GameSystems {
                 case PISTOL -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
                     manager.transform[id].scale = new Vector3(.2f, 0.2f, 0.2f);
-                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", Color.GRAY);
-                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", "./src/objects/guns/pistol/startPistol128.png");
+                    manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
 
@@ -767,8 +768,9 @@ public class GameSystems {
                 case MACHINE_GUN -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
                     manager.transform[id].scale = new Vector3(.05f, 0.05f, 0.05f);
-                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.GRAY);
-                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", "./src/objects/guns/machineGun/AKM128.png");
+                    manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -779,8 +781,9 @@ public class GameSystems {
                 case SHOTGUN -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SHOTGUN;
                     manager.transform[id].scale = new Vector3(.05f, 0.05f, 0.05f);
-                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.GRAY);
-                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", "./src/objects/guns/shotgun/Shotgun128.png");
+                    manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -791,8 +794,9 @@ public class GameSystems {
                 case SNIPER -> {
                     manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
                     manager.transform[id].scale = new Vector3(.04f, 0.04f, 0.04f);
-                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.GRAY);
-                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                    manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", "./src/objects/guns/sniper/Sniper128.png");
+                    manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
                     manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 4.2f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
 
