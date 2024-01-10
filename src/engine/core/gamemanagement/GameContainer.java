@@ -40,6 +40,8 @@ public class GameContainer {
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
 
+    static boolean playerDeath = false;
+
 
     GameContainer() throws Exception {
         scenes = new HashMap<>();
@@ -122,6 +124,10 @@ public class GameContainer {
             }
 
             MKeyListener keyListener = MKeyListener.getInstance();
+
+
+            if (playerDeath) {
+                deltaTime = 0;
 
             switch (currentGamePhase) {
                 case START:
