@@ -19,27 +19,6 @@ public class ExampleScene extends Scene {
         // for loop to create floor*/
 
         try {
-            for (int width = 0; width < 30; width++) {
-                for (int length = 0; length < 30; length++) {
-                    int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER);
-                    if (id > -1) {
-                        manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj", Color.blue);
-                        manager.rendering[id].renderType = GameComponents.Rendering.RenderType.CustomArena;
-                        manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.CustomArena);
-                        manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
-                        manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                        manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
-
-                        manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
-                        manager.collider[id].colliderSize = new Vector3(0.9f, 0.9f, 0.9f);
-                        manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
-                        manager.collider[id].center = manager.transform[id].pos;
-                        manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
-
-                    }
-                }
-            }
-
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
 
             if (id > -1) {
@@ -56,6 +35,113 @@ public class ExampleScene extends Scene {
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
             }
+
+
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER);
+            if (id > -1) {
+                manager.rendering[id].mesh = new Mesh("src/objects/scenes/GameRoom.obj", Color.GREEN);//"./src/objects/rock/rock64.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.CustomArena;
+                manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.CustomArena);
+                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
+
+            //Scene colliders:
+            /*id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(2.87461f*2, 2*1.0f, 6.60847f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(-0.869554f, -0.910281f, 2.8608f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(2.76108f*2, 2.0f, 4.72104f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(4.75628f, -0.910281f, 0.900751f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(2.86496f*2, 2.0f, 15.1826f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(12.2398f, -0.910281f, -0.033764f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(4.74815f*2, 2.0f, 15.1826f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(-10.3856f, -0.910281f, -0.033764f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(7.61181f*2, 2.0f, 4.83404f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(-1.84857f, -0.910281f, -10.4328f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(7.61181f*2, 2.0f, 2.03322f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(-1.84857f, -0.910281f, -13.3091f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(2.85498f*2, 2.0f, 1.89108f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(-6.61316f, -0.910281f, -9.39541f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(2.85498f*2, 4.41388f*2, 1.89108f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(8.44343f, 0.597267f, 11.2576f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(0.98101f*2, 4.41388f*2, 2.82516f*2);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(-10.2987f, 0.597267f, -0.939377f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }*/
+
+
+            id = manager.createEntity(GameComponents.TRANSFORM|GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(300.0f, 3*1.0f, 300.0f);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+            }
+
+
+
+
+
 
          /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
@@ -126,7 +212,7 @@ public class ExampleScene extends Scene {
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER | GameComponents.DAMAGEABLE);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].pos = new Vector3(0.0f, 2.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.05f, 0.05f, 0.05f);
                 manager.playerMovement[id].mouseSpeed = 0.08f;
@@ -146,8 +232,6 @@ public class ExampleScene extends Scene {
                 manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
-
-
             }
 
             manager.createEntity(GameComponents.GAMELOGIC);
@@ -267,6 +351,7 @@ public class ExampleScene extends Scene {
             manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
         }*/
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);
