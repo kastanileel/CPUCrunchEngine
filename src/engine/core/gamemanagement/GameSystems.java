@@ -921,16 +921,32 @@ public class GameSystems {
                 }
 
                 case ENEMY -> {
-                    Vector3 center = manager.collider[playerId].center;
-                    Vector3 otherPos = manager.transform[otherId].pos;
+                    System.out.println("colliding with enemy");
+                    switch (manager.aiBehavior[otherId].enemyType){
+                        case SIGHTSEEKER -> {
+                            manager.damageable[playerId].health -= manager.aiBehavior[otherId].damage;
+                            manager.damageable[otherId].health -= manager.damageable[otherId].health;
+                            DamageSystem.damagedEntities.add(otherId);
 
-                    Vector3 direction = RenderMaths.substractVectors(otherPos, center);
+                            MusicPlayer.getInstance().playRandomPlayerSound();
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SIGHTSEEKER_DEATH);
 
-                    direction = RenderMaths.normalizeVector(direction);
+                        }
+                        case GROUNDENEMY, GUNTURRED -> {
+                            Vector3 center = manager.collider[otherId].center;
+                            Vector3 playerPos = manager.transform[playerId].pos;
 
-                    manager.physicsBody[otherId].force.x = direction.x * 100.0f;
-                    // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
-                    manager.physicsBody[otherId].force.z = direction.z * 100.0f;
+                            Vector3 direction = RenderMaths.substractVectors(playerPos, center);
+
+                            direction = RenderMaths.normalizeVector(direction);
+
+                            manager.physicsBody[playerId].force.x = direction.x * 100.0f;
+                            // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                            manager.physicsBody[playerId].force.z = direction.z * 100.0f;
+                        }
+                    }
+
+                    DrawingWindow.playerHealth = manager.damageable[playerId].health;
 
                     DamageSystem.damagedEntities.add(playerId);
                     System.out.println("Playercollision " + manager.damageable[playerId].health);
@@ -1114,8 +1130,13 @@ public class GameSystems {
             switch (manager.aiBehavior[entityId].currentState) {
                 case WANDERING:
                     switch (manager.aiBehavior[entityId].enemyType) {
-                        case SIGHTSEEKER, GROUNDENEMY -> {
-                            handleWandering(manager, entityId, deltaTime);
+                        case SIGHTSEEKER -> {
+                            handleWanderingSightSeeker(manager, entityId, deltaTime);
+                            rotateEnemy(manager, entityId, deltaTime, manager.aiBehavior[entityId].wanderingDirection);
+
+                        }
+                        case GROUNDENEMY -> {
+                            handleWanderingGroundEnemy(manager, entityId, deltaTime);
                             rotateEnemy(manager, entityId, deltaTime, manager.aiBehavior[entityId].wanderingDirection);
 
                         }
@@ -1126,9 +1147,14 @@ public class GameSystems {
                     break;
                 case CHASING:
                     switch (manager.aiBehavior[entityId].enemyType) {
-                        case SIGHTSEEKER, GROUNDENEMY -> {
-                            handleChasing(manager, entityId, deltaTime);
+                        case SIGHTSEEKER -> {
+                            handleChasingSightSeeker(manager, entityId, deltaTime);
                             rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
+                        }
+                        case GROUNDENEMY -> {
+                            handleChasingGroundEnemy(manager, entityId, deltaTime);
+                            rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
+                            handleAttacking(manager,entityId,deltaTime);
                         }
                         case GUNTURRED -> {
                             rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
@@ -1142,7 +1168,22 @@ public class GameSystems {
             }
         }
 
-        private void handleWandering(EntityManager manager, int entityId, float deltaTime) {
+        private void handleWanderingSightSeeker(EntityManager manager, int entityId, float deltaTime) {
+            float maxWanderingDuration = 5f;
+            GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
+            GameComponents.AIBEHAVIOR aibehavior = manager.aiBehavior[entityId];
+
+            if (aibehavior.timeSinceLastDirectionChange > aibehavior.wanderingDuration) {
+                calculateWanderingDirection(manager, entityId, deltaTime);
+                aibehavior.timeSinceLastDirectionChange = 0;
+                aibehavior.wanderingDuration = (float) (Math.random() * maxWanderingDuration);
+            } else {
+                manager.aiBehavior[entityId].timeSinceLastDirectionChange += deltaTime;
+                physicsBody.velocity = new Vector3(aibehavior.wanderingDirection.x, 0f, aibehavior.wanderingDirection.z);
+            }
+        }
+
+        private void handleWanderingGroundEnemy(EntityManager manager, int entityId, float deltaTime) {
             float maxWanderingDuration = 5f;
             GameComponents.PhysicsBody physicsBody = manager.physicsBody[entityId];
             GameComponents.AIBEHAVIOR aibehavior = manager.aiBehavior[entityId];
@@ -1206,7 +1247,16 @@ public class GameSystems {
         }
 
 
-        private void handleChasing(EntityManager manager, int entityId, float deltaTime) {
+        private void handleChasingSightSeeker(EntityManager manager, int entityId, float deltaTime) {
+            Vector3 vector3 = RenderMaths.normalizeVector(distanceVectorPlayerEnemy);
+            manager.physicsBody[entityId].velocity = new Vector3(
+                    vector3.x * manager.physicsBody[entityId].speed,
+                    (vector3.y - 0.1f) * manager.physicsBody[entityId].speed,
+                    vector3.z * manager.physicsBody[entityId].speed
+            );
+        }
+
+        private void handleChasingGroundEnemy(EntityManager manager, int entityId, float deltaTime) {
             Vector3 vector3 = RenderMaths.normalizeVector(distanceVectorPlayerEnemy);
             manager.physicsBody[entityId].velocity = new Vector3(
                     vector3.x * manager.physicsBody[entityId].speed,
@@ -1216,8 +1266,6 @@ public class GameSystems {
         }
 
         private void handleAttacking(EntityManager manager, int entityId, float deltaTime) {
-            manager.physicsBody[entityId].velocity = new Vector3(0.0f, 0.0f, 0.0f);
-
             manager.aiBehavior[entityId].shootingCooldown -= deltaTime;
 
             switch (manager.aiBehavior[entityId].enemyType) {
@@ -1265,7 +1313,7 @@ public class GameSystems {
 
         private void gunturredShotHandler(EntityManager manager, int id, float deltaTime) {
             // 1. set cooldown
-            manager.aiBehavior[id].shootingCooldown = 1f;
+            manager.aiBehavior[id].shootingCooldown = 3f;
             //Bullet Spawnpoint adaption
             float yOffSet = 0f;
             //Scattering factor
@@ -1283,13 +1331,13 @@ public class GameSystems {
             );
 
 
-            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
+            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_SNIPER, yOffSet);
 
         }
 
         private void groundenemyShotHandler(EntityManager manager, int id, float deltaTime) {
             // 1. set cooldown
-            manager.aiBehavior[id].shootingCooldown = 6f;
+            manager.aiBehavior[id].shootingCooldown = 0.8f;
             //Bullet Spawnpoint adaption
             float yOffSet = 1f;
             //Scattering factor
@@ -1306,7 +1354,7 @@ public class GameSystems {
                     normalizeVector.z + z * factor
             );
 
-            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_PISTOL, yOffSet);
+            shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_AK, yOffSet);
 
         }
 
@@ -1532,12 +1580,12 @@ public class GameSystems {
 
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
 
-                            manager.aiBehavior[id].shootingCooldown = 6f;
-                            manager.physicsBody[id].speed = 1f;
+                            manager.aiBehavior[id].shootingCooldown = 0.8f;
+                            manager.physicsBody[id].speed = 1.0f;
                             manager.damageable[id].health = 10 * level;
                             manager.aiBehavior[id].chasingDistance = 40;
-                            manager.aiBehavior[id].attackingDistance = 30;
-                            manager.aiBehavior[id].damage = 5 * level;
+                            manager.aiBehavior[id].attackingDistance = 10;
+                            manager.aiBehavior[id].damage = level;
                             manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(2f, 2f, 1f);
                             manager.collider[id].center = manager.transform[id].pos;
@@ -1561,13 +1609,13 @@ public class GameSystems {
 
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.SIGHTSEEKER;
 
-                            manager.aiBehavior[id].shootingCooldown = 1f;
+                            manager.aiBehavior[id].shootingCooldown = 3f;
                             manager.physicsBody[id].speed = 4f;
                             manager.damageable[id].health = 5 * level;
-                            manager.aiBehavior[id].chasingDistance = 30;
-                            manager.aiBehavior[id].attackingDistance = 5;
-                            manager.aiBehavior[id].damage = level;
-                            manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
+                            manager.aiBehavior[id].chasingDistance = 50;
+                            manager.aiBehavior[id].attackingDistance = 0;
+                            manager.aiBehavior[id].damage = level * 3;
+                            manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 1f, 1f);
                             manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
@@ -1575,7 +1623,7 @@ public class GameSystems {
                         }
 
                     }
-                    case 2 ->{
+                    case 2->{
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
@@ -1593,8 +1641,8 @@ public class GameSystems {
                             manager.aiBehavior[id].shootingCooldown = 1f;
                             manager.physicsBody[id].speed = 0f;
                             manager.damageable[id].health = 5 * level;
-                            manager.aiBehavior[id].chasingDistance = 40;
-                            manager.aiBehavior[id].attackingDistance = 40;
+                            manager.aiBehavior[id].chasingDistance = 100;
+                            manager.aiBehavior[id].attackingDistance = manager.aiBehavior[id].chasingDistance;
                             manager.aiBehavior[id].damage = level;
                             manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);

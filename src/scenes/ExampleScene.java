@@ -39,10 +39,7 @@ public class ExampleScene extends Scene {
                 }
             }
 
-
-            int id;
-
-            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY);
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
 
             if (id > -1) {
                 manager.rendering[id].mesh = new Mesh("src/objects/guns/pistol/startPistol.obj", "src/objects/guns/pistol/startPistol128.png");//"./src/objects/rock/rock64.png");
@@ -51,6 +48,12 @@ public class ExampleScene extends Scene {
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.1f, .1f, .1f);
 
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(3.0f, 3.0f, 3.0f);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
             }
 
          /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
