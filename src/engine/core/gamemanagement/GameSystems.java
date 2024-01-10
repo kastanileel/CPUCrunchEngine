@@ -1458,7 +1458,13 @@ public class GameSystems {
 
         @Override
         public void onPlayerDeath() {
-            DrawingWindow.windowState = DrawingWindow.WindowStates.DEATHSCREEN;            MusicPlayer.getInstance().stopGameMusic();
+
+
+            GameContainer.playerDeath = true;
+            MusicPlayer.getInstance().stopGameMusic();
+
+            DrawingWindow.windowState = DrawingWindow.WindowStates.DEATHSCREEN;            
+
             System.out.println("Player died");
             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.GAME_OVER);
         }
