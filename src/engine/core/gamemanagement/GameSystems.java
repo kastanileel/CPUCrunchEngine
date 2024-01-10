@@ -163,8 +163,10 @@ public class GameSystems {
             }
 
             // run this in a second thread
-            renderPip.stepTwo();
+            renderPip.stepTwo(deltaTime);
             renderPip.draw();
+
+            DrawingWindow.fadeColor(deltaTime);
 
         }
 

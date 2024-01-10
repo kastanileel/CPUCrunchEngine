@@ -42,6 +42,7 @@ public class GameComponents {
             TexturedAndOutline,
             Emissive,
             Hide,
+            CustomArena
             //OneColorAndOutline,
             //OneColorDerivedFromTexture,
 
