@@ -211,7 +211,7 @@ public class GameSystems {
                 manager.transform[knife].scale = new Vector3(0.05f, 0.05f, 0.05f);
                 manager.physicsBody[knife].mass = 0.1f;
 
-                manager.rendering[knife].mesh = new Mesh("./src/objects/guns/knife/combatKnife.obj", Color.RED);
+                manager.rendering[knife].mesh = new Mesh("src/objects/guns/knife/combatKnife.obj", "src/objects/guns/knife/combatKnife128.png");//"./src/objects/rock/rock64.png");
                 manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.Hide;
                 manager.rendering[knife].modelRotation = new Vector3(0.1f, -3.1415f / 2.0f, 3.0015f / 2.0f);
                 manager.physicsBody[knife].speed = 100.0f;
@@ -611,8 +611,8 @@ public class GameSystems {
                 knifeCooldown = knifeTime;
                 manager.transform[knife].pos = Camera.getInstance().position.clone();
                 manager.collider[knife].center = manager.transform[knife].pos;
-                manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.OneColor;
-                manager.rendering[knife].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
+                manager.rendering[knife].renderType = GameComponents.Rendering.RenderType.Textured;
+                manager.rendering[knife].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
 
                 // get direction of camera
                 Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 3.0f), Camera.getInstance().rotation.y);
