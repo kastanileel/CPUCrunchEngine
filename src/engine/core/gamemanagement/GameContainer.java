@@ -5,12 +5,16 @@ import src.engine.core.tools.MKeyListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
 import src.scenes.ExampleScene;
+import src.scenes.startScene;
 
 import java.util.HashMap;
 
 public class GameContainer {
 
+    public enum Phases {
+        START, PAUSE, GAME
 
+    }
 
     EntityManager manager;
     GameSystems.Renderer rasterizer;
@@ -30,6 +34,8 @@ public class GameContainer {
     GameSystems.GameLogicSystem gameLogicSystem;
 
     GameSystems.hotkeyMenuSystem hotkeyMenuSystem;
+
+    GameSystems.startSceneSystem startSceneSystem;
 
     HashMap<String, Scene> scenes;
     static String currentSceneName = "";
@@ -59,26 +65,28 @@ public class GameContainer {
 
         hotkeyMenuSystem = new GameSystems.hotkeyMenuSystem();
 
+        startSceneSystem = new GameSystems.startSceneSystem();
+
 
        Scene example = new ExampleScene(1000, "example");
+       Scene start = new startScene(1000, "start");
        scenes.put(example.getName(), example);
+       scenes.put(start.getName(), start);
 
-        currentSceneName = "example";
-
-
+       currentSceneName = "start";
 
         startGameLoop();
     }
 
     void startGameLoop() throws Exception {
 
-
-
         String activeSceneName = "";
 
         long lastTime = System.nanoTime() / 1000000;
 
         MusicPlayer.getInstance().loopMusic("src/sound/misc/music.wav");
+
+        Phases currentGamePhase = Phases.START;
 
         boolean lastStateM = false;
 
@@ -90,7 +98,6 @@ public class GameContainer {
         float deltaTime;
 
         while(true) {
-
             currentSystemTime = System.nanoTime();
             deltaTime = ((float) currentSystemTime / 1000000 - (float) lastTime / 1000000) / 1000.0f;
 
@@ -112,30 +119,46 @@ public class GameContainer {
                 enemySystem.start(manager);
                 gameLogicSystem.start(manager);
                 hotkeyMenuSystem.start(manager);
+
+                startSceneSystem.start(manager);
             }
 
             MKeyListener keyListener = MKeyListener.getInstance();
 
-            if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
-                if (pauseResume) {
-                    pauseResume = false;
-                    DrawingWindow.onPause = false;
-                } else {
-                    pauseResume = true;
-                    DrawingWindow.onPause = true;
-                }
-            }
 
-            lastStateM = keyListener.isKeyPressed('P');
-            lastStatem = keyListener.isKeyPressed('p');
-
-            hotkeyMenuSystem.update(manager, deltaTime);
-
-            if (pauseResume || playerDeath) {
+            if (playerDeath) {
                 deltaTime = 0;
-            }
 
-            rasterizer.update(manager, deltaTime);
+            switch (currentGamePhase) {
+                case START:
+                    for (boolean key : keyListener.getKeyList()) {
+                        if (key) {
+                            DrawingWindow.windowState = DrawingWindow.WindowStates.INGAMESCREEN;
+                            currentSceneName = "example";
+                            currentGamePhase = Phases.GAME;
+                        }
+                    }
+                    break;
+                case GAME:
+                    if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
+                        currentGamePhase = Phases.PAUSE;
+                        DrawingWindow.windowState = DrawingWindow.WindowStates.PAUSESCREEN;
+                    }
+
+                    lastStateM = keyListener.isKeyPressed('P');
+                    lastStatem = keyListener.isKeyPressed('p');
+                    break;
+                case PAUSE:
+                    deltaTime = 0;
+                    if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
+                        currentGamePhase = Phases.GAME;
+                        DrawingWindow.windowState = DrawingWindow.WindowStates.INGAMESCREEN;
+                    }
+
+                    lastStateM = keyListener.isKeyPressed('P');
+                    lastStatem = keyListener.isKeyPressed('p');
+                    break;
+            }
             collisionSystem.update(manager, deltaTime);
             physicsHandler.update(manager, deltaTime);
             playerMovement.update(manager, deltaTime);
@@ -144,11 +167,12 @@ public class GameContainer {
             damageSystem.update(manager, deltaTime);
             enemySystem.update(manager, deltaTime);
             gameLogicSystem.update(manager, deltaTime);
-
+            rasterizer.update(manager, deltaTime);
+            hotkeyMenuSystem.update(manager, deltaTime);
+            startSceneSystem.update(manager, deltaTime);
 
             MMouseListener.getInstance().update(deltaTime);
             manager.clearDestroyedEntities();
-
 
         }
 

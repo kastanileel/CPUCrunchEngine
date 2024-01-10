@@ -40,14 +40,10 @@ public class ExampleScene extends Scene {
             }
 
 
-
-
             int id;
 
-
-
-
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY);
+
             if (id > -1) {
                 manager.rendering[id].mesh = new Mesh("src/objects/guns/pistol/startPistol.obj", "src/objects/guns/pistol/startPistol128.png");//"./src/objects/rock/rock64.png");
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
@@ -56,8 +52,6 @@ public class ExampleScene extends Scene {
                 manager.transform[id].scale = new Vector3(.1f, .1f, .1f);
 
             }
-
-
 
          /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
             if (id > -1) {
@@ -151,6 +145,8 @@ public class ExampleScene extends Scene {
 
 
             }
+
+            manager.createEntity(GameComponents.GAMELOGIC);
 
           /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);

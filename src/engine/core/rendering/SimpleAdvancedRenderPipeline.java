@@ -33,7 +33,7 @@ public class SimpleAdvancedRenderPipeline {
     private DrawingWindow drawingWindow;
     private Frame frame;
 
-    public static float fFov;
+    public static float fFov = 120.0f;
 
     private boolean finishedStepTwo;
 
