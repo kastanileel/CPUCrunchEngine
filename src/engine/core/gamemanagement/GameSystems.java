@@ -1499,7 +1499,7 @@ public class GameSystems {
         private void spawnShotgun(EntityManager manager) throws IOException {
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.CYAN);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.PINK);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = weaponSpawn.clone();
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -1518,7 +1518,7 @@ public class GameSystems {
         private void spawnMachinegun(EntityManager manager) throws IOException {
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.CYAN);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.PINK);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = weaponSpawn.clone();
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -1537,7 +1537,7 @@ public class GameSystems {
         private void spawnSniper(EntityManager manager) throws IOException {
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.CYAN);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.PINK);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = weaponSpawn.clone();
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -1564,8 +1564,25 @@ public class GameSystems {
             for(int i  = 0; i < livingEnemies; i++){
 
                 int enemyType = rand.nextInt(3);
-                float spawnX =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
-                float spawnZ =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
+                float spawnX;
+                float spawnZ;
+
+                if(rand.nextBoolean()){
+                    if(rand.nextBoolean())
+                        spawnX = 15.0f;
+                    else
+                        spawnX = -15.0f;
+                    spawnZ =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
+                }
+                else {
+                    if(rand.nextBoolean())
+                        spawnZ = 15.0f;
+                    else
+                        spawnZ = -15.0f;
+                    spawnX =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
+                }
+
+
 
                 switch (enemyType){
                     case 0 -> {
@@ -1593,7 +1610,7 @@ public class GameSystems {
                             manager.aiBehavior[id].attackingDistance = 10;
                             manager.aiBehavior[id].damage = level;
                             manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
-                            manager.collider[id].colliderSize = new Vector3(2f, 2f, 1f);
+                            manager.collider[id].colliderSize = new Vector3(4f, 4f, 1f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
                             manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
