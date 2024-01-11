@@ -422,7 +422,7 @@ public class ExampleScene extends Scene {
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", "./src/objects/guns/pistol/startPistol128.png");
                 manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
+                manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 1.5f);
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
 
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;

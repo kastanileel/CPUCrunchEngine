@@ -309,8 +309,8 @@ public class GameSystems {
             // Clamp the vertical rotation to a range if you don't want it to flip over
             if (cam.rotation.x > 0.2f)
                 cam.rotation.x = 0.2f;
-            if (cam.rotation.x < -0.1f)
-                cam.rotation.x = -0.1f;
+            if (cam.rotation.x < -0.4f)
+                cam.rotation.x = -0.4f;
 
             float yRot = cam.rotation.y;
             Vector3 vec = manager.rendering[id].modelTranslation;
@@ -760,7 +760,7 @@ public class GameSystems {
                     manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", "./src/objects/guns/pistol/startPistol128.png");
                     manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
+                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 1.0f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
 
                     MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_PISTOL);
@@ -773,7 +773,7 @@ public class GameSystems {
                     manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", "./src/objects/guns/machineGun/AKM128.png");
                     manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 3.0f);
+                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 1.9f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
 
                     MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_AK);
@@ -786,7 +786,7 @@ public class GameSystems {
                     manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", "./src/objects/guns/shotgun/Shotgun128.png");
                     manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 3.0f);
+                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 1.9f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
 
                     MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SHOTGUN);
@@ -799,7 +799,7 @@ public class GameSystems {
                     manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", "./src/objects/guns/sniper/Sniper128.png");
                     manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 4.2f);
+                    manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 2.6f);
                     manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
 
                     MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.PICKUP_SNIPER);
@@ -1345,7 +1345,7 @@ public class GameSystems {
             // 1. set cooldown
             manager.aiBehavior[id].shootingCooldown = 0.8f;
             //Bullet Spawnpoint adaption
-            float yOffSet = 1f;
+            float yOffSet = 2f;
             //Scattering factor
             float factor = 0.1f;
             // generate random, small offset
@@ -1580,7 +1580,7 @@ public class GameSystems {
 
                             manager.transform[id].pos = new Vector3(spawnX, -0.9f, spawnZ);
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                            manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
+                            manager.transform[id].scale = new Vector3(.4f, .4f, .4f);
 
                             manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
@@ -1635,7 +1635,8 @@ public class GameSystems {
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
 
-                            manager.transform[id].pos = new Vector3(spawnX, 0.0f, spawnZ);
+
+                            manager.transform[id].pos = new Vector3(spawnX, rand.nextInt(1, 4), spawnZ);
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
                             manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
