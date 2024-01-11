@@ -1461,7 +1461,7 @@ public class GameSystems {
                     // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
                     manager.physicsBody[enemyId].force.z = direction.z * 50.0f;
                     manager.aiBehavior[enemyId].wanderingDirection = new Vector3(direction.x, 0, direction.z).rotateY((float) Math.PI / 2);
-                    manager.aiBehavior[enemyId].currentState = GameComponents.State.COLLIDED;
+                    //manager.aiBehavior[enemyId].currentState = GameComponents.State.COLLIDED;
                     manager.aiBehavior[enemyId].colliderbounceTime = 2f;
                 }
             }
@@ -1704,7 +1704,7 @@ public class GameSystems {
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GROUNDENEMY;
 
                             manager.aiBehavior[id].shootingCooldown = 0.8f;
-                            manager.physicsBody[id].speed = 0.5f;
+                            manager.physicsBody[id].speed = 1.0f;
                             manager.damageable[id].health = 10 * level;
                             manager.aiBehavior[id].chasingDistance = 40;
                             manager.aiBehavior[id].attackingDistance = 10;
