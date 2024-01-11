@@ -22,7 +22,7 @@ public class DrawingWindow extends JPanel {
     private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     private BufferedImage imageBuffer;
     private Graphics graphics;
-    public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
+    public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
     public static boolean snipe = false;
     public static int playerHealth;
     public static int currentAmmo = 0;

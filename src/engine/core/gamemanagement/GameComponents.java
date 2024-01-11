@@ -76,6 +76,7 @@ public class GameComponents {
             MACHINE_GUN,
             SHOTGUN,
             SNIPER,
+            HEALTHPACK
         }
 
         public WeaponType weaponType;

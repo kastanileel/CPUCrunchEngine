@@ -57,7 +57,7 @@ public class ExampleScene extends Scene {
 
             }
 
-            float size = 4.4f;
+            float size = 3.7f;
             ///// first block
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
@@ -407,7 +407,7 @@ public class ExampleScene extends Scene {
             id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
                     | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER | GameComponents.DAMAGEABLE);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].pos = new Vector3(0.0f, 2.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(.05f, 0.05f, 0.05f);
                 manager.playerMovement[id].mouseSpeed = 0.08f;
@@ -416,12 +416,14 @@ public class ExampleScene extends Scene {
                 manager.physicsBody[id].speed = 3.0f;
                 manager.physicsBody[id].velocity = new Vector3(0, 0, 0);
 
-                manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.MACHINE_GUN;
+                manager.playerMovement[id].weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
 
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", "./src/objects/guns/machineGun/AKM128.png");
+                manager.transform[id].scale = new Vector3(.2f, 0.2f, 0.2f);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/pistol/startPistol.obj", "./src/objects/guns/pistol/startPistol128.png");
+                manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
-                manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.5f, 3.0f);
-                manager.rendering[id].modelRotation = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.rendering[id].modelTranslation = new Vector3(-0.5f, -0.7f, 1.5f);
+                manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
 
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                 manager.collider[id].colliderSize = new Vector3(0.5f, 1.0f, 1.0f);

@@ -22,7 +22,7 @@ public class startScene extends Scene {
                     int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER);
                     if (id > -1) {
                         manager.rendering[id].mesh = new Mesh("./src/objects/rock/plane.obj", Color.blue);
-                        manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
+                        manager.rendering[id].renderType = GameComponents.Rendering.RenderType.CustomArena;
                         manager.transform[id].pos = new Vector3(-15.0f + width, -1.0f, -15.0f + length);
                         manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                         manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
