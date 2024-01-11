@@ -1639,8 +1639,8 @@ public class GameSystems {
                             manager.aiBehavior[id].damage = level;
                             manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
                             manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
-                            manager.collider[id].center = manager.transform[id].pos;
-                            manager.rendering[id].modelTranslation = new Vector3(0.0f, 1.0f, 0.0f);
+                            manager.collider[id].center = RenderMaths.addVectors(manager.transform[id].pos, new Vector3(0.0f, -1.0f, 0.0f));
+                            manager.rendering[id].modelTranslation = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
                             manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                         }
