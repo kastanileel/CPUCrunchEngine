@@ -143,8 +143,8 @@ public class GameComponents {
         WANDERING,
         CHASING,
         ATTACKING,
-
-        DEACTIVATED
+        DEACTIVATED,
+        COLLIDED
     }
 
     public enum EnemyType {
@@ -166,6 +166,7 @@ public class GameComponents {
         public float shootingCooldown;
         public int chooseWanderingCounter;
         public int damage;
+        public float colliderbounceTime;
 
     }
 
