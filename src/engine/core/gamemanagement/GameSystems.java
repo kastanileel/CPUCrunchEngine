@@ -773,6 +773,16 @@ public class GameSystems {
 
                     DrawingWindow.weaponType = GameComponents.PlayerMovement.WeaponType.SNIPER;
                 }
+                case HEALTHPACK -> {
+                    int healthIncrease = 20;
+                    manager.damageable[id].health += healthIncrease;
+                    if (manager.damageable[id].health > 100)
+                        manager.damageable[id].health = 100;
+
+                    DrawingWindow.playerHealth = manager.damageable[id].health;
+                    System.out.println("Health: " + manager.damageable[id].health);
+                    MusicPlayer.getInstance().playSound("src/sound/misc/heal.wav");
+                }
             }
         }
 
@@ -1474,6 +1484,35 @@ public class GameSystems {
 
         }
 
+        private void spawnHealthPack(EntityManager manager) throws IOException{
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
+            if (id > -1) {
+                Random rand = new Random();
+                int x = 13;
+                int z = 13;
+                if(rand.nextBoolean())
+                    x = -x;
+
+                if(rand.nextBoolean())
+                    z = -z;
+
+
+                manager.rendering[id].mesh = new Mesh("./src/objects/misc/healthPack.obj", "./src/objects/misc/healthPack128.png");
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured;
+                manager.transform[id].pos = new Vector3(x, 0.0f, z);
+                manager.transform[id].rot = new Vector3(0.0f, -1.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(.20f, .20f, .20f);
+                manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+                manager.pickupWeapon[id].weaponType = GameComponents.PlayerMovement.WeaponType.HEALTHPACK;
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(3.0f, 2.0f, 2.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PICKUPWEAPON;
+
+            }
+        }
+
         private void spawnShotgun(EntityManager manager) throws IOException {
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
@@ -1536,6 +1575,8 @@ public class GameSystems {
             DrawingWindow.level = level;
 
             livingEnemies = level;
+
+            spawnHealthPack(manager);
 
             Random rand = new Random();
 
