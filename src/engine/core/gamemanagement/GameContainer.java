@@ -1,6 +1,7 @@
 package src.engine.core.gamemanagement;
 
 import src.engine.core.rendering.DrawingWindow;
+import src.engine.core.rendering.SimpleAdvancedRenderPipeline;
 import src.engine.core.tools.MKeyListener;
 import src.engine.core.tools.MMouseListener;
 import src.engine.core.tools.MusicPlayer;
@@ -137,6 +138,7 @@ public class GameContainer {
                                 DrawingWindow.windowState = DrawingWindow.WindowStates.INGAMESCREEN;
                                 currentSceneName = "example";
                                 currentGamePhase = Phases.GAME;
+                                SimpleAdvancedRenderPipeline.fFov = 150.0f;
                             }
                         }
                         break;
