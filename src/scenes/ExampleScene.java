@@ -57,7 +57,7 @@ public class ExampleScene extends Scene {
 
             }
 
-            float size = 4.4f;
+            float size = 3.7f;
             ///// first block
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {

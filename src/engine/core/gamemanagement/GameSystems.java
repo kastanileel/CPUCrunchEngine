@@ -979,22 +979,33 @@ public class GameSystems {
         }
 
         private void reactToCollisionTagBullet(EntityManager manager, int bulletId, int otherID) {
-            if (manager.damageable[otherID] != null) {
-                if (!((manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.ENEMY && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.ENEMY)
-                        || (manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.PLAYER && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER))) {
-                    System.out.println(manager.damageable[otherID].health);
-                    DamageSystem.damagedEntities.add(otherID);
 
-                    manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
-                    if (manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER) {
-                        MusicPlayer.getInstance().playRandomPlayerSound();
-                        DrawingWindow.playerHealth = manager.damageable[otherID].health;
+            try{
+                if (manager.damageable[otherID] != null) {
+                    if (!((manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.ENEMY && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.ENEMY)
+                            || (manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.PLAYER && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER))) {
+                        System.out.println(manager.damageable[otherID].health);
+                        DamageSystem.damagedEntities.add(otherID);
+
+                        manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
+                        if (manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER) {
+                            MusicPlayer.getInstance().playRandomPlayerSound();
+                            DrawingWindow.playerHealth = manager.damageable[otherID].health;
+                        }
+                        System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
+
+                        manager.destroyEntity(bulletId);
                     }
-                    System.out.println("Bullet hit: " + manager.collider[otherID].colliderTag.name());
-
+                }
+                else if(manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.OBSTACLE){
                     manager.destroyEntity(bulletId);
                 }
+
             }
+            catch(Exception e){
+                System.out.println("beeeenis");
+            }
+
         }
     }
 
