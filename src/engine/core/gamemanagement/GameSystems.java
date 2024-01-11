@@ -1540,8 +1540,9 @@ public class GameSystems {
                         if (id > -1) {
 
                             // Set up the transformation component
-                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
-                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj","./src/objects/enemies/groundEnemy/groundEnemy128.png");
+                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
 
 
 
