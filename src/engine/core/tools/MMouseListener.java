@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.image.BufferedImage;
 
-public class MMouseListener extends MouseAdapter {
+public class MMouseListener extends MouseAdapter implements Runnable{
 
     // You may want to maintain a singleton instance like in MKeyListener
     private static MMouseListener instance;
@@ -19,6 +19,9 @@ public class MMouseListener extends MouseAdapter {
     private boolean rightButtonPressed = false;
     private int mouseX, mouseY; // Store the current mouse coordinates
     private int lastMouseX, lastMouseY; // Store the last mouse coordinates
+
+
+    private boolean running = false;
 
     int width, height, x, y, maxEdgeDistance;
 
@@ -33,6 +36,7 @@ public class MMouseListener extends MouseAdapter {
 
     private MMouseListener() {
         // Private constructor for singleton pattern
+        //start mouse listener in a new thread
         width = Integer.parseInt(Configurator.getInstance().get("windowWidth"));
         height = Integer.parseInt(Configurator.getInstance().get("windowHeight"));
 
@@ -57,6 +61,62 @@ public class MMouseListener extends MouseAdapter {
         mouseY = height;
         lastMouseX = 0;
         lastMouseY = 0;
+    }
+    //Thread logic test
+
+    public void start() {
+        if (!running) {
+            running = true;
+            new Thread(this).start();
+        }
+    }
+
+    public void stop() {
+        running = false;
+    }
+
+    @Override
+    public void run() {
+        while (running) {
+            // Add the logic you want to run in the new thread
+            update(0.016f); // Assuming 60 FPS, you may adjust accordingly
+            try {
+                Thread.sleep(16); // Adjust sleep time based on desired update frequency
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+
+    public void update(float deltaTime) {
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
+
+        x = frame.getX();
+        y = frame.getY();
+
+        cooldown -= deltaTime;
+
+        lastTimeMouseMoved += deltaTime;
+
+        if(lastTimeMouseMoved > 0.3f){
+
+            mouseX = x + width/2;
+            mouseY = y + height/2;
+            try {
+                Robot robot = new Robot();
+                robot.mouseMove(mouseX, mouseY);
+                lastMouseY = mouseY;
+                lastMouseX = mouseX;
+
+                hideCursor();
+            } catch (AWTException awtException) {
+                awtException.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -104,35 +164,6 @@ public class MMouseListener extends MouseAdapter {
 
         doScreenEdgeCheck(e);
 
-    }
-
-
-    public void update(float deltaTime) {
-        lastMouseX = mouseX;
-        lastMouseY = mouseY;
-
-        x = frame.getX();
-        y = frame.getY();
-
-        cooldown -= deltaTime;
-
-        lastTimeMouseMoved += deltaTime;
-
-        if(lastTimeMouseMoved > 0.3f){
-
-            mouseX = x + width/2;
-            mouseY = y + height/2;
-            try {
-                Robot robot = new Robot();
-                robot.mouseMove(mouseX, mouseY);
-                lastMouseY = mouseY;
-                lastMouseX = mouseX;
-
-                hideCursor();
-            } catch (AWTException awtException) {
-                awtException.printStackTrace();
-            }
-        }
     }
 
     private void doScreenEdgeCheck(MouseEvent e) {

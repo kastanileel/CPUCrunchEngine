@@ -85,6 +85,8 @@ public class GameContainer {
         long lastTime = System.nanoTime() / 1000000;
 
         MusicPlayer.getInstance().loopMusic("src/sound/misc/music.wav");
+        //test if this works
+        //MMouseListener.getInstance().start();
 
         Phases currentGamePhase = Phases.START;
 
