@@ -14,6 +14,8 @@ public class MusicPlayer {
         //Shoot("src/sound/shoot.wav"),
         //BIG_SHOOT("src/sound/destroy.wav"),
         //Pistol SFX
+        MORE_BULLETS("src/sound/guns/moreBullets.wav"),
+        BIGGER_GUN("src/sound/guns/biggerWeapons.wav"),
         PICKUP_PISTOL("src/sound/guns/pistol/pickupPistol.wav"),
         SHOOT_PISTOL("src/sound/guns/pistol/pistolShot.wav"),
         RELOAD_PISTOL("src/sound/guns/pistol/pistolReload.wav"),

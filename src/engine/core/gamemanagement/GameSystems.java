@@ -34,6 +34,8 @@ import java.awt.*;
 
 public class GameSystems {
 
+    public static Random randomS = new Random();
+
 
     public static class CollisionSystem extends GameSystem {
 
@@ -358,6 +360,9 @@ public class GameSystems {
                         } else if (magazinePistol == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Pistol!");
+                            int randomInt = randomS.nextInt(0, 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_PISTOL);
                             magazinePistol = 10;
                         }
@@ -378,6 +383,9 @@ public class GameSystems {
                         } else if (magazineMachineGun == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Machine Gun!");
+                            int randomInt = randomS.nextInt(0, 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_AK);
                             magazineMachineGun = 30;
                         }
@@ -400,6 +408,9 @@ public class GameSystems {
                         else if (magazineShotgun == 0){
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
+                            int randomInt = randomS.nextInt(0, 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
                         }
@@ -416,6 +427,9 @@ public class GameSystems {
                         else if (magazineShotgun == 0){
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
+                            int randomInt = randomS.nextInt(0, 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
                         }
@@ -433,6 +447,9 @@ public class GameSystems {
                         else if (magazineSniper == 0){
                             shootingCooldown = 6.0f;
                             System.out.println("Reloading Sniper!");
+                            int randomInt = randomS.nextInt(0, 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
                             magazineSniper = 5;
                         }
@@ -710,9 +727,10 @@ public class GameSystems {
                     }
 
                     entityManager.destroyEntity(otherId);
-                    //MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.Weapon_Equip);
 
-
+                    int randomInt = randomS.nextInt(0, 8);
+                    if(randomInt == 5)
+                        MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
                 }
             }
         }
@@ -862,79 +880,85 @@ public class GameSystems {
         }
 
         private void reactToCollisionTagPlayer(EntityManager manager, int playerId, int otherId) {
-            GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
-            switch (tag) {
-                case GROUND -> {
-                    if (manager.physicsBody[playerId].velocity.y < 0.0f) {
-                        manager.physicsBody[playerId].velocity.y = 0.0f;
-                    }
-                    if (manager.physicsBody[playerId].force.y < 0.0f) {
-                        manager.physicsBody[playerId].force.y = 0.0f;
-                    }
-                }
-                case OBSTACLE -> {
-                    // get center of obstacle
-                    Vector3 center = manager.collider[otherId].center;
-                    Vector3 playerPos = manager.transform[playerId].pos;
-
-                    Vector3 direction = RenderMaths.substractVectors(playerPos, center);
-
-                    direction = RenderMaths.normalizeVector(direction);
-
-                    manager.physicsBody[playerId].force.x = direction.x * 100.0f;
-                    // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
-                    manager.physicsBody[playerId].force.z = direction.z * 100.0f;
-
-
-                }
-                case PLAYER -> {
-                    Vector3 center = manager.collider[otherId].center;
-                    Vector3 playerPos = manager.transform[playerId].pos;
-
-                    Vector3 direction = RenderMaths.substractVectors(playerPos, center);
-
-                    direction = RenderMaths.normalizeVector(direction);
-
-                    manager.physicsBody[playerId].force.x = direction.x * 100.0f;
-                    // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
-                    manager.physicsBody[playerId].force.z = direction.z * 100.0f;
-
-                    DamageSystem.damagedEntities.add(playerId);
-                    System.out.println("Playercollision " + manager.damageable[playerId].health);
-                }
-
-                case ENEMY -> {
-                    System.out.println("colliding with enemy");
-                    switch (manager.aiBehavior[otherId].enemyType){
-                        case SIGHTSEEKER -> {
-                            manager.damageable[playerId].health -= manager.aiBehavior[otherId].damage;
-                            manager.damageable[otherId].health -= manager.damageable[otherId].health;
-                            DamageSystem.damagedEntities.add(otherId);
-
-                            MusicPlayer.getInstance().playRandomPlayerSound();
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SIGHTSEEKER_DEATH);
-
+            try {
+                GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
+                switch (tag) {
+                    case GROUND -> {
+                        if (manager.physicsBody[playerId].velocity.y < 0.0f) {
+                            manager.physicsBody[playerId].velocity.y = 0.0f;
                         }
-                        case GROUNDENEMY, GUNTURRED -> {
-                            Vector3 center = manager.collider[otherId].center;
-                            Vector3 playerPos = manager.transform[playerId].pos;
-
-                            Vector3 direction = RenderMaths.substractVectors(playerPos, center);
-
-                            direction = RenderMaths.normalizeVector(direction);
-
-                            manager.physicsBody[playerId].force.x = direction.x * 100.0f;
-                            // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
-                            manager.physicsBody[playerId].force.z = direction.z * 100.0f;
+                        if (manager.physicsBody[playerId].force.y < 0.0f) {
+                            manager.physicsBody[playerId].force.y = 0.0f;
                         }
                     }
+                    case OBSTACLE -> {
+                        // get center of obstacle
+                        Vector3 center = manager.collider[otherId].center;
+                        Vector3 playerPos = manager.transform[playerId].pos;
 
-                    DrawingWindow.playerHealth = manager.damageable[playerId].health;
+                        Vector3 direction = RenderMaths.substractVectors(playerPos, center);
 
-                    DamageSystem.damagedEntities.add(playerId);
-                    System.out.println("Playercollision " + manager.damageable[playerId].health);
+                        direction = RenderMaths.normalizeVector(direction);
+
+                        manager.physicsBody[playerId].force.x = direction.x * 100.0f;
+                        // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                        manager.physicsBody[playerId].force.z = direction.z * 100.0f;
+
+
+                    }
+                    case PLAYER -> {
+                        Vector3 center = manager.collider[otherId].center;
+                        Vector3 playerPos = manager.transform[playerId].pos;
+
+                        Vector3 direction = RenderMaths.substractVectors(playerPos, center);
+
+                        direction = RenderMaths.normalizeVector(direction);
+
+                        manager.physicsBody[playerId].force.x = direction.x * 100.0f;
+                        // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                        manager.physicsBody[playerId].force.z = direction.z * 100.0f;
+
+                        DamageSystem.damagedEntities.add(playerId);
+                        System.out.println("Playercollision " + manager.damageable[playerId].health);
+                    }
+
+                    case ENEMY -> {
+                        System.out.println("colliding with enemy");
+                        switch (manager.aiBehavior[otherId].enemyType){
+                            case SIGHTSEEKER -> {
+                                manager.damageable[playerId].health -= manager.aiBehavior[otherId].damage;
+                                manager.damageable[otherId].health -= manager.damageable[otherId].health;
+                                DamageSystem.damagedEntities.add(otherId);
+
+                                MusicPlayer.getInstance().playRandomPlayerSound();
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SIGHTSEEKER_DEATH);
+
+                            }
+                            case GROUNDENEMY, GUNTURRED -> {
+                                Vector3 center = manager.collider[otherId].center;
+                                Vector3 playerPos = manager.transform[playerId].pos;
+
+                                Vector3 direction = RenderMaths.substractVectors(playerPos, center);
+
+                                direction = RenderMaths.normalizeVector(direction);
+
+                                manager.physicsBody[playerId].force.x = direction.x * 100.0f;
+                                // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                                manager.physicsBody[playerId].force.z = direction.z * 100.0f;
+                            }
+                        }
+
+                        DrawingWindow.playerHealth = manager.damageable[playerId].health;
+
+                        DamageSystem.damagedEntities.add(playerId);
+                        System.out.println("Playercollision " + manager.damageable[playerId].health);
+                    }
                 }
             }
+            catch (Exception e){
+                System.out.println("ouoiuoiuoi");
+            }
+
         }
     }
 
@@ -1640,13 +1664,17 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
-                            manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/sightseeker128.png");
+                            if(randomS.nextInt(0,10) == 5)
+                                manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
+                            else
+                                manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/sightseeker128.png");
+
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
                             manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
 
                             manager.transform[id].pos = new Vector3(spawnX, 0f, spawnZ);
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                            manager.transform[id].scale = new Vector3(.4f, .4f, .4f);
+                            manager.transform[id].scale = new Vector3(1f, 1f, 1f);
 
                             manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
@@ -1659,7 +1687,7 @@ public class GameSystems {
                             manager.aiBehavior[id].attackingDistance = 0;
                             manager.aiBehavior[id].damage = level * 3;
                             manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 1f, 1f);
-                            manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
+                            manager.collider[id].colliderSize = new Vector3(2.0f, 1.0f, 1.0f);
                             manager.collider[id].center = manager.transform[id].pos;
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
                             manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
