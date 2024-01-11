@@ -404,8 +404,7 @@ public class GameSystems {
                             shotgun(manager, id, deltaTime);
                             magazineShotgun--;
                             return;
-                        }
-                        else if (magazineShotgun == 0){
+                        } else if (magazineShotgun == 0) {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
                             int randomInt = randomS.nextInt(0, 16);
@@ -463,10 +462,9 @@ public class GameSystems {
                         }
                         SimpleAdvancedRenderPipeline.fFov = 40.0f;
                         DrawingWindow.snipe = true;
-                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed/2.0f;
-                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed/2.0f;
-                    }
-                    else {
+                        manager.playerMovement[id].mouseSpeed = defaultMouseSpeed / 2.0f;
+                        manager.playerMovement[id].moveSpeed = defaultMoveSpeed / 2.0f;
+                    } else {
                         scopedIn = false;
 
                         SimpleAdvancedRenderPipeline.fFov = 150.0f;
@@ -1126,19 +1124,28 @@ public class GameSystems {
                     playerPosition = manager.transform[i].pos;
                 }
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
-                    if (!(manager.aiBehavior[i].currentState == GameComponents.State.DEACTIVATED)) {
-                        distanceVectorPlayerEnemy = playerPosition.subtract(manager.transform[i].pos);
+                    switch (manager.aiBehavior[i].currentState) {
+                        case COLLIDED:
+                            updateAI(manager, i, deltaTime);
+                            if (manager.aiBehavior[i].colliderbounceTime > 0) {
+                                break;
+                            }
+                        case WANDERING, CHASING, ATTACKING:
+                            distanceVectorPlayerEnemy = playerPosition.subtract(manager.transform[i].pos);
 
-                        float distancePlayerEnemy = distanceVectorPlayerEnemy.length();
-                        if (distancePlayerEnemy > manager.aiBehavior[i].chasingDistance) {
-                            manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
-                        } else if (distancePlayerEnemy > manager.aiBehavior[i].attackingDistance) {
-                            manager.aiBehavior[i].currentState = GameComponents.State.CHASING;
-                        } else {
-                            manager.aiBehavior[i].currentState = GameComponents.State.ATTACKING;
+                            float distancePlayerEnemy = distanceVectorPlayerEnemy.length();
+                            if (distancePlayerEnemy > manager.aiBehavior[i].chasingDistance) {
+                                manager.aiBehavior[i].currentState = GameComponents.State.WANDERING;
+                            } else if (distancePlayerEnemy > manager.aiBehavior[i].attackingDistance) {
+                                manager.aiBehavior[i].currentState = GameComponents.State.CHASING;
+                            } else {
+                                manager.aiBehavior[i].currentState = GameComponents.State.ATTACKING;
 
-                        }
-                        updateAI(manager, i, deltaTime);
+                            }
+                            updateAI(manager, i, deltaTime);
+                            break;
+                        case DEACTIVATED:
+                            break;
                     }
                 }
             }
@@ -1151,11 +1158,13 @@ public class GameSystems {
                         case SIGHTSEEKER -> {
                             handleWanderingSightSeeker(manager, entityId, deltaTime);
                             rotateEnemy(manager, entityId, deltaTime, manager.aiBehavior[entityId].wanderingDirection);
+                            calculateCollision(manager, entityId, deltaTime);
 
                         }
                         case GROUNDENEMY -> {
                             handleWanderingGroundEnemy(manager, entityId, deltaTime);
                             rotateEnemy(manager, entityId, deltaTime, manager.aiBehavior[entityId].wanderingDirection);
+                            calculateCollision(manager, entityId, deltaTime);
 
                         }
                         case GUNTURRED -> {
@@ -1168,11 +1177,15 @@ public class GameSystems {
                         case SIGHTSEEKER -> {
                             handleChasingSightSeeker(manager, entityId, deltaTime);
                             rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
+                            calculateCollision(manager, entityId, deltaTime);
+
                         }
                         case GROUNDENEMY -> {
                             handleChasingGroundEnemy(manager, entityId, deltaTime);
                             rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
-                            handleAttacking(manager,entityId,deltaTime);
+                            handleAttacking(manager, entityId, deltaTime);
+                            calculateCollision(manager, entityId, deltaTime);
+
                         }
                         case GUNTURRED -> {
                             rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
@@ -1182,6 +1195,9 @@ public class GameSystems {
                 case ATTACKING:
                     rotateEnemy(manager, entityId, deltaTime, distanceVectorPlayerEnemy);
                     handleAttacking(manager, entityId, deltaTime);
+                    break;
+                case COLLIDED:
+                    manager.aiBehavior[entityId].colliderbounceTime -= deltaTime;
                     break;
             }
         }
@@ -1411,6 +1427,45 @@ public class GameSystems {
                 }
             }
         }
+
+        private void calculateCollision(EntityManager manager, int id, float deltatime) {
+            //System.out.println(manager.collisionList.size());
+
+            if (manager.aiBehavior[id] == null) {
+                return;
+            }
+
+            for (CollisionInformation.CollisionEvent event : manager.collisionList.get(id).collisionEvents) {
+                if (event.entityIDs.getFirst() == id) {
+                    reactToCollisionTagEnemy(manager, id, event.entityIDs.getSecond(), deltatime);
+
+                } else if (event.entityIDs.getSecond() == id) {
+                    reactToCollisionTagEnemy(manager, id, event.entityIDs.getFirst(), deltatime);
+                }
+            }
+        }
+
+        private void reactToCollisionTagEnemy(EntityManager manager, int enemyId, int otherId, float deltatime) {
+            GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
+            switch (tag) {
+                case OBSTACLE -> {
+                    // get center of obstacle
+                    Vector3 center = manager.collider[otherId].center;
+                    Vector3 enemyPos = manager.transform[enemyId].pos;
+
+                    Vector3 direction = RenderMaths.substractVectors(enemyPos, center);
+
+                    direction = RenderMaths.normalizeVector(direction);
+
+                    manager.physicsBody[enemyId].force.x = direction.x * 50.0f;
+                    // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                    manager.physicsBody[enemyId].force.z = direction.z * 50.0f;
+                    manager.aiBehavior[enemyId].wanderingDirection = new Vector3(direction.x, 0, direction.z).rotateY((float) Math.PI / 2);
+                    manager.aiBehavior[enemyId].currentState = GameComponents.State.COLLIDED;
+                    manager.aiBehavior[enemyId].colliderbounceTime = 2f;
+                }
+            }
+        }
     }
 
 
@@ -1559,6 +1614,7 @@ public class GameSystems {
         private void spawnMachinegun(EntityManager manager) throws IOException {
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
+
                 manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.RED);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = weaponSpawn.clone();

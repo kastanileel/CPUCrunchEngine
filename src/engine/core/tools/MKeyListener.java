@@ -36,7 +36,10 @@ public class MKeyListener extends KeyAdapter {
         frame.addKeyListener(this);
     }
 
-    public boolean[] getKeyList(){
-        return keyList;
+    public boolean[] getKeyListWithExceptions(){
+        boolean[] keyListWithExceptions = keyList;
+        keyListWithExceptions['m'] = false;
+        keyListWithExceptions['M'] = false;
+        return keyListWithExceptions;
     }
 }
