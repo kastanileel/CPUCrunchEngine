@@ -248,39 +248,6 @@ public class GameSystems {
                     if(knifing)
                         handleKnife(manager, i);
 
-                    /*if (MKeyListener.getInstance().isKeyPressed('1')) {
-                        try {
-                            changeWeapon(GameComponents.PlayerMovement.WeaponType.PISTOL, manager, i);
-
-                        } catch (Exception e) {
-
-                        }
-
-                    }
-                    if (MKeyListener.getInstance().isKeyPressed('2')) {
-                        try {
-                            changeWeapon(GameComponents.PlayerMovement.WeaponType.MACHINE_GUN, manager, i);
-
-                        } catch (Exception e) {
-
-                        }
-                    }
-                    if (MKeyListener.getInstance().isKeyPressed('3')) {
-                        try {
-                            changeWeapon(GameComponents.PlayerMovement.WeaponType.SHOTGUN, manager, i);
-
-                        } catch (Exception e) {
-
-                        }
-                    }
-                    if (MKeyListener.getInstance().isKeyPressed('4')) {
-                        try {
-                            changeWeapon(GameComponents.PlayerMovement.WeaponType.SNIPER, manager, i);
-
-                        } catch (Exception e) {
-
-                        }
-                    }*/
 
 
                 }
@@ -1590,8 +1557,9 @@ public class GameSystems {
                         if (id > -1) {
 
                             // Set up the transformation component
-                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", Color.GRAY);
-                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj","./src/objects/enemies/groundEnemy/groundEnemy128.png");
+                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
 
 
 
@@ -1620,7 +1588,7 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
-                            manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
+                            manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/sightseeker128.png");
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
                             manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
 
@@ -1649,8 +1617,9 @@ public class GameSystems {
                     case 2->{
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
-                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
-                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", "./src/objects/enemies/gunTurret/turret128.png");
+                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
 
 
                             manager.transform[id].pos = new Vector3(spawnX, rand.nextInt(1, 4), spawnZ);
