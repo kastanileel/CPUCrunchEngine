@@ -59,17 +59,34 @@ public class MusicPlayer {
         public String getPath() {
             return path;
         }
+
+
     }
 
     private static volatile MusicPlayer instance;
     private ExecutorService threadPool;
     private HashMap<String, Clip> soundClips;
+    public float volume = 0.8f;
 
     private MusicPlayer() {
         threadPool = Executors.newCachedThreadPool();
         soundClips = new HashMap<>();
         // Initialize resources
     }
+
+    //adjust volume
+    public void changeVolume(float volume) {
+        this.volume = volume;
+    }
+
+    public void setVolume(Clip clip){
+        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        double gain = volume; // number between 0 and 1 (loudest)
+        float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
+        gainControl.setValue(dB);
+    }
+
+    //singleton
 
     public static MusicPlayer getInstance() {
         if (instance == null) {
@@ -85,14 +102,17 @@ public class MusicPlayer {
         threadPool.execute(() -> {
             Clip clip = loadClip(sound); // Implement loadClip to load and return a Clip
             soundClips.put(sound, clip);
+            setVolume(clip);
             clip.start();
         });
     }
+
 
     public void playSound(SoundEffect sound) {
         threadPool.execute(() -> {
             Clip clip = loadClip(sound.getPath()); // Implement loadClip to load and return a Clip
             soundClips.put(sound.getPath(), clip);
+            setVolume(clip);
             clip.start();
         });
     }
@@ -111,6 +131,7 @@ public class MusicPlayer {
             int random = (int) (Math.random() * playerSounds.length);
             Clip clip = loadClip(playerSounds[random]); // Implement loadClip to load and return a Clip
             soundClips.put(playerSounds[random], clip);
+            setVolume(clip);
             clip.start();
         });
     }
@@ -147,6 +168,7 @@ public class MusicPlayer {
     public void pauseResume(String sound) {
         threadPool.execute(() -> {
             Clip clip = soundClips.get(sound);
+            setVolume(clip);
             if (clip.isActive()) {
                 clip.stop();
             } else {

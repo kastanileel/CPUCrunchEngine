@@ -1466,7 +1466,7 @@ public class GameSystems {
         private void spawnShotgun(EntityManager manager) throws IOException {
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.PINK);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/shotgun/superShotgun.obj", Color.RED);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = weaponSpawn.clone();
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -1485,7 +1485,7 @@ public class GameSystems {
         private void spawnMachinegun(EntityManager manager) throws IOException {
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.PINK);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/machineGun/AKM.obj", Color.RED);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = weaponSpawn.clone();
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -1504,7 +1504,7 @@ public class GameSystems {
         private void spawnSniper(EntityManager manager) throws IOException {
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.PINK);
+                manager.rendering[id].mesh = new Mesh("./src/objects/guns/sniper/AWP.obj", Color.RED);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor;
                 manager.transform[id].pos = weaponSpawn.clone();
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -1622,7 +1622,7 @@ public class GameSystems {
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
 
 
-                            manager.transform[id].pos = new Vector3(spawnX, rand.nextInt(1, 4), spawnZ);
+                            manager.transform[id].pos = new Vector3(spawnX, /*rand.nextInt(1, 4)*/ 1, spawnZ);
                             manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
                             manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
@@ -1671,7 +1671,8 @@ public class GameSystems {
         public void update(EntityManager manager, float deltaTime) throws Exception {
             checkMusicKey();
             checkQuitKey();
-
+            checkMusicLouder();
+            checkMusicQuieter();
         }
 
         private void checkMusicKey(){
@@ -1681,6 +1682,25 @@ public class GameSystems {
             }
             lastStateM = keyListener.isKeyPressed('M');
             lastStatem = keyListener.isKeyPressed('m');
+        }
+
+        private void checkMusicQuieter(){
+            if (keyListener.isKeyPressed('Y') != lastStateM && keyListener.isKeyPressed('Y') || keyListener.isKeyPressed('y') != lastStatem && keyListener.isKeyPressed('y')) {
+                if (MusicPlayer.getInstance().volume > 0.1f) {
+                    MusicPlayer.getInstance().changeVolume(MusicPlayer.getInstance().volume -0.1f);
+                    System.out.println("Volume: " + MusicPlayer.getInstance().volume);
+
+                }
+            }
+        }
+
+        private void checkMusicLouder(){
+            if (keyListener.isKeyPressed('X') != lastStateM && keyListener.isKeyPressed('X') || keyListener.isKeyPressed('x') != lastStatem && keyListener.isKeyPressed('x')) {
+                if (MusicPlayer.getInstance().volume < 0.91f){
+                    MusicPlayer.getInstance().changeVolume(MusicPlayer.getInstance().volume +0.1f);
+                    System.out.println("Volume: " + MusicPlayer.getInstance().volume);
+                }
+            }
         }
 
         private void checkQuitKey() {
