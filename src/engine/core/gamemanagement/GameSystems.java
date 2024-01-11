@@ -298,13 +298,13 @@ public class GameSystems {
             cam.rotation.x += mouseY * deltaTime * manager.playerMovement[id].mouseSpeed;
 
             if (MKeyListener.getInstance().isKeyPressed('l'))
-                cam.rotation.y += 1.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.y += 6.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
             if (MKeyListener.getInstance().isKeyPressed('j'))
-                cam.rotation.y -= 1.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.y -= 6.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
             if (MKeyListener.getInstance().isKeyPressed('i'))
-                cam.rotation.x -= 1.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.x -= 3.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
             if (MKeyListener.getInstance().isKeyPressed('k'))
-                cam.rotation.x += 1.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.x += 3.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
 
             // Clamp the vertical rotation to a range if you don't want it to flip over
             if (cam.rotation.x > 0.1f)
@@ -373,7 +373,7 @@ public class GameSystems {
         }
 
         private void doShooting(EntityManager manager, int id, float deltaTime) {
-            SimpleAdvancedRenderPipeline.fFov = 120.0f;
+            SimpleAdvancedRenderPipeline.fFov = 150.0f;
 
             shootingCooldown -= deltaTime;
             knifeCooldown -= deltaTime;
@@ -381,7 +381,7 @@ public class GameSystems {
             switch (manager.playerMovement[id].weaponType) {
                 case PISTOL -> {
                     DrawingWindow.currentAmmo = magazinePistol;
-                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
+                    if (MMouseListener.getInstance().isLeftButtonPressed() || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')) {
                         if (shootingCooldown <= 0.0f && magazinePistol > 0) {
 
 
@@ -395,14 +395,14 @@ public class GameSystems {
                             magazinePistol = 10;
                         }
                     }
-                    if (MMouseListener.getInstance().isRightButtonPressed()) {
+                    if (MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('U')) {
 
                         knife(manager, id);
                     }
                 }
                 case MACHINE_GUN -> {
                     DrawingWindow.currentAmmo = magazineMachineGun;
-                    if (MMouseListener.getInstance().isLeftButtonPressed()) {
+                    if (MMouseListener.getInstance().isLeftButtonPressed()  || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')) {
                         if (shootingCooldown <= 0.0f && magazineMachineGun > 0) {
 
                             machineGun(manager, id, deltaTime);
@@ -415,7 +415,7 @@ public class GameSystems {
                             magazineMachineGun = 30;
                         }
                     }
-                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                    if(MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('U')){
 
                         knife(manager, id);
                     }
@@ -423,7 +423,7 @@ public class GameSystems {
                 }
                 case SHOTGUN -> {
                     DrawingWindow.currentAmmo = magazineShotgun;
-                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                    if(MMouseListener.getInstance().isLeftButtonPressed() || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')){
                         if (shootingCooldown <= 0.0f && magazineShotgun > 0) {
 
                             shotgun(manager, id, deltaTime);
@@ -438,7 +438,7 @@ public class GameSystems {
                         }
                     }
 
-                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                    if(MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('U')){
                         if (shootingCooldown <= 0.0f && magazineShotgun > 1) {
 
                             shotgunDouble(manager, id, deltaTime);
@@ -457,7 +457,7 @@ public class GameSystems {
                 }
                 case SNIPER ->{
                     DrawingWindow.currentAmmo = magazineSniper;
-                    if(MMouseListener.getInstance().isLeftButtonPressed()){
+                    if(MMouseListener.getInstance().isLeftButtonPressed()  || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')){
                         if (shootingCooldown <= 0.0f && magazineSniper > 0) {
 
                             snipe(manager, id, deltaTime);
@@ -472,7 +472,7 @@ public class GameSystems {
                     }
 
 
-                    if(MMouseListener.getInstance().isRightButtonPressed()){
+                    if(MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('U')){
                         if (!scopedIn){
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SCOPE);
                             scopedIn = true;
@@ -485,7 +485,7 @@ public class GameSystems {
                     else {
                         scopedIn = false;
 
-                        SimpleAdvancedRenderPipeline.fFov = 120.0f;
+                        SimpleAdvancedRenderPipeline.fFov = 150.0f;
                         DrawingWindow.snipe = false;
                         manager.playerMovement[id].mouseSpeed = defaultMouseSpeed;
                         manager.playerMovement[id].moveSpeed = defaultMoveSpeed;

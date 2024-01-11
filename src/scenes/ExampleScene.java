@@ -19,7 +19,7 @@ public class ExampleScene extends Scene {
         // for loop to create floor*/
 
         try {
-            for (int width = 0; width < 30; width++) {
+            /*for (int width = 0; width < 30; width++) {
                 for (int length = 0; length < 30; length++) {
                     int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER);
                     if (id > -1) {
@@ -38,9 +38,26 @@ public class ExampleScene extends Scene {
 
                     }
                 }
+            }*/
+
+            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.rendering[id].mesh = new Mesh("./src/objects/GameRoom.obj", Color.blue);
+                manager.rendering[id].renderType = GameComponents.Rendering.RenderType.CustomArena;
+                manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.CustomArena);
+                manager.transform[id].pos = new Vector3(0, -1.0f, 0);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.BOX;
+                manager.collider[id].colliderSize = new Vector3(32.0f, 0.9f, 32.0f);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.GROUND;
+
             }
 
-            int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
+            id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
 
             if (id > -1) {
                 manager.rendering[id].mesh = new Mesh("src/objects/guns/knife/combatKnife.obj", "src/objects/guns/knife/combatKnife128.png");//"./src/objects/rock/rock64.png");
