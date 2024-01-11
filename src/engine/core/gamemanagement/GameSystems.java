@@ -298,9 +298,9 @@ public class GameSystems {
             cam.rotation.x += mouseY * deltaTime * manager.playerMovement[id].mouseSpeed;
 
             if (MKeyListener.getInstance().isKeyPressed('l'))
-                cam.rotation.y += 8.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.y +=11.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
             if (MKeyListener.getInstance().isKeyPressed('j'))
-                cam.rotation.y -= 8.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.y -= 11.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
             if (MKeyListener.getInstance().isKeyPressed('i'))
                 cam.rotation.x -= 3.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
             if (MKeyListener.getInstance().isKeyPressed('k'))
@@ -309,8 +309,8 @@ public class GameSystems {
             // Clamp the vertical rotation to a range if you don't want it to flip over
             if (cam.rotation.x > 0.2f)
                 cam.rotation.x = 0.2f;
-            if (cam.rotation.x < -0.2f)
-                cam.rotation.x = -0.2f;
+            if (cam.rotation.x < -0.1f)
+                cam.rotation.x = -0.1f;
 
             float yRot = cam.rotation.y;
             Vector3 vec = manager.rendering[id].modelTranslation;
