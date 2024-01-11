@@ -57,11 +57,11 @@ public class ExampleScene extends Scene {
 
             }
 
-            float size = 4.8f;
+            float size = 4.4f;
             ///// first block
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(-10.3f, -1.0f, -0.95f);
+                manager.transform[id].pos = new Vector3(-10.3f, 1.0f, -0.95f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -73,7 +73,7 @@ public class ExampleScene extends Scene {
             }
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(-10.3f, -1.0f, 2.75f);
+                manager.transform[id].pos = new Vector3(-10.3f, 1.0f, 2.75f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -86,21 +86,7 @@ public class ExampleScene extends Scene {
             //// next block
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(-8.48f, -1.0f, -8.45f);
-                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
-                manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
-
-                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(size, 3f, 3f);
-                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
-                manager.collider[id].center = manager.transform[id].pos;
-                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
-            }
-
-            //// next block
-            id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
-            if (id > -1) {
-                manager.transform[id].pos = new Vector3(-8.48f, -1.0f, 8.45f);
+                manager.transform[id].pos = new Vector3(-8.48f, 1.0f, -8.45f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -114,7 +100,21 @@ public class ExampleScene extends Scene {
             //// next block
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(4.7f, -1.0f, 8.45f);
+                manager.transform[id].pos = new Vector3(-8.48f, 1.0f, 8.45f);
+                manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
+
+                manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                manager.collider[id].colliderSize = new Vector3(size, 3f, 3f);
+                manager.collider[id].colliderRotation = new Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+                manager.collider[id].center = manager.transform[id].pos;
+                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.OBSTACLE;
+            }
+
+            //// next block
+            id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
+            if (id > -1) {
+                manager.transform[id].pos = new Vector3(4.7f, 1.0f, 8.45f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -128,7 +128,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(6.59f, -1.0f, 2.74f);
+                manager.transform[id].pos = new Vector3(6.59f, 1.0f, 2.74f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -142,7 +142,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(6.59f, -1.0f, -4.67f);
+                manager.transform[id].pos = new Vector3(6.59f, 1.0f, -4.67f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -156,7 +156,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(-2.85f, -1.0f, -8.45f);
+                manager.transform[id].pos = new Vector3(-2.85f, 1.0f, -8.45f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -170,7 +170,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(-2.85f, -1.0f, 2.7f);
+                manager.transform[id].pos = new Vector3(-2.85f, 1.0f, 2.7f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -184,7 +184,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(0.93f, -1.0f, -8.45f);
+                manager.transform[id].pos = new Vector3(0.93f, 1.0f, -8.45f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -199,7 +199,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(8.45f, -1.0f, 10.36f);
+                manager.transform[id].pos = new Vector3(8.45f, 1.0f, 10.36f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -212,7 +212,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(10.25f, -1.0f, 10.36f);
+                manager.transform[id].pos = new Vector3(10.25f, 1.0f, 10.36f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -225,7 +225,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(10.25f, -1.0f, 12.14f);
+                manager.transform[id].pos = new Vector3(10.25f, 1.0f, 12.14f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -238,7 +238,7 @@ public class ExampleScene extends Scene {
             //// säule
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(8.45f, -1.0f, 12.14f);
+                manager.transform[id].pos = new Vector3(8.45f, 1.0f, 12.14f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -252,7 +252,7 @@ public class ExampleScene extends Scene {
             //next
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(10.35f, -1.0f, -10.35f);
+                manager.transform[id].pos = new Vector3(10.35f, 1.0f, -10.35f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -264,7 +264,7 @@ public class ExampleScene extends Scene {
             }
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(8.45f, -1.0f, -10.35f);
+                manager.transform[id].pos = new Vector3(8.45f, 1.0f, -10.35f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -276,7 +276,7 @@ public class ExampleScene extends Scene {
             }
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(6.55f, -1.0f, -10.35f);
+                manager.transform[id].pos = new Vector3(6.55f, 1.0f, -10.35f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -288,7 +288,7 @@ public class ExampleScene extends Scene {
             }
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(6.55f, -1.0f, -12.16f);
+                manager.transform[id].pos = new Vector3(6.55f, 1.0f, -12.16f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -300,7 +300,7 @@ public class ExampleScene extends Scene {
             }
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(8.45f, -1.0f, -12.16f);
+                manager.transform[id].pos = new Vector3(8.45f, 1.0f, -12.16f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
@@ -311,7 +311,7 @@ public class ExampleScene extends Scene {
             }
             id = manager.createEntity(GameComponents.TRANSFORM  | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.transform[id].pos = new Vector3(10.35f, -1.0f, -12.16f);
+                manager.transform[id].pos = new Vector3(10.35f, 1.0f, -12.16f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].scale = new Vector3(1.0f, 1.0f, 1.0f);
 
