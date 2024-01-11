@@ -133,7 +133,7 @@ public class GameContainer {
 
                 switch (currentGamePhase) {
                     case START:
-                        for (boolean key : keyListener.getKeyList()) {
+                        for (boolean key : keyListener.getKeyListWithExceptions()) {
                             if (key) {
                                 DrawingWindow.windowState = DrawingWindow.WindowStates.INGAMESCREEN;
                                 currentSceneName = "example";
