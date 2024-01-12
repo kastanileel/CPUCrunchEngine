@@ -22,6 +22,8 @@ public class DrawingWindow extends JPanel {
     private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     private BufferedImage imageBuffer;
     private Graphics graphics;
+
+    public static Vector3 playerPos = new Vector3();
     public static GameComponents.PlayerMovement.WeaponType weaponType = GameComponents.PlayerMovement.WeaponType.PISTOL;
     public static boolean snipe = false;
     public static int playerHealth;
@@ -443,6 +445,8 @@ public class DrawingWindow extends JPanel {
         graphics.setColor(Color.white);
         graphics.setFont(new Font("Arial", Font.PLAIN, 50));
         graphics.drawString("Level: " + level, this.getWidth() - 280, this.getHeight() - 150);
+
+        graphics.drawString(playerPos.x + ", " + playerPos.y + ", " + playerPos.z, this.getWidth()/2 - 100, this.getHeight() - 50);
     }
 
     public void  drawTriangleCustomArena(Triangle triangle){

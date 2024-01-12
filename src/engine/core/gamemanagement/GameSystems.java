@@ -243,6 +243,9 @@ public class GameSystems {
             int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+
+                    DrawingWindow.playerPos = manager.transform[i].pos;
+
                     doCameraRotation(manager, i, deltaTime);
                     doPlayerMovement(manager, i, deltaTime);
                     doShooting(manager, i, deltaTime);
@@ -711,25 +714,30 @@ public class GameSystems {
         }
 
         private void reactToCollisionTag(EntityManager entityManager, int playerId, int otherId) {
-            GameComponents.Collider.ColliderTag tag = entityManager.collider[otherId].colliderTag;
-            switch (tag) {
+            try {
+                GameComponents.Collider.ColliderTag tag = entityManager.collider[otherId].colliderTag;
+                switch (tag) {
 
-                case ENEMY -> {
+                    case ENEMY -> {
 
-                }
-                case PICKUPWEAPON -> {
-                    try {
-                        changeWeapon(entityManager.pickupWeapon[otherId].weaponType, entityManager, playerId);
-                    } catch (Exception e) {
-                        System.out.println("oops");
                     }
+                    case PICKUPWEAPON -> {
+                        try {
+                            changeWeapon(entityManager.pickupWeapon[otherId].weaponType, entityManager, playerId);
+                        } catch (Exception e) {
+                            System.out.println("oops");
+                        }
 
-                    entityManager.destroyEntity(otherId);
+                        entityManager.destroyEntity(otherId);
 
-                    int randomInt = randomS.nextInt(0, 8);
-                    if(randomInt == 5)
-                        MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
+                        int randomInt = randomS.nextInt(0, 8);
+                        if (randomInt == 5)
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
+                    }
                 }
+            }
+            catch (Exception e){
+                System.out.println("Error reacting to collision tag adds");
             }
         }
 
@@ -1481,6 +1489,35 @@ public class GameSystems {
         float finishTimer = 0.0f;
         float cooldown = 7.0f;
 
+        private int spawnedTurrets;
+        private int startIndex;
+
+        private Vector3[] spawnPositionsTurret = {
+                new Vector3(-10.0f, 1.0f, -3.0f),
+                new Vector3(-3.1f, 1.4f, 0.7f),
+                new Vector3(9.3f, 1.4f, 8.4f),
+                new Vector3(6.5f, 1.4f, 0.65f),
+                new Vector3(6.7f, 1.4f, -2.7f),
+                new Vector3(10f, 1.4f, -8f),
+                new Vector3(6.7f, 1.4f, -8f),
+                new Vector3(4.7f, 1.4f, -11f),
+                new Vector3(2.9f, 1.4f, -8.4f)
+        };
+
+        private boolean[] leftRotated = {
+                true,
+                true,
+                false,
+                false,
+                true,
+                true,
+                true,
+                false,
+                true
+        };
+
+
+
         Vector3 weaponSpawn = new Vector3(0.0f, -0.5f, 0.0f);
 
         @Override
@@ -1652,6 +1689,9 @@ public class GameSystems {
 
         private void loadNextLevel(EntityManager manager) throws IOException {
 
+            startIndex = randomS.nextInt(0, spawnPositionsTurret.length );
+            spawnedTurrets = 0;
+
             DrawingWindow.level = level;
 
             livingEnemies = level;
@@ -1684,7 +1724,7 @@ public class GameSystems {
 
 
                 switch (enemyType){
-                    case 0 -> {
+                    case 10 -> {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
 
@@ -1716,7 +1756,7 @@ public class GameSystems {
                             manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                         }
                     }
-                    case 1 ->{
+                    case 12 ->{
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
@@ -1750,21 +1790,53 @@ public class GameSystems {
                         }
 
                     }
-                    case 2->{
+                    case 0,1,2->{
+
+                        if(spawnedTurrets >= spawnPositionsTurret.length){
+                            i--;
+                            continue;
+                        }
+
+                        spawnedTurrets += 1;
+                        startIndex = (startIndex + 1) % spawnPositionsTurret.length;
+
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
-                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", "./src/objects/enemies/gunTurret/turret128.png");
-                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
-                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+                            Color color = Color.yellow;
+                            switch (randomS.nextInt(0,4)){
+                                case 0 ->{
+                                    color = Color.RED;
+                                }
+                                case 1 ->{
+                                    color = Color.green;
+                                }
+                                case 2 ->{
+                                    color = Color.yellow;
+                                }
+                                case 3 ->{
+                                    color = Color.white;
+                                }
+                            }
+                            int index = startIndex;
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", color );
+                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+                            manager.aiBehavior[id].leftRotated = leftRotated[index];
 
+                            //manager.transform[id].pos = new Vector3(spawnX, /*rand.nextInt(1, 4)*/ 1, spawnZ);
+                            manager.transform[id].pos = spawnPositionsTurret[index];
 
-                            manager.transform[id].pos = new Vector3(spawnX, /*rand.nextInt(1, 4)*/ 1, spawnZ);
-                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
+                            if(leftRotated[index])
+                                manager.transform[id].rot = new Vector3(-3.14f/2, 0.0f, 3.1415f);
+
+                            else
+                                manager.transform[id].rot = new Vector3(3.14f/2, 0.0f, 3.1415f);
+
                             manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
                             manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
-                            manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
+                            manager.rendering[id].modelRotation =new Vector3(0.0f, 3.1415f, 0.0f);
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
 
                             manager.aiBehavior[id].shootingCooldown = 1f;
