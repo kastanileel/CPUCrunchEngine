@@ -643,8 +643,8 @@ public class GameSystems {
                 case ENEMY -> {
                     manager.damageable[otherId].health -= 50;
                     System.out.println("Enemy health: " + manager.damageable[otherId].health);
-
-                    DamageSystem.damagedEntities.add(otherId);
+                    if(!DamageSystem.damagedEntities.contains(otherId))
+                        DamageSystem.damagedEntities.add(otherId);
                 }
             }
         }
@@ -924,6 +924,7 @@ public class GameSystems {
                         // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
                         manager.physicsBody[playerId].force.z = direction.z * 100.0f;
 
+
                         DamageSystem.damagedEntities.add(playerId);
                         System.out.println("Playercollision " + manager.damageable[playerId].health);
                     }
@@ -934,7 +935,8 @@ public class GameSystems {
                             case SIGHTSEEKER -> {
                                 manager.damageable[playerId].health -= manager.aiBehavior[otherId].damage;
                                 manager.damageable[otherId].health -= manager.damageable[otherId].health;
-                                DamageSystem.damagedEntities.add(otherId);
+                                if(!DamageSystem.damagedEntities.contains(otherId))
+                                    DamageSystem.damagedEntities.add(otherId);
 
                                 MusicPlayer.getInstance().playRandomPlayerSound();
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SIGHTSEEKER_DEATH);
@@ -1025,7 +1027,8 @@ public class GameSystems {
                     if (!((manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.ENEMY && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.ENEMY)
                             || (manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.PLAYER && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER))) {
                         System.out.println(manager.damageable[otherID].health);
-                        DamageSystem.damagedEntities.add(otherID);
+                        if(!DamageSystem.damagedEntities.contains(otherID))
+                            DamageSystem.damagedEntities.add(otherID);
 
                         manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
                         if (manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER) {
@@ -1724,7 +1727,7 @@ public class GameSystems {
 
 
                 switch (enemyType){
-                    case 10 -> {
+                    case 0 -> {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
 
@@ -1756,7 +1759,7 @@ public class GameSystems {
                             manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                         }
                     }
-                    case 12 ->{
+                    case 1 ->{
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
@@ -1790,7 +1793,7 @@ public class GameSystems {
                         }
 
                     }
-                    case 0,1,2->{
+                    case 2->{
 
                         if(spawnedTurrets >= spawnPositionsTurret.length){
                             i--;
@@ -1846,7 +1849,7 @@ public class GameSystems {
                             manager.aiBehavior[id].attackingDistance = manager.aiBehavior[id].chasingDistance;
                             manager.aiBehavior[id].damage = level;
                             manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
-                            manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
+                            manager.collider[id].colliderSize = new Vector3(3f, 3f, 3f);
                             manager.collider[id].center = RenderMaths.addVectors(manager.transform[id].pos, new Vector3(0.0f, -1.0f, 0.0f));
                             manager.rendering[id].modelTranslation = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
