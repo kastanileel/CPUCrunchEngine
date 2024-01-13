@@ -446,7 +446,7 @@ public class DrawingWindow extends JPanel {
         graphics.setFont(new Font("Arial", Font.PLAIN, 50));
         graphics.drawString("Level: " + level, this.getWidth() - 280, this.getHeight() - 150);
 
-        graphics.drawString(playerPos.x + ", " + playerPos.y + ", " + playerPos.z, this.getWidth()/2 - 100, this.getHeight() - 50);
+        //graphics.drawString(playerPos.x + ", " + playerPos.y + ", " + playerPos.z, this.getWidth()/2 - 100, this.getHeight() - 50);
     }
 
     public void  drawTriangleCustomArena(Triangle triangle){
