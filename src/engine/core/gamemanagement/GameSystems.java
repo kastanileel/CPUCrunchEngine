@@ -447,9 +447,7 @@ public class GameSystems {
                         } else if (magazineSniper == 0) {
                             shootingCooldown = 6.0f;
                             System.out.println("Reloading Sniper!");
-                            int randomInt = randomS.nextInt(0, 16);
-                            if (randomInt == 5)
-                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
                             magazineSniper = 5;
                         }
@@ -531,7 +529,7 @@ public class GameSystems {
 
             direction = RenderMaths.normalizeVector(direction);
 
-            shoot(manager, id, direction, 200.0f, 1.5f, 80, MusicPlayer.SoundEffect.SHOOT_SNIPER);
+            shoot(manager, id, direction, 200.0f, 1.5f, 100, MusicPlayer.SoundEffect.SHOOT_SNIPER);
 
         }
 
@@ -1504,7 +1502,7 @@ public class GameSystems {
 
                     switch (manager.aiBehavior[id].enemyType) {
                         case GUNTURRED:
-                            manager.transform[bulletId].rot.y -= (float) Math.PI / 2 ;
+                            manager.transform[bulletId].rot.y -= (float) Math.PI / 2;
                             break;
                         case GROUNDENEMY:
                             manager.transform[bulletId].rot.y += (float) Math.PI;
@@ -1534,45 +1532,43 @@ public class GameSystems {
         }
 
         private void calculateCollision(EntityManager manager, int id, float deltatime) {
-            //System.out.println(manager.collisionList.size());
+            try {
+                for (CollisionInformation.CollisionEvent event : manager.collisionList.get(id).collisionEvents) {
+                    if (event.entityIDs.getFirst() == id) {
+                        reactToCollisionTagEnemy(manager, id, event.entityIDs.getSecond(), deltatime);
 
-            if (manager.aiBehavior[id] == null) {
-                return;
-            }
-
-            for (CollisionInformation.CollisionEvent event : manager.collisionList.get(id).collisionEvents) {
-                if (event.entityIDs.getFirst() == id) {
-                    reactToCollisionTagEnemy(manager, id, event.entityIDs.getSecond(), deltatime);
-
-                } else if (event.entityIDs.getSecond() == id) {
-                    reactToCollisionTagEnemy(manager, id, event.entityIDs.getFirst(), deltatime);
+                    } else if (event.entityIDs.getSecond() == id) {
+                        reactToCollisionTagEnemy(manager, id, event.entityIDs.getFirst(), deltatime);
+                    }
                 }
+            } catch (Exception e) {
+                System.out.println("Schwau pau wow");
             }
         }
 
         private void reactToCollisionTagEnemy(EntityManager manager, int enemyId, int otherId, float deltatime) {
             try {
-            GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
-            switch (tag) {
-                case OBSTACLE -> {
-                    // get center of obstacle
-                    Vector3 center = manager.collider[otherId].center;
-                    Vector3 enemyPos = manager.transform[enemyId].pos;
+                GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
+                switch (tag) {
+                    case OBSTACLE -> {
+                        // get center of obstacle
+                        Vector3 center = manager.collider[otherId].center;
+                        Vector3 enemyPos = manager.transform[enemyId].pos;
 
-                    Vector3 direction = RenderMaths.substractVectors(enemyPos, center);
+                        Vector3 direction = RenderMaths.substractVectors(enemyPos, center);
 
-                    direction = RenderMaths.normalizeVector(direction);
+                        direction = RenderMaths.normalizeVector(direction);
 
-                    manager.physicsBody[enemyId].force.x = direction.x * 50.0f;
-                    // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
-                    manager.physicsBody[enemyId].force.z = direction.z * 50.0f;
-                    manager.aiBehavior[enemyId].wanderingDirection = new Vector3(direction.x, 0, direction.z).rotateY((float) Math.PI / 2);
-                    //manager.aiBehavior[enemyId].currentState = GameComponents.State.COLLIDED;
-                    manager.aiBehavior[enemyId].colliderbounceTime = 2f;
+                        manager.physicsBody[enemyId].force.x = direction.x * 50.0f;
+                        // manager.physicsBody[playerId].force.y = direction.y * 100.0f;
+                        manager.physicsBody[enemyId].force.z = direction.z * 50.0f;
+                        manager.aiBehavior[enemyId].wanderingDirection = new Vector3(direction.x, 0, direction.z).rotateY((float) Math.PI / 2);
+                        //manager.aiBehavior[enemyId].currentState = GameComponents.State.COLLIDED;
+                        manager.aiBehavior[enemyId].colliderbounceTime = 2f;
+                    }
                 }
-            }
-            }catch (Exception e) {
-                System.out.println("Maybe manager.collider[otherId] is null?");
+            } catch (Exception e) {
+                System.out.println("Sau now pow");
             }
         }
 
@@ -1887,7 +1883,7 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
-                            if (randomS.nextInt(0, 4) == 1 && maxMalteSeeker > 0) {
+                            if (randomS.nextInt(0, 7) == 1 && maxMalteSeeker > 0) {
                                 maxMalteSeeker--;
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
                                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
