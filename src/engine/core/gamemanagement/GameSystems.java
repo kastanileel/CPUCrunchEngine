@@ -35,6 +35,7 @@ import java.awt.*;
 public class GameSystems {
 
     public static Random randomS = new Random();
+    public static float bulletLifeTime = 2.0f;
 
 
     public static class CollisionSystem extends GameSystem {
@@ -193,6 +194,7 @@ public class GameSystems {
         int magazineShotgun = 2;
         int magazineSniper = 5;
 
+        float rotating = 0.0f;
         boolean scopedIn = false;
 
         Vector3 knifeDir = new Vector3();
@@ -243,12 +245,16 @@ public class GameSystems {
             int required_GameComponents = GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT | GameComponents.PHYSICSBODY;
             for (int i = 0; i < manager.size; i++) {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
+
+                    DrawingWindow.playerPos = manager.transform[i].pos;
+
                     doCameraRotation(manager, i, deltaTime);
                     doPlayerMovement(manager, i, deltaTime);
                     doShooting(manager, i, deltaTime);
                     handleCollision(manager, i);
                     if (knifing)
                         handleKnife(manager, i);
+
 
 
                 }
@@ -265,14 +271,22 @@ public class GameSystems {
             float mouseY = MMouseListener.getInstance().getMouseDeltaY();
             cam.rotation.x += mouseY * deltaTime * manager.playerMovement[id].mouseSpeed;
 
+            float rotationSpeed = 11.0f * deltaTime * manager.playerMovement[id].mouseSpeed * Math.min(2.0f, rotating + 1.0f);
+
             if (MKeyListener.getInstance().isKeyPressed('l'))
-                cam.rotation.y += 11.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.y +=rotationSpeed;
             if (MKeyListener.getInstance().isKeyPressed('j'))
-                cam.rotation.y -= 11.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.y -= rotationSpeed;
             if (MKeyListener.getInstance().isKeyPressed('i'))
                 cam.rotation.x -= 3.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
             if (MKeyListener.getInstance().isKeyPressed('k'))
                 cam.rotation.x += 3.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+
+            if(MKeyListener.getInstance().isKeyPressed('l') || MKeyListener.getInstance().isKeyPressed('j')) {
+                rotating += deltaTime;
+            }
+            else
+                rotating = 0.0f;
 
             // Clamp the vertical rotation to a range if you don't want it to flip over
             if (cam.rotation.x > 0.2f)
@@ -371,7 +385,7 @@ public class GameSystems {
                 }
                 case MACHINE_GUN -> {
                     DrawingWindow.currentAmmo = magazineMachineGun;
-                    if (MMouseListener.getInstance().isLeftButtonPressed() || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('U')) {
+                    if (MMouseListener.getInstance().isLeftButtonPressed()  || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('U')) {
                         if (shootingCooldown <= 0.0f && magazineMachineGun > 0) {
 
                             machineGun(manager, id, deltaTime);
@@ -385,7 +399,7 @@ public class GameSystems {
                             magazineMachineGun = 30;
                         }
                     }
-                    if (MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')) {
+                    if(MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')){
 
                         knife(manager, id);
                     }
@@ -393,7 +407,7 @@ public class GameSystems {
                 }
                 case SHOTGUN -> {
                     DrawingWindow.currentAmmo = magazineShotgun;
-                    if (MMouseListener.getInstance().isLeftButtonPressed() || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('U')) {
+                    if(MMouseListener.getInstance().isLeftButtonPressed() || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('U')){
                         if (shootingCooldown <= 0.0f && magazineShotgun > 0) {
 
                             shotgun(manager, id, deltaTime);
@@ -408,14 +422,15 @@ public class GameSystems {
                         }
                     }
 
-                    if (MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')) {
+                    if(MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')){
                         if (shootingCooldown <= 0.0f && magazineShotgun > 1) {
 
                             shotgunDouble(manager, id, deltaTime);
                             magazineShotgun--;
                             magazineShotgun--;
                             return;
-                        } else if (magazineShotgun == 0) {
+                        }
+                        else if (magazineShotgun == 0){
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
@@ -425,25 +440,28 @@ public class GameSystems {
                     }
 
                 }
-                case SNIPER -> {
+                case SNIPER ->{
                     DrawingWindow.currentAmmo = magazineSniper;
-                    if (MMouseListener.getInstance().isLeftButtonPressed() || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('u')) {
+                    if(MMouseListener.getInstance().isLeftButtonPressed()  || MKeyListener.getInstance().isKeyPressed('u') || MKeyListener.getInstance().isKeyPressed('u')){
                         if (shootingCooldown <= 0.0f && magazineSniper > 0) {
 
                             snipe(manager, id, deltaTime);
                             magazineSniper--;
-                        } else if (magazineSniper == 0) {
+                        }
+                        else if (magazineSniper == 0){
                             shootingCooldown = 6.0f;
                             System.out.println("Reloading Sniper!");
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+                            int randomInt = randomS.nextInt(0, 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
                             magazineSniper = 5;
                         }
                     }
 
 
-                    if (MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')) {
-                        if (!scopedIn) {
+                    if(MMouseListener.getInstance().isRightButtonPressed() || MKeyListener.getInstance().isKeyPressed('e') || MKeyListener.getInstance().isKeyPressed('E')){
+                        if (!scopedIn){
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SCOPE);
                             scopedIn = true;
                         }
@@ -521,7 +539,7 @@ public class GameSystems {
 
         }
 
-        private void shotgun(EntityManager manager, int id, float deltaTime) {
+        private void shotgun(EntityManager manager, int id, float deltaTime){
             shootingCooldown = 0.8f;
 
             Vector3 direction = RenderMaths.rotateVectorY(new Vector3(0.0f, 0.0f, 1.0f), manager.transform[id].rot.y);
@@ -543,7 +561,7 @@ public class GameSystems {
             }
         }
 
-        private void shotgunDouble(EntityManager manager, int id, float deltaTime) {
+        private void shotgunDouble(EntityManager manager, int id, float deltaTime){
             shootingCooldown = 3.5f;
 
             //Add Double Shot
@@ -607,10 +625,10 @@ public class GameSystems {
             }
         }
 
-        private void handleKnife(EntityManager manager, int id) {
+        private void handleKnife(EntityManager manager, int id){
             // check if knife is colliding with enemy
             for (CollisionInformation.CollisionEvent event : manager.collisionList.get(knife).collisionEvents) {
-                // System.out.println("Collision with: " + event.entityIDs.getFirst() + " " + event.entityIDs.getSecond());
+               // System.out.println("Collision with: " + event.entityIDs.getFirst() + " " + event.entityIDs.getSecond());
                 if (event.entityIDs.getFirst() == knife) {
                     reactToKnifeCollision(manager, knife, event.entityIDs.getSecond());
 
@@ -621,7 +639,7 @@ public class GameSystems {
             }
         }
 
-        private void reactToKnifeCollision(EntityManager manager, int knife, int otherId) {
+        private void reactToKnifeCollision(EntityManager manager, int knife, int otherId){
             GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
             switch (tag) {
                 case ENEMY -> {
@@ -698,24 +716,27 @@ public class GameSystems {
         }
 
         private void reactToCollisionTag(EntityManager entityManager, int playerId, int otherId) {
-            GameComponents.Collider.ColliderTag tag = entityManager.collider[otherId].colliderTag;
-            switch (tag) {
+            try {
+                GameComponents.Collider.ColliderTag tag = entityManager.collider[otherId].colliderTag;
+                switch (tag) {
 
-                case ENEMY -> {
+                    case ENEMY -> {
 
-                }
-                case PICKUPWEAPON -> {
-                    try {
-                        changeWeapon(entityManager.pickupWeapon[otherId].weaponType, entityManager, playerId);
+                    }
+                    case PICKUPWEAPON -> {
+                        try {
+                            changeWeapon(entityManager.pickupWeapon[otherId].weaponType, entityManager, playerId);
+                        } catch (Exception e) {
+                            System.out.println("oops");
+                        }
                         if (entityManager.pickupWeapon[otherId].weaponType != GameComponents.PlayerMovement.WeaponType.HEALTHPACK)
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
 
-                    } catch (Exception e) {
-                        System.out.println("oops");
+                        entityManager.destroyEntity(otherId);
                     }
-
-                    entityManager.destroyEntity(otherId);
                 }
+            } catch (Exception e){
+                System.out.println("Error reacting to collision tag adds");
             }
         }
 
@@ -908,11 +929,12 @@ public class GameSystems {
 
                     case ENEMY -> {
                         System.out.println("colliding with enemy");
-                        switch (manager.aiBehavior[otherId].enemyType) {
+                        switch (manager.aiBehavior[otherId].enemyType){
                             case SIGHTSEEKER -> {
                                 manager.damageable[playerId].health -= manager.aiBehavior[otherId].damage;
                                 manager.damageable[otherId].health -= manager.damageable[otherId].health;
-                                DamageSystem.damagedEntities.add(otherId);
+                                if(!DamageSystem.damagedEntities.contains(otherId))
+                                    DamageSystem.damagedEntities.add(otherId);
 
                                 MusicPlayer.getInstance().playRandomPlayerSound();
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.SIGHTSEEKER_DEATH);
@@ -938,7 +960,8 @@ public class GameSystems {
                         System.out.println("Playercollision " + manager.damageable[playerId].health);
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e){
                 System.out.println("ouoiuoiuoi");
             }
 
@@ -997,7 +1020,7 @@ public class GameSystems {
 
         private void reactToCollisionTagBullet(EntityManager manager, int bulletId, int otherID) {
 
-            try {
+            try{
                 if (manager.damageable[otherID] != null) {
                     if (!((manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.ENEMY && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.ENEMY)
                             || (manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.PLAYER && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER))) {
@@ -1014,11 +1037,13 @@ public class GameSystems {
 
                         manager.destroyEntity(bulletId);
                     }
-                } else if (manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.OBSTACLE) {
+                }
+                else if(manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.OBSTACLE){
                     manager.destroyEntity(bulletId);
                 }
 
-            } catch (Exception e) {
+            }
+            catch(Exception e){
                 System.out.println("beeeenis");
             }
 
@@ -1397,6 +1422,15 @@ public class GameSystems {
             manager.aiBehavior[id].shootingCooldown = 3f;
             //Bullet Spawnpoint adaption
             float yOffSet = 0f;
+            float leftRightOffset = 0.0f;
+
+            if(manager.aiBehavior[id].leftRotated){
+                // offset the bullet to the right
+                leftRightOffset += 1.5f;
+            }
+            else {
+
+            }
             //Scattering factor
             float factor = 0.4f;
             // generate random, small offset
@@ -1410,6 +1444,10 @@ public class GameSystems {
                     normalizeVector.y + y * factor,
                     normalizeVector.z + z * factor
             );
+
+            Vector3 offset = new Vector3();
+            // direction is bullet forward vector... put it to the right
+
 
 
             shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_SNIPER, yOffSet);
@@ -1469,15 +1507,16 @@ public class GameSystems {
 
                 try {
                     manager.bullet[bulletId].shooter = GameComponents.Bullet.ShooterType.ENEMY;
-                    manager.transform[bulletId].pos = manager.transform[id].pos.clone();
+                    manager.transform[bulletId].pos = RenderMaths.addVectors(manager.transform[id].pos.clone(), RenderMaths.multiplyVector(RenderMaths.normalizeVector(direction.clone()),1.65f));
                     manager.transform[bulletId].pos.y += yOffSet;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
 
                     switch (manager.aiBehavior[id].enemyType) {
-                        case GUNTURRED:
-                            manager.transform[bulletId].rot.y -= (float) Math.PI / 2 ;
+                        /*case GUNTURRED:
+                            manager.transform[bulletId].rot.y -= (float) Math.PI / 2 ;*/
                         case GROUNDENEMY:
-                            manager.transform[bulletId].rot.y -= (float) Math.PI;
+                            manager.transform[bulletId].rot.y += (float) Math.PI;
+                            break;
                     }
 
                     manager.transform[bulletId].scale = new Vector3(0.13f, 0.13f, 0.13f);
@@ -1487,7 +1526,7 @@ public class GameSystems {
                     manager.rendering[bulletId].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[bulletId].modelRotation = new Vector3(0.0f, 3.1415f / -2.0f, 0.0f);
                     manager.physicsBody[bulletId].speed = speed;
-                    manager.bullet[bulletId].lifeTime = lifeTime;
+                    manager.bullet[bulletId].lifeTime = bulletLifeTime;
                     manager.bullet[bulletId].damage = damage;
                     manager.collider[bulletId].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                     manager.collider[bulletId].center = manager.transform[bulletId].pos;
@@ -1574,6 +1613,35 @@ public class GameSystems {
         float finishTimer = 0.0f;
         float cooldown = 7.0f;
 
+        private int spawnedTurrets;
+        private int startIndex;
+
+        private Vector3[] spawnPositionsTurret = {
+                new Vector3(-10.0f, 1.0f, -2.0f),
+                new Vector3(-3.1f, 1.4f, 1.7f),
+                new Vector3(9.3f, 1.4f, 9.1f),
+                new Vector3(6.5f, 1.4f, 1.7f),
+                new Vector3(6.7f, 1.4f, -3.575f),
+                new Vector3(10f, 1.4f, -9.1f),
+                new Vector3(6.7f, 1.4f, -9.1f),
+                new Vector3(5.1f, 1.4f, -11f),
+                new Vector3(2.45f, 1.4f, -8.4f)
+        };
+
+        private boolean[] leftRotated = {
+                true,
+                true,
+                false,
+                false,
+                true,
+                true,
+                true,
+                false,
+                true
+        };
+
+
+
         Vector3 weaponSpawn = new Vector3(0.0f, -0.5f, 0.0f);
 
         @Override
@@ -1644,7 +1712,7 @@ public class GameSystems {
             livingEnemies -= 1;
             DrawingWindow.currentEnemyCount = livingEnemies;
 
-            if (livingEnemies == 0) {
+            if(livingEnemies == 0){
                 onFinishLevel(level);
             }
         }
@@ -1653,7 +1721,7 @@ public class GameSystems {
             Random rand = new Random();
             int type = rand.nextInt(3);
 
-            switch (type) {
+            switch (type){
                 case 0 -> spawnShotgun(manager);
                 case 1 -> spawnMachinegun(manager);
                 case 2 -> spawnSniper(manager);
@@ -1661,16 +1729,16 @@ public class GameSystems {
 
         }
 
-        private void spawnHealthPack(EntityManager manager) throws IOException {
+        private void spawnHealthPack(EntityManager manager) throws IOException{
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON | GameComponents.COLLIDER);
             if (id > -1) {
                 Random rand = new Random();
                 int x = 13;
                 int z = 13;
-                if (rand.nextBoolean())
+                if(rand.nextBoolean())
                     x = -x;
 
-                if (rand.nextBoolean())
+                if(rand.nextBoolean())
                     z = -z;
 
 
@@ -1750,6 +1818,9 @@ public class GameSystems {
 
         private void loadNextLevel(EntityManager manager) throws IOException {
 
+            startIndex = randomS.nextInt(0, spawnPositionsTurret.length );
+            spawnedTurrets = 0;
+
             DrawingWindow.level = level;
 
             livingEnemies = level;
@@ -1758,36 +1829,39 @@ public class GameSystems {
 
             Random rand = new Random();
 
-            for (int i = 0; i < livingEnemies; i++) {
+            for(int i  = 0; i < livingEnemies; i++){
 
                 int enemyType = rand.nextInt(3);
                 float spawnX;
                 float spawnZ;
 
-                if (rand.nextBoolean()) {
-                    if (rand.nextBoolean())
+                if(rand.nextBoolean()){
+                    if(rand.nextBoolean())
                         spawnX = 15.0f;
                     else
                         spawnX = -15.0f;
-                    spawnZ = ((float) rand.nextInt(15)) * 2.0f - 15.0f;
-                } else {
-                    if (rand.nextBoolean())
+                    spawnZ =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
+                }
+                else {
+                    if(rand.nextBoolean())
                         spawnZ = 15.0f;
                     else
                         spawnZ = -15.0f;
-                    spawnX = ((float) rand.nextInt(15)) * 2.0f - 15.0f;
+                    spawnX =  ((float) rand.nextInt(15)) * 2.0f - 15.0f;
                 }
 
 
-                switch (enemyType) {
+
+                switch (enemyType){
                     case 0 -> {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
 
                             // Set up the transformation component
-                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj", "./src/objects/enemies/groundEnemy/groundEnemy128.png");
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/groundEnemy/groundEnemy.obj","./src/objects/enemies/groundEnemy/groundEnemy128.png");
                             manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+
 
 
                             manager.transform[id].pos = new Vector3(spawnX, -0.9f, spawnZ);
@@ -1811,11 +1885,11 @@ public class GameSystems {
                             manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                         }
                     }
-                    case 1 -> {
+                    case 1 ->{
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
-                            if (randomS.nextInt(0, 10) == 5) {
+                            if(randomS.nextInt(0,10) == 5)
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
 
                                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
@@ -1870,24 +1944,59 @@ public class GameSystems {
                                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
                                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                             }
-                        }
 
                     }
-                    case 2 -> {
+                    case 2->{
+
+                        if(spawnedTurrets >= spawnPositionsTurret.length){
+                            i--;
+                            continue;
+                        }
+
+                        spawnedTurrets += 1;
+                        startIndex = (startIndex + 1) % spawnPositionsTurret.length;
+
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
-                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", "./src/objects/enemies/gunTurret/turret128.png");
-                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
-                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+                            Color color = Color.yellow;
+                            switch (randomS.nextInt(0,4)){
+                                case 0 ->{
+                                    color = Color.RED;
+                                }
+                                case 1 ->{
+                                    color = Color.green;
+                                }
+                                case 2 ->{
+                                    color = Color.yellow;
+                                }
+                                case 3 ->{
+                                    color = Color.white;
+                                }
+                            }
+                            int index = startIndex;
 
+                            float yS = randomS.nextFloat(1.0f, 3.2f);
 
-                            manager.transform[id].pos = new Vector3(spawnX, /*rand.nextInt(1, 4)*/ 1, spawnZ);
-                            manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
+                            manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", color );
+                            manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
+                            manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
+                            manager.aiBehavior[id].leftRotated = leftRotated[index];
+
+                            //manager.transform[id].pos = new Vector3(spawnX, /*rand.nextInt(1, 4)*/ 1, spawnZ);
+                            manager.transform[id].pos = spawnPositionsTurret[index];
+                            manager.transform[id].pos.y = yS;
+
+                            if(leftRotated[index])
+                                manager.transform[id].rot = new Vector3(-3.14f/2, 0.0f, 3.1415f);
+
+                            else
+                                manager.transform[id].rot = new Vector3(3.14f/2, 0.0f, 3.1415f);
+
                             manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
                             manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
 
-                            manager.rendering[id].modelRotation = new Vector3(0.0f, 3.1415f, 0.0f);
+                            manager.rendering[id].modelRotation =new Vector3(0.0f, 3.1415f, 0.0f);
                             manager.aiBehavior[id].enemyType = GameComponents.EnemyType.GUNTURRED;
 
                             manager.aiBehavior[id].shootingCooldown = 1f;
@@ -1897,7 +2006,7 @@ public class GameSystems {
                             manager.aiBehavior[id].attackingDistance = manager.aiBehavior[id].chasingDistance;
                             manager.aiBehavior[id].damage = level;
                             manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
-                            manager.collider[id].colliderSize = new Vector3(1f, 1f, 1f);
+                            manager.collider[id].colliderSize = new Vector3(3.2f, 3f, 3f);
                             manager.collider[id].center = RenderMaths.addVectors(manager.transform[id].pos, new Vector3(0.0f, -1.0f, 0.0f));
                             manager.rendering[id].modelTranslation = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
@@ -1934,7 +2043,7 @@ public class GameSystems {
             checkMusicQuieter();
         }
 
-        private void checkMusicKey() {
+        private void checkMusicKey(){
             //Stop or start gamemusic
             if (keyListener.isKeyPressed('M') != lastStateM && keyListener.isKeyPressed('M') || keyListener.isKeyPressed('m') != lastStatem && keyListener.isKeyPressed('m')) {
                 MusicPlayer.getInstance().pauseResume("src/sound/misc/music.wav");
@@ -1943,20 +2052,20 @@ public class GameSystems {
             lastStatem = keyListener.isKeyPressed('m');
         }
 
-        private void checkMusicQuieter() {
+        private void checkMusicQuieter(){
             if (keyListener.isKeyPressed('Y') != lastStateM && keyListener.isKeyPressed('Y') || keyListener.isKeyPressed('y') != lastStatem && keyListener.isKeyPressed('y')) {
                 if (MusicPlayer.getInstance().volume > 0.1f) {
-                    MusicPlayer.getInstance().changeVolume(MusicPlayer.getInstance().volume - 0.1f);
+                    MusicPlayer.getInstance().changeVolume(MusicPlayer.getInstance().volume -0.1f);
                     System.out.println("Volume: " + MusicPlayer.getInstance().volume);
 
                 }
             }
         }
 
-        private void checkMusicLouder() {
+        private void checkMusicLouder(){
             if (keyListener.isKeyPressed('X') != lastStateM && keyListener.isKeyPressed('X') || keyListener.isKeyPressed('x') != lastStatem && keyListener.isKeyPressed('x')) {
-                if (MusicPlayer.getInstance().volume < 0.91f) {
-                    MusicPlayer.getInstance().changeVolume(MusicPlayer.getInstance().volume + 0.1f);
+                if (MusicPlayer.getInstance().volume < 0.91f){
+                    MusicPlayer.getInstance().changeVolume(MusicPlayer.getInstance().volume +0.1f);
                     System.out.println("Volume: " + MusicPlayer.getInstance().volume);
                 }
             }
@@ -2005,25 +2114,25 @@ public class GameSystems {
             }
         }
 
-        private void handleRoute(EntityManager manager, int i) {
+        private void handleRoute(EntityManager manager, int i){
             int counter = manager.cameraElement[i].listCounter;
             Vector3 nextPoint = manager.cameraElement[i].checkpointList.get(counter);
             Vector3 currentPos = manager.transform[i].pos;
 
-            if (nextPoint.close(currentPos)) {
-                if (counter == manager.cameraElement[i].checkpointList.size() - 1) {
+            if (nextPoint.close(currentPos)){
+                if(counter == manager.cameraElement[i].checkpointList.size()-1){
                     manager.cameraElement[i].listCounter = 0;
                 } else {
                     manager.cameraElement[i].listCounter++;
                 }
             }
 
-            Vector3 direction = nextPoint.subtract(currentPos);
+            Vector3 direction =  nextPoint.subtract(currentPos);
             direction = RenderMaths.normalizeVector(direction);
-            manager.physicsBody[i].force = RenderMaths.multiplyVector(direction, manager.physicsBody[i].speed);
+            manager.physicsBody[i].force = RenderMaths.multiplyVector(direction , manager.physicsBody[i].speed);
         }
 
-        public void calculateRotation(Vector3 focusPosition) {
+        public void calculateRotation(Vector3 focusPosition){
             Vector3 direction = cam.position.subtract(focusPosition);
             float currentAngleY = cam.rotation.y;
 
@@ -2049,7 +2158,7 @@ public class GameSystems {
             cam.rotation.x = currentAngleX + angleDifferenceX;
         }
 
-        public void createDisplay(EntityManager manager) {
+        public void createDisplay(EntityManager manager){
             try {
                 ArrayList<Integer> visitIdList = new ArrayList<>();
                 int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PICKUPWEAPON);
@@ -2108,7 +2217,7 @@ public class GameSystems {
                     manager.aiBehavior[id].shootingCooldown = 1f;
                     manager.aiBehavior[id].currentState = GameComponents.State.DEACTIVATED;
                     manager.physicsBody[id].speed = 0f;
-                    manager.damageable[id].health = 5;
+                    manager.damageable[id].health = 5 ;
                     manager.aiBehavior[id].chasingDistance = 40;
                     manager.aiBehavior[id].attackingDistance = 40;
                     manager.aiBehavior[id].damage = 1;
@@ -2155,12 +2264,12 @@ public class GameSystems {
                 if (id > -1) {
                     manager.cameraElement[id].cameraElementType = GameComponents.cameraElementTypes.CAMERAROUTE;
                     ArrayList<Vector3> vector3ForRoute = new ArrayList<>();
-                    vector3ForRoute.add(new Vector3(5f, -0.5f, 12f));
-                    vector3ForRoute.add(new Vector3(10f, 0f, 0f));
-                    vector3ForRoute.add(new Vector3(0f, 10f, 0f));
-                    vector3ForRoute.add(new Vector3(-10f, 0f, 2f));
-                    vector3ForRoute.add(new Vector3(10f, 0f, 2f));
-                    vector3ForRoute.add(new Vector3(1f, 0f, 1f));
+                    vector3ForRoute.add(new Vector3(5f,-0.5f,12f));
+                    vector3ForRoute.add(new Vector3(10f,0f,0f));
+                    vector3ForRoute.add(new Vector3(0f,10f,0f));
+                    vector3ForRoute.add(new Vector3(-10f,0f,2f));
+                    vector3ForRoute.add(new Vector3(10f,0f,2f));
+                    vector3ForRoute.add(new Vector3(1f,0f,1f));
                     manager.cameraElement[id].checkpointList = vector3ForRoute;
                     manager.transform[id].pos = new Vector3(5f, 0.5f, 5.0f);
                     manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
@@ -2185,7 +2294,7 @@ public class GameSystems {
                 }
 
 
-            } catch (Exception e) {
+            } catch (Exception e){
                 System.out.println(e);
             }
         }
