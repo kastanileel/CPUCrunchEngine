@@ -1551,6 +1551,7 @@ public class GameSystems {
         }
 
         private void reactToCollisionTagEnemy(EntityManager manager, int enemyId, int otherId, float deltatime) {
+            try {
             GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
             switch (tag) {
                 case OBSTACLE -> {
@@ -1569,6 +1570,9 @@ public class GameSystems {
                     //manager.aiBehavior[enemyId].currentState = GameComponents.State.COLLIDED;
                     manager.aiBehavior[enemyId].colliderbounceTime = 2f;
                 }
+            }
+            }catch (Exception e) {
+                System.out.println("Maybe manager.collider[otherId] is null?");
             }
         }
 
@@ -1814,6 +1818,7 @@ public class GameSystems {
         }
 
         private void loadNextLevel(EntityManager manager) throws IOException {
+            int maxMalteSeeker = 1;
 
             startIndex = randomS.nextInt(0, spawnPositionsTurret.length);
             spawnedTurrets = 0;
@@ -1882,7 +1887,8 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
-                            if (randomS.nextInt(0, 4) == 1) {
+                            if (randomS.nextInt(0, 4) == 1 && maxMalteSeeker > 0) {
+                                maxMalteSeeker--;
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
                                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
                                 manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);

@@ -397,7 +397,6 @@ public class SimpleAdvancedRenderPipeline {
                                 mesh = meshesToRender.get(triangle.meshIndex);
                                 drawingWindow.drawTriangleImproved(triangle, mesh.textureTriangles[triangle.textureIndex], mesh.texture);
                             } catch (Exception e) {
-                                System.out.println("render pip textured");
                                 triangle.color = Color.RED;
                                 drawingWindow.drawTriangle(triangle);
                             }
