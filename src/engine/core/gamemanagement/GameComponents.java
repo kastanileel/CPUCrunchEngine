@@ -151,7 +151,8 @@ public class GameComponents {
     public enum EnemyType {
         GUNTURRED,
         SIGHTSEEKER,
-        GROUNDENEMY
+        GROUNDENEMY,
+        MALTESEEKER
 
     }
 
@@ -168,6 +169,8 @@ public class GameComponents {
         public int chooseWanderingCounter;
         public int damage;
         public float colliderbounceTime;
+        public float soundCooldown;
+
 
     }
 

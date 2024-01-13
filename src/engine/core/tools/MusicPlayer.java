@@ -49,7 +49,12 @@ public class MusicPlayer {
 
         //SIGHSEEKER_ATTACK("src/sound/enemies/sightSeeker/laserShot.wav"),
         SIGHSEEKER_ATTACK("src/sound/misc/shoot.wav"),
-        SIGHTSEEKER_DEATH("src/sound/enemies/sightSeeker/sightSeeker_death.wav");
+        SIGHTSEEKER_DEATH("src/sound/enemies/sightSeeker/sightSeeker_death.wav"),
+
+        MALTESEEKER_RANDOMTALK1("src/sound/enemies/malteSeeker/Alter_marcel.wav"),
+        MALTESEEKER_RANDOMTALK2("src/sound/enemies/malteSeeker/Alter_marcel_tief_schnell.wav"),
+        MALTESEEKER_SPAWN_AND_ATTACK("src/sound/enemies/malteSeeker/hallo.wav"),
+        MALTESEEKER_RANDOMTALK3("src/sound/enemies/malteSeeker/Marcel_ist_immer_schuld.wav");
 
 
         private final String path;
