@@ -438,9 +438,7 @@ public class GameSystems {
                         else if (magazineSniper == 0){
                             shootingCooldown = 6.0f;
                             System.out.println("Reloading Sniper!");
-                            int randomInt = randomS.nextInt(0, 16);
-                            if(randomInt == 5)
-                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
                             magazineSniper = 5;
                         }
@@ -1008,7 +1006,8 @@ public class GameSystems {
                     if (!((manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.ENEMY && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.ENEMY)
                             || (manager.bullet[bulletId].shooter == GameComponents.Bullet.ShooterType.PLAYER && manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER))) {
                         System.out.println(manager.damageable[otherID].health);
-                        DamageSystem.damagedEntities.add(otherID);
+                        if (!DamageSystem.damagedEntities.contains(otherID))
+                            DamageSystem.damagedEntities.add(otherID);
 
                         manager.damageable[otherID].health -= manager.bullet[bulletId].damage;
                         if (manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.PLAYER) {
@@ -1482,7 +1481,7 @@ public class GameSystems {
                     EventSystem.getInstance().addListener(this);
                     level = 1;
                     loadNextLevel(manager);
-
+                    DrawingWindow.currentEnemyCount = livingEnemies;
                     localManager = manager;
                 }
             }
@@ -1496,6 +1495,7 @@ public class GameSystems {
                     if (finishedLevel) {
                         if (finishTimer > 0.0f) {
                             finishTimer -= deltaTime;
+                            DrawingWindow.levelCooldown = finishTimer;
                             return;
                         }
                         finishedLevel = false;
@@ -1503,7 +1503,9 @@ public class GameSystems {
 
                         level += 1;
 
+                        DrawingWindow.inGameState = DrawingWindow.InGameStates.DEFAULT;
                         loadNextLevel(manager);
+                        DrawingWindow.currentEnemyCount = livingEnemies;
                     }
                 }
             }
@@ -1513,6 +1515,7 @@ public class GameSystems {
         public void onFinishLevel(int level) {
             finishedLevel = true;
             finishTimer = cooldown;
+            DrawingWindow.inGameState = DrawingWindow.InGameStates.WAITINGFORNEXTLEVEL;
             try {
                 spawnRandomWeapon(localManager);
             } catch (Exception e) {
@@ -1536,6 +1539,7 @@ public class GameSystems {
         @Override
         public void onKillEnemy() {
             livingEnemies -= 1;
+            DrawingWindow.currentEnemyCount = livingEnemies;
 
             if(livingEnemies == 0){
                 onFinishLevel(level);
