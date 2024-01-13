@@ -360,9 +360,7 @@ public class GameSystems {
                         } else if (magazinePistol == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Pistol!");
-                            int randomInt = randomS.nextInt(0, 16);
-                            if(randomInt == 5)
-                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_PISTOL);
                             magazinePistol = 10;
                         }
@@ -383,9 +381,7 @@ public class GameSystems {
                         } else if (magazineMachineGun == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Machine Gun!");
-                            int randomInt = randomS.nextInt(0, 16);
-                            if(randomInt == 5)
-                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_AK);
                             magazineMachineGun = 30;
                         }
@@ -407,9 +403,7 @@ public class GameSystems {
                         } else if (magazineShotgun == 0) {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
-                            int randomInt = randomS.nextInt(0, 16);
-                            if(randomInt == 5)
-                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
                         }
@@ -426,9 +420,7 @@ public class GameSystems {
                         else if (magazineShotgun == 0){
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
-                            int randomInt = randomS.nextInt(0, 16);
-                            if(randomInt == 5)
-                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
                         }
@@ -720,15 +712,14 @@ public class GameSystems {
                 case PICKUPWEAPON -> {
                     try {
                         changeWeapon(entityManager.pickupWeapon[otherId].weaponType, entityManager, playerId);
+                        if (entityManager.pickupWeapon[otherId].weaponType != GameComponents.PlayerMovement.WeaponType.HEALTHPACK)
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
+
                     } catch (Exception e) {
                         System.out.println("oops");
                     }
 
                     entityManager.destroyEntity(otherId);
-
-                    int randomInt = randomS.nextInt(0, 8);
-                    if(randomInt == 5)
-                        MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
                 }
             }
         }
