@@ -35,6 +35,7 @@ import java.awt.*;
 public class GameSystems {
 
     public static Random randomS = new Random();
+    public static float bulletLifeTime = 2.0f;
 
 
     public static class CollisionSystem extends GameSystem {
@@ -193,6 +194,7 @@ public class GameSystems {
         int magazineShotgun = 2;
         int magazineSniper = 5;
 
+        float rotating = 0.0f;
         boolean scopedIn = false;
 
         Vector3 knifeDir = new Vector3();
@@ -269,14 +271,22 @@ public class GameSystems {
             float mouseY = MMouseListener.getInstance().getMouseDeltaY();
             cam.rotation.x += mouseY * deltaTime * manager.playerMovement[id].mouseSpeed;
 
+            float rotationSpeed = 11.0f * deltaTime * manager.playerMovement[id].mouseSpeed * Math.min(2.0f, rotating + 1.0f);
+
             if (MKeyListener.getInstance().isKeyPressed('l'))
-                cam.rotation.y +=11.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.y +=rotationSpeed;
             if (MKeyListener.getInstance().isKeyPressed('j'))
-                cam.rotation.y -= 11.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+                cam.rotation.y -= rotationSpeed;
             if (MKeyListener.getInstance().isKeyPressed('i'))
                 cam.rotation.x -= 3.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
             if (MKeyListener.getInstance().isKeyPressed('k'))
                 cam.rotation.x += 3.0f * deltaTime * manager.playerMovement[id].mouseSpeed;
+
+            if(MKeyListener.getInstance().isKeyPressed('l') || MKeyListener.getInstance().isKeyPressed('j')) {
+                rotating += deltaTime;
+            }
+            else
+                rotating = 0.0f;
 
             // Clamp the vertical rotation to a range if you don't want it to flip over
             if (cam.rotation.x > 0.2f)
@@ -686,7 +696,7 @@ public class GameSystems {
                     manager.rendering[bulletId].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[bulletId].modelRotation = new Vector3(0.0f, 3.1415f / -2.0f, 0.0f);
                     manager.physicsBody[bulletId].speed = speed;
-                    manager.bullet[bulletId].lifeTime = lifeTime;
+                    manager.bullet[bulletId].lifeTime = bulletLifeTime;
                     manager.bullet[bulletId].damage = damage;
                     manager.collider[bulletId].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                     manager.collider[bulletId].center = manager.transform[bulletId].pos;
@@ -1040,7 +1050,7 @@ public class GameSystems {
                         manager.destroyEntity(bulletId);
                     }
                 }
-                else if(manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.OBSTACLE){
+                else if(manager.collider[otherID].colliderTag == GameComponents.Collider.ColliderTag.OBSTACLE ){
                     manager.destroyEntity(bulletId);
                 }
 
@@ -1361,6 +1371,15 @@ public class GameSystems {
             manager.aiBehavior[id].shootingCooldown = 3f;
             //Bullet Spawnpoint adaption
             float yOffSet = 0f;
+            float leftRightOffset = 0.0f;
+
+            if(manager.aiBehavior[id].leftRotated){
+                // offset the bullet to the right
+                leftRightOffset += 1.5f;
+            }
+            else {
+
+            }
             //Scattering factor
             float factor = 0.4f;
             // generate random, small offset
@@ -1374,6 +1393,10 @@ public class GameSystems {
                     normalizeVector.y + y * factor,
                     normalizeVector.z + z * factor
             );
+
+            Vector3 offset = new Vector3();
+            // direction is bullet forward vector... put it to the right
+
 
 
             shoot(manager, direction, id, 150.0f, 2.0f, manager.aiBehavior[id].damage, MusicPlayer.SoundEffect.SHOOT_SNIPER, yOffSet);
@@ -1410,7 +1433,7 @@ public class GameSystems {
 
                 try {
                     manager.bullet[bulletId].shooter = GameComponents.Bullet.ShooterType.ENEMY;
-                    manager.transform[bulletId].pos = manager.transform[id].pos.clone();
+                    manager.transform[bulletId].pos = RenderMaths.addVectors(manager.transform[id].pos.clone(), RenderMaths.multiplyVector(RenderMaths.normalizeVector(direction.clone()),1.65f));
                     manager.transform[bulletId].pos.y += yOffSet;
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
 
@@ -1424,7 +1447,7 @@ public class GameSystems {
                     manager.rendering[bulletId].renderType = GameComponents.Rendering.RenderType.OneColor;
                     manager.rendering[bulletId].modelRotation = new Vector3(0.0f, 3.1415f / -2.0f, 0.0f);
                     manager.physicsBody[bulletId].speed = speed;
-                    manager.bullet[bulletId].lifeTime = lifeTime;
+                    manager.bullet[bulletId].lifeTime = bulletLifeTime;
                     manager.bullet[bulletId].damage = damage;
                     manager.collider[bulletId].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                     manager.collider[bulletId].center = manager.transform[bulletId].pos;
@@ -1496,15 +1519,15 @@ public class GameSystems {
         private int startIndex;
 
         private Vector3[] spawnPositionsTurret = {
-                new Vector3(-10.0f, 1.0f, -3.0f),
-                new Vector3(-3.1f, 1.4f, 0.7f),
-                new Vector3(9.3f, 1.4f, 8.4f),
-                new Vector3(6.5f, 1.4f, 0.65f),
-                new Vector3(6.7f, 1.4f, -2.7f),
-                new Vector3(10f, 1.4f, -8f),
-                new Vector3(6.7f, 1.4f, -8f),
-                new Vector3(4.7f, 1.4f, -11f),
-                new Vector3(2.9f, 1.4f, -8.4f)
+                new Vector3(-10.0f, 1.0f, -2.0f),
+                new Vector3(-3.1f, 1.4f, 1.7f),
+                new Vector3(9.3f, 1.4f, 9.1f),
+                new Vector3(6.5f, 1.4f, 1.7f),
+                new Vector3(6.7f, 1.4f, -3.575f),
+                new Vector3(10f, 1.4f, -9.1f),
+                new Vector3(6.7f, 1.4f, -9.1f),
+                new Vector3(5.1f, 1.4f, -11f),
+                new Vector3(2.45f, 1.4f, -8.4f)
         };
 
         private boolean[] leftRotated = {
@@ -1821,6 +1844,9 @@ public class GameSystems {
                                 }
                             }
                             int index = startIndex;
+
+                            float yS = randomS.nextFloat(1.0f, 3.2f);
+
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", color );
                             manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
                             manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
@@ -1828,6 +1854,7 @@ public class GameSystems {
 
                             //manager.transform[id].pos = new Vector3(spawnX, /*rand.nextInt(1, 4)*/ 1, spawnZ);
                             manager.transform[id].pos = spawnPositionsTurret[index];
+                            manager.transform[id].pos.y = yS;
 
                             if(leftRotated[index])
                                 manager.transform[id].rot = new Vector3(-3.14f/2, 0.0f, 3.1415f);
@@ -1849,7 +1876,7 @@ public class GameSystems {
                             manager.aiBehavior[id].attackingDistance = manager.aiBehavior[id].chasingDistance;
                             manager.aiBehavior[id].damage = level;
                             manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 0f, 1f);
-                            manager.collider[id].colliderSize = new Vector3(3f, 3f, 3f);
+                            manager.collider[id].colliderSize = new Vector3(3.2f, 3f, 3f);
                             manager.collider[id].center = RenderMaths.addVectors(manager.transform[id].pos, new Vector3(0.0f, -1.0f, 0.0f));
                             manager.rendering[id].modelTranslation = new Vector3(0.0f, 0.0f, 0.0f);
                             manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
