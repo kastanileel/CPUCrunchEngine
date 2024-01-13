@@ -148,7 +148,7 @@ public class DrawingWindow extends JPanel {
                 graphics.drawString("pressing a key im go to f@cking murder you :)", getWidth() / 2 - (int) (this.getWidth() * 0.3), getHeight() / 2 - (int) (this.getHeight() * 0.05 - this.getHeight() * 0.05));
                 font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.022));
                 graphics.setFont(font);
-                i = 1;
+                int i = 1;
                 graphics.drawString("Movement - a,w,s,d", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
                 graphics.drawString("Rotate camera - j,i,k,l", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
                 graphics.drawString("Shoot - u", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
