@@ -1069,7 +1069,7 @@ public class GameSystems {
                         System.out.println("Enemy got hit");
                         if (manager.damageable[id].health <= 0) {
                             manager.destroyEntity(id);
-                            EventSystem.getInstance().onKillEnemy();
+                            EventSystem.getInstance().onKillEnemy(manager, manager.aiBehavior[id].enemyType);
                         }
                         break;
                     default:
@@ -1503,8 +1503,9 @@ public class GameSystems {
                     manager.transform[bulletId].rot = manager.transform[id].rot.clone();
 
                     switch (manager.aiBehavior[id].enemyType) {
-                        /*case GUNTURRED:
-                            manager.transform[bulletId].rot.y -= (float) Math.PI / 2 ;*/
+                        case GUNTURRED:
+                            manager.transform[bulletId].rot.y -= (float) Math.PI / 2 ;
+                            break;
                         case GROUNDENEMY:
                             manager.transform[bulletId].rot.y += (float) Math.PI;
                             break;
@@ -1698,10 +1699,16 @@ public class GameSystems {
         }
 
         @Override
-        public void onKillEnemy() {
+        public void onKillEnemy(EntityManager manager, GameComponents.EnemyType enemyType) throws IOException {
             livingEnemies -= 1;
             DrawingWindow.currentEnemyCount = livingEnemies;
-
+            if (enemyType == GameComponents.EnemyType.MALTESEEKER) {
+                try {
+                    spawnHealthPack(manager);
+                } catch (Exception e) {
+                    System.out.println("Could not spawn healthpack");
+                }
+            }
             if (livingEnemies == 0) {
                 onFinishLevel(level);
             }
@@ -1875,7 +1882,7 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
-                            if (randomS.nextInt(0, 10) == 5) {
+                            if (randomS.nextInt(0, 4) == 1) {
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
                                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
                                 manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
