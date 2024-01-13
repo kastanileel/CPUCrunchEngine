@@ -167,6 +167,8 @@ public class GameComponents {
         public float shootingCooldown;
         public int chooseWanderingCounter;
         public int damage;
+
+        public boolean leftRotated = false;
         public float colliderbounceTime;
 
     }
