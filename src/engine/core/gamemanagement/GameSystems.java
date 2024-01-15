@@ -640,14 +640,18 @@ public class GameSystems {
         }
 
         private void reactToKnifeCollision(EntityManager manager, int knife, int otherId) {
-            GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
-            switch (tag) {
-                case ENEMY -> {
-                    manager.damageable[otherId].health -= 50;
-                    System.out.println("Enemy health: " + manager.damageable[otherId].health);
-                    if (!DamageSystem.damagedEntities.contains(otherId))
-                        DamageSystem.damagedEntities.add(otherId);
+            try {
+                GameComponents.Collider.ColliderTag tag = manager.collider[otherId].colliderTag;
+                switch (tag) {
+                    case ENEMY -> {
+                        manager.damageable[otherId].health -= 50;
+                        System.out.println("Enemy health: " + manager.damageable[otherId].health);
+                        if (!DamageSystem.damagedEntities.contains(otherId))
+                            DamageSystem.damagedEntities.add(otherId);
+                    }
                 }
+            } catch (Exception e) {
+                System.out.println("reactToKnifeCollision");
             }
         }
 
@@ -1303,13 +1307,18 @@ public class GameSystems {
                 );
             } else {
                 manager.aiBehavior[entityId].chooseWanderingCounter = 0;
-                Vector3 normalizedVectorToSpawn = RenderMaths.normalizeVector(manager.aiBehavior[entityId].spawnPoint.subtract(manager.transform[entityId].pos));
-                manager.aiBehavior[entityId].wanderingDirection = new Vector3(
-                        normalizedVectorToSpawn.x * 0.25f * manager.physicsBody[entityId].speed,
-                        normalizedVectorToSpawn.y * 0.25f * manager.physicsBody[entityId].speed,
-                        normalizedVectorToSpawn.z * 0.25f * manager.physicsBody[entityId].speed
-                );
+                Vector3 vectorSpawnPos = manager.aiBehavior[entityId].spawnPoint.subtract(manager.transform[entityId].pos);
 
+                if (vectorSpawnPos.x == 0 && vectorSpawnPos.y == 0 && vectorSpawnPos.z == 0) {
+                    manager.aiBehavior[entityId].wanderingDirection = new Vector3(1f, 0f, 1f);
+                } else {
+                    Vector3 normalizedVectorToSpawn = RenderMaths.normalizeVector(vectorSpawnPos);
+                    manager.aiBehavior[entityId].wanderingDirection = new Vector3(
+                            normalizedVectorToSpawn.x * 0.25f * manager.physicsBody[entityId].speed,
+                            normalizedVectorToSpawn.y * 0.25f * manager.physicsBody[entityId].speed,
+                            normalizedVectorToSpawn.z * 0.25f * manager.physicsBody[entityId].speed
+                    );
+                }
             }
         }
 
