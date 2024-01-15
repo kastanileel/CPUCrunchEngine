@@ -1901,7 +1901,7 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
-                            if (randomS.nextInt(0, 7) == 1 && maxMalteSeeker > 0) {
+                            if (randomS.nextInt(7) == 1 && maxMalteSeeker > 0) {
                                 maxMalteSeeker--;
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
                                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
@@ -1971,7 +1971,7 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             Color color = Color.yellow;
-                            switch (randomS.nextInt(0, 4)) {
+                            switch (randomS.nextInt( 4)) {
                                 case 0 -> {
                                     color = Color.RED;
                                 }
