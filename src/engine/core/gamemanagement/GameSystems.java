@@ -1534,7 +1534,7 @@ public class GameSystems {
                     manager.bullet[bulletId].damage = damage;
                     manager.collider[bulletId].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                     manager.collider[bulletId].center = manager.transform[bulletId].pos;
-                    manager.collider[bulletId].colliderSize = new Vector3(0.2f, 0.2f, 0.2f);
+                    manager.collider[bulletId].colliderSize = new Vector3(0.4f, 0.2f, 0.2f);
                     manager.collider[bulletId].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
 
                     MusicPlayer.getInstance().playSound(soundEffect);
@@ -2115,11 +2115,11 @@ public class GameSystems {
                 if ((manager.flag[i] & required_GameComponents) == required_GameComponents) {
                     switch (manager.cameraElement[i].cameraElementType) {
                         case CAMERAFOCUSROUTE:
-                            handleRoute(manager, i);
+                            handleRoute(manager, i, deltaTime);
                             calculateRotation(manager.transform[i].pos);
                             break;
                         case CAMERAROUTE:
-                            handleRoute(manager, i);
+                            handleRoute(manager, i, deltaTime);
                             cam.position = manager.transform[i].pos;
                             break;
                     }
@@ -2127,7 +2127,7 @@ public class GameSystems {
             }
         }
 
-        private void handleRoute(EntityManager manager, int i) {
+        private void handleRoute(EntityManager manager, int i, float deltaTime) {
             int counter = manager.cameraElement[i].listCounter;
             Vector3 nextPoint = manager.cameraElement[i].checkpointList.get(counter);
             Vector3 currentPos = manager.transform[i].pos;
@@ -2141,8 +2141,8 @@ public class GameSystems {
             }
 
             Vector3 direction = nextPoint.subtract(currentPos);
-            direction = RenderMaths.normalizeVector(direction);
-            manager.physicsBody[i].force = RenderMaths.multiplyVector(direction, manager.physicsBody[i].speed);
+            direction = RenderMaths.multiplyVector(RenderMaths.normalizeVector(direction), deltaTime);
+            manager.transform[i].pos = RenderMaths.addVectors(direction, manager.transform[i].pos);
         }
 
         public void calculateRotation(Vector3 focusPosition) {

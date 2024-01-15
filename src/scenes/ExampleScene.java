@@ -427,7 +427,7 @@ public class ExampleScene extends Scene {
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
 
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(0.5f, 1.0f, 1.0f);
+                manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
 
@@ -437,7 +437,7 @@ public class ExampleScene extends Scene {
             manager.createEntity(GameComponents.GAMELOGIC);
 
           /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
-                    | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
+                    | GameComponents.PHYSICSBODY | GameComponents.RENDER |q GameComponents.COLLIDER);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
