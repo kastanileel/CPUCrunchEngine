@@ -1,5 +1,9 @@
 package src.engine.core.gamemanagement.gamelogic;
 
+import src.engine.core.gamemanagement.EntityManager;
+import src.engine.core.gamemanagement.GameComponents;
+
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class EventSystem {
@@ -35,9 +39,9 @@ public class EventSystem {
         }
     }
 
-    public void onKillEnemy(){
+    public void onKillEnemy(EntityManager manager, GameComponents.EnemyType enemyType) throws IOException {
         for (GameEventListener listener : listeners){
-            listener.onKillEnemy();
+            listener.onKillEnemy(manager, enemyType);
         }
     }
 }

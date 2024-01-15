@@ -146,7 +146,7 @@ public class GameContainer {
                     case GAME:
                         if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
                             currentGamePhase = Phases.PAUSE;
-                            DrawingWindow.windowState = DrawingWindow.WindowStates.PAUSESCREEN;
+                            DrawingWindow.inGameState = DrawingWindow.InGameStates.PAUSESCREEN;
                         }
 
                         lastStateM = keyListener.isKeyPressed('P');
@@ -156,7 +156,7 @@ public class GameContainer {
                         deltaTime = 0;
                         if (keyListener.isKeyPressed('P') != lastStateM && keyListener.isKeyPressed('P') || keyListener.isKeyPressed('p') != lastStatem && keyListener.isKeyPressed('p')) {
                             currentGamePhase = Phases.GAME;
-                            DrawingWindow.windowState = DrawingWindow.WindowStates.INGAMESCREEN;
+                            DrawingWindow.inGameState = DrawingWindow.InGameStates.DEFAULT;
                         }
 
                         lastStateM = keyListener.isKeyPressed('P');

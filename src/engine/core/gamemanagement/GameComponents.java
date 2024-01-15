@@ -151,7 +151,8 @@ public class GameComponents {
     public enum EnemyType {
         GUNTURRED,
         SIGHTSEEKER,
-        GROUNDENEMY
+        GROUNDENEMY,
+        MALTESEEKER
 
     }
 
@@ -170,6 +171,8 @@ public class GameComponents {
 
         public boolean leftRotated = false;
         public float colliderbounceTime;
+        public float soundCooldown;
+
 
     }
 

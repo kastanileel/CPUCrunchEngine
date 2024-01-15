@@ -17,7 +17,12 @@ import java.awt.image.BufferedImage;
 public class DrawingWindow extends JPanel {
 
     public enum WindowStates {
-        DEATHSCREEN, PAUSESCREEN, STARTSCREEN, INGAMESCREEN
+        DEATHSCREEN, STARTSCREEN, INGAMESCREEN
+    }
+
+    public enum InGameStates {
+        DEFAULT, PAUSESCREEN, WAITINGFORNEXTLEVEL
+
     }
     private GraphicsConfiguration graphicsConf = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
     private BufferedImage imageBuffer;
@@ -32,6 +37,9 @@ public class DrawingWindow extends JPanel {
     public int minAccuracy;
     public static int level;
     public static WindowStates windowState = WindowStates.STARTSCREEN;
+    public static InGameStates inGameState = InGameStates.DEFAULT;
+    public static float levelCooldown;
+    public static int currentEnemyCount;
 
     private static boolean colorFade = true;
     private static float colorSwitchCooldown;
@@ -83,26 +91,37 @@ public class DrawingWindow extends JPanel {
                 graphics.setFont(font);
                 graphics.drawString("YOU DIED", getWidth() / 2 - (int)(this.getWidth() * 0.15), getHeight() / 2 + (int)(this.getWidth() * 0.05));
                 break;
-            case PAUSESCREEN:
-                graphics.setColor(new Color(0, 0, 0, 128));
-                graphics.fillRect(0, 0, getWidth(), getHeight());
-                graphics.setColor(Color.WHITE);
-                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
-                graphics.setFont(font);
-                graphics.drawString("Paused", getWidth() / 2 - (int) (this.getWidth() * 0.052), getHeight() / 2 - (int) (this.getWidth() * 0.05));
-                font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.022));
-                graphics.setFont(font);
-                graphics.drawString("Hotkeys:", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1));
-                font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.022));
-                graphics.setFont(font);
-                int i = 1;
-                graphics.drawString("Turn off/on music - m", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
-                graphics.drawString("Volume Up - x", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
-                graphics.drawString("Volume Down - y", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
-                graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
-                graphics.drawString("Quitgame - q", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
-                graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
             case INGAMESCREEN:
+                switch (inGameState){
+                    case DEFAULT:
+                        break;
+                    case WAITINGFORNEXTLEVEL:
+                        font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.1));
+                        graphics.setColor(Color.WHITE);
+                        graphics.setFont(font);
+                        graphics.drawString(String.valueOf((int)levelCooldown),getWidth() / 2, getHeight() / 2);
+                        break;
+                    case PAUSESCREEN:
+                        graphics.setColor(new Color(0, 0, 0, 128));
+                        graphics.fillRect(0, 0, getWidth(), getHeight());
+                        graphics.setColor(Color.WHITE);
+                        font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
+                        graphics.setFont(font);
+                        graphics.drawString("Paused", getWidth() / 2 - (int) (this.getWidth() * 0.052), getHeight() / 2 - (int) (this.getWidth() * 0.05));
+                        font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.022));
+                        graphics.setFont(font);
+                        graphics.drawString("Hotkeys:", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1));
+                        font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.022));
+                        graphics.setFont(font);
+                        int i = 1;
+                        graphics.drawString("Turn off/on music - m", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                        graphics.drawString("Volume Up - x", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                        graphics.drawString("Volume Down - y", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                        graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                        graphics.drawString("Quitgame - q", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                        graphics.drawString("Resume - p", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
+                        break;
+                }
                 graphics.setColor(Color.red);
                 //draw ammo count
                 font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.05));
@@ -129,7 +148,7 @@ public class DrawingWindow extends JPanel {
                 graphics.drawString("pressing a key im go to f@cking murder you :)", getWidth() / 2 - (int) (this.getWidth() * 0.3), getHeight() / 2 - (int) (this.getHeight() * 0.05 - this.getHeight() * 0.05));
                 font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.022));
                 graphics.setFont(font);
-                i = 1;
+                int i = 1;
                 graphics.drawString("Movement - a,w,s,d", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
                 graphics.drawString("Rotate camera - j,i,k,l", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
                 graphics.drawString("Shoot - u", (int) (getWidth() * 0.05), (int) (getHeight() * 0.1 + i++ * this.getWidth() * 0.03));
@@ -445,8 +464,8 @@ public class DrawingWindow extends JPanel {
         graphics.setColor(Color.white);
         graphics.setFont(new Font("Arial", Font.PLAIN, 50));
         graphics.drawString("Level: " + level, this.getWidth() - 280, this.getHeight() - 150);
-
-        //graphics.drawString(playerPos.x + ", " + playerPos.y + ", " + playerPos.z, this.getWidth()/2 - 100, this.getHeight() - 50);
+        graphics.setFont(new Font("Arial", Font.PLAIN, (int) (getWidth() * 0.02)));
+        graphics.drawString("Enemies left: " + currentEnemyCount, this.getWidth() - 280, this.getHeight() - 150 + (int) (this.getHeight() * 0.05));
     }
 
     public void  drawTriangleCustomArena(Triangle triangle){
