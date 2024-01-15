@@ -144,8 +144,8 @@ public class DrawingWindow extends JPanel {
                 graphics.setColor(Color.WHITE);
                 font = new Font("Arial", Font.BOLD, (int) (this.getWidth() * 0.03));
                 graphics.setFont(font);
-                //graphics.drawString("If you skip this amazing startscreen by", getWidth() / 2 - (int) (this.getWidth() * 0.24), getHeight() / 2 - (int) (this.getHeight() * 0.05));
-                //graphics.drawString("pressing a key im go to f@cking murder you :)", getWidth() / 2 - (int) (this.getWidth() * 0.3), getHeight() / 2 - (int) (this.getHeight() * 0.05 - this.getHeight() * 0.05));
+                graphics.drawString("If you skip this amazing startscreen by", getWidth() / 2 - (int) (this.getWidth() * 0.24), getHeight() / 2 + (int) (this.getHeight() * 015));
+                graphics.drawString("pressing a key im go to f@cking murder you :)", getWidth() / 2 - (int) (this.getWidth() * 0.3), getHeight() / 2  + (int) (this.getHeight() * 0.15 - this.getHeight() * 0.05));
                 graphics.drawString("Alien Arena Shootout", getWidth() / 2 - (int) (this.getWidth() * 0.24), getHeight() / 2 - (int) (this.getHeight() * 0.05));
                 graphics.drawString("pres any key to start the game", getWidth() / 2 - (int) (this.getWidth() * 0.3), getHeight() / 2 - (int) (this.getHeight() * 0.05 - this.getHeight() * 0.05));
                 font = new Font("Arial", Font.PLAIN, (int) (this.getWidth() * 0.022));
