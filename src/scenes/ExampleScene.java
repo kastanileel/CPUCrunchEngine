@@ -437,7 +437,7 @@ public class ExampleScene extends Scene {
             manager.createEntity(GameComponents.GAMELOGIC);
 
           /*id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.PLAYERMOVEMENT
-                    | GameComponents.PHYSICSBODY | GameComponents.RENDER | GameComponents.COLLIDER);
+                    | GameComponents.PHYSICSBODY | GameComponents.RENDER |q GameComponents.COLLIDER);
             if (id > -1){
                 manager.transform[id].pos = new Vector3(0.0f, 0.0f, 0.0f);
                 manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
