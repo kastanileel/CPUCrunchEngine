@@ -32,7 +32,6 @@ public class Quaternion {
     }
 
     // Helper function to rotate a vector by a quaternion
-    // Helper function to rotate a vector by a quaternion
     public static Vector3 rotateByQuaternion(Vector3 v, Quaternion q) {
         Quaternion qv = new Quaternion(0, v.x, v.y, v.z);
         Quaternion qConjugate = getConjugate(q);

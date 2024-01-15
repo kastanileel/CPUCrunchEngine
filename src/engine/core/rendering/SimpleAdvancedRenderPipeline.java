@@ -90,8 +90,6 @@ public class SimpleAdvancedRenderPipeline {
         plane_n = RenderMaths.normalizeVector(plane_n);
 
         // Return signed shortest distance from point to plane, plane normal must be normalised
-
-
         // Create two temporary storage arrays to classify points either side of plane
         // If distance sign is positive, point lies on "inside" of plane
         Vector3[] inside_points = new Vector3[3];

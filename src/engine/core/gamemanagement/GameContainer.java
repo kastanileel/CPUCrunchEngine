@@ -175,12 +175,9 @@ public class GameContainer {
                 hotkeyMenuSystem.update(manager, deltaTime);
                 startSceneSystem.update(manager, deltaTime);
 
-                //MMouseListener.getInstance().update(deltaTime);
                 manager.clearDestroyedEntities();
 
             }
-
-            //System.out.println(System.nanoTime()/1000000 - lastTime);
     }
 
     public static void main(String[] args) throws Exception {

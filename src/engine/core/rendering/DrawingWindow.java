@@ -324,14 +324,11 @@ public class DrawingWindow extends JPanel {
 
                 g2d.fillRect(x - xInkrement, y - yInkrement, xInkrement, yInkrement);
             }
-            // g2d.fillRect(lastX, lastY, xInkrement , yInkrement );
         }
-        //g2d.fillRect(lastX, lastY, xInkrement , yInkrement );
 
 
         int thickness = (int) (accuracy / 10.0f);
-        //  if(distance < 10)
-        // drawTriangleOutline(triangle,new Color(255, 0, 0, 255), 1);
+
     }
 
     public void drawTriangleImprovedOutline(Triangle triangle, Triangle textureTriangle, BufferedImage texture) {
@@ -359,14 +356,11 @@ public class DrawingWindow extends JPanel {
         int maxY = (int) Math.ceil(Math.max(triangle.vertices[0].y, Math.max(triangle.vertices[1].y, triangle.vertices[2].y)));
 
         // divide bounding box width and height / 100 and round up
-        // accuracy += (int) Math.ceil(Math.max(maxX - minX, maxY - minY) / 100.0f);
 
 
         int xInkrement = Math.max(1, (maxX - minX) / accuracy) + 1;
         int yInkrement = Math.max(1, (maxY - minY) / accuracy) + 1;
 
-
-        //drawTriangle(triangle, new Color(102, 84, 61, 255));
 
         int lastY = 0;
         int lastX = 0;
@@ -396,13 +390,10 @@ public class DrawingWindow extends JPanel {
 
                 g2d.fillRect(x - xInkrement, y - yInkrement, xInkrement, yInkrement);
             }
-            // g2d.fillRect(lastX, lastY, xInkrement , yInkrement );
         }
-        //g2d.fillRect(lastX, lastY, xInkrement , yInkrement );
 
 
         int thickness = (int) (accuracy / 30.0f);
-        //  if(distance < 10)
         drawTriangleOutline(triangle, new Color(255, 0, 0, 255), thickness);
     }
 
@@ -519,9 +510,6 @@ public class DrawingWindow extends JPanel {
                 colorFade = true;
             }
         }
-
-
-
         return color;
     }
 }
