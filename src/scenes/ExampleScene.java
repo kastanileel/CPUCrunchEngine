@@ -427,7 +427,7 @@ public class ExampleScene extends Scene {
                 manager.rendering[id].modelRotation = new Vector3(0.0f, 3.0f, 0.0f);
 
                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
-                manager.collider[id].colliderSize = new Vector3(0.5f, 1.0f, 1.0f);
+                manager.collider[id].colliderSize = new Vector3(1.0f, 1.0f, 1.0f);
                 manager.collider[id].center = manager.transform[id].pos;
                 manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.PLAYER;
 

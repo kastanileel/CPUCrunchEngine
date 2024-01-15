@@ -1525,7 +1525,7 @@ public class GameSystems {
                     manager.bullet[bulletId].damage = damage;
                     manager.collider[bulletId].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                     manager.collider[bulletId].center = manager.transform[bulletId].pos;
-                    manager.collider[bulletId].colliderSize = new Vector3(0.2f, 0.2f, 0.2f);
+                    manager.collider[bulletId].colliderSize = new Vector3(0.4f, 0.2f, 0.2f);
                     manager.collider[bulletId].colliderTag = GameComponents.Collider.ColliderTag.BULLET;
 
                     MusicPlayer.getInstance().playSound(soundEffect);
