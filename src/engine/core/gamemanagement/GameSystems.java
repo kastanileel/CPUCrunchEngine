@@ -2142,7 +2142,8 @@ public class GameSystems {
 
             Vector3 direction = nextPoint.subtract(currentPos);
             direction = RenderMaths.multiplyVector(RenderMaths.normalizeVector(direction), deltaTime);
-            manager.transform[i].pos = RenderMaths.addVectors(direction, manager.transform[i].pos);
+            Vector3 newDirection = RenderMaths.multiplyVector(direction, manager.physicsBody[i].speed);
+            manager.transform[i].pos = RenderMaths.addVectors(newDirection, manager.transform[i].pos);
         }
 
         public void calculateRotation(Vector3 focusPosition) {
@@ -2318,7 +2319,7 @@ public class GameSystems {
                     manager.transform[id].pos = new Vector3(5f, 0.5f, 5.0f);
                     manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                     manager.transform[id].scale = new Vector3(0.0f, 0.0f, 0.0f);
-                    manager.physicsBody[id].speed = 2f;
+                    manager.physicsBody[id].speed = 0.5f;
 
                 }
 
@@ -2335,6 +2336,7 @@ public class GameSystems {
                     manager.transform[id].pos = new Vector3(-2.5f, 0.5f, 6.5f);
                     manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                     manager.transform[id].scale = new Vector3(0.0f, 0.0f, 0.0f);
+                    manager.physicsBody[id].speed = 0.5f;
 
                 }
             } catch (Exception e) {
