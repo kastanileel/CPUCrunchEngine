@@ -1916,6 +1916,7 @@ public class GameSystems {
                                 manager.collider[id].colliderSize = new Vector3(2.0f, 1.0f, 1.0f);
                                 manager.collider[id].center = manager.transform[id].pos;
                                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
 
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MALTESEEKER_SPAWN_AND_ATTACK);
 
