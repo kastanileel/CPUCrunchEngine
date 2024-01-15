@@ -43,25 +43,6 @@ public class MMouseListener extends MouseAdapter {
 
     }
 
-    /*public void attachToFrame(Frame frame) {
-        this.frame = frame;
-        frame.addMouseListener(this);
-        frame.addMouseMotionListener(this);
-        frame.addMouseWheelListener(this);
-
-        hideCursor();
-
-//mouseX = frame.getX() + width/2;
-        //mouseY = frame.getY() + height/2;
-       // lastMouseX = mouseX;
-       // lastMouseY = mouseY;
-
-        mouseX = width;
-        mouseY = height;
-        lastMouseX = 0;
-        lastMouseY = 0;
-    }*/
-
     public void attachToFrame(Frame frame) {
         this.frame = frame;
         frame.addMouseListener(this);

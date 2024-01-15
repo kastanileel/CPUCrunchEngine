@@ -9,7 +9,5 @@ public interface GameEventListener {
 
     void onFinishLevel(int level);
     void onPlayerDeath();
-    //implement game over
-
     void onKillEnemy(EntityManager manager, GameComponents.EnemyType enemyType) throws IOException;
 }

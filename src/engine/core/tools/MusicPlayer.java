@@ -11,8 +11,6 @@ public class MusicPlayer {
 
     // enum for sound effects
     public enum SoundEffect {
-        //Shoot("src/sound/shoot.wav"),
-        //BIG_SHOOT("src/sound/destroy.wav"),
         //Pistol SFX
         MORE_BULLETS("src/sound/guns/moreBullets.wav"),
         BIGGER_GUN("src/sound/guns/biggerWeapons.wav"),
@@ -37,17 +35,15 @@ public class MusicPlayer {
 
         //Round over SFX
         LEVEL_FINISHED("src/sound/misc/newRound.wav"),
+
         //player Death SFX
         GAME_OVER("src/sound/misc/gameOver.wav"),
 
         //Enemy SFX
         GE_DEATH("src/sound/enemies/groundEnemy/groundEnemy_death.wav"),
-        //add attack
 
         GUNNER_DEATH("src/sound/enemies/gunTurret/gunTurret_death.wav"),
-        //add attack
 
-        //SIGHSEEKER_ATTACK("src/sound/enemies/sightSeeker/laserShot.wav"),
         SIGHSEEKER_ATTACK("src/sound/misc/shoot.wav"),
         SIGHTSEEKER_DEATH("src/sound/enemies/sightSeeker/sightSeeker_death.wav"),
 
@@ -193,6 +189,4 @@ public class MusicPlayer {
         }
         soundClips.clear();
     }
-
-    // Additional methods to stop sounds, manage resources, etc.
 }
