@@ -42,7 +42,8 @@ public class ExampleScene extends Scene {
 
             int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.COLLIDER);
             if (id > -1) {
-                manager.rendering[id].mesh = new Mesh("./src/objects/GameRoom.obj", Color.blue);
+                //manager.rendering[id].mesh = new Mesh("./src/objects/GameRoom.obj", Color.blue);
+                manager.rendering[id].mesh = new Mesh("./src/objects/gameRoomFixed.obj", Color.blue);
                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.CustomArena;
                 manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.CustomArena);
                 manager.transform[id].pos = new Vector3(0, -1.0f, 0);

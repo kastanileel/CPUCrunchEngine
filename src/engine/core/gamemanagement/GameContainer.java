@@ -175,7 +175,7 @@ public class GameContainer {
                 hotkeyMenuSystem.update(manager, deltaTime);
                 startSceneSystem.update(manager, deltaTime);
 
-                MMouseListener.getInstance().update(deltaTime);
+                //MMouseListener.getInstance().update(deltaTime);
                 manager.clearDestroyedEntities();
 
             }

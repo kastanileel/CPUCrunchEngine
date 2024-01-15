@@ -371,7 +371,11 @@ public class GameSystems {
                         } else if (magazinePistol == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Pistol!");
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
+                            int randomInt = randomS.nextInt(16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_PISTOL);
                             magazinePistol = 10;
                         }
@@ -392,7 +396,11 @@ public class GameSystems {
                         } else if (magazineMachineGun == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Machine Gun!");
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
+                            int randomInt = randomS.nextInt( 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_AK);
                             magazineMachineGun = 30;
                         }
@@ -414,7 +422,11 @@ public class GameSystems {
                         } else if (magazineShotgun == 0) {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
+                            int randomInt = randomS.nextInt( 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
                         }
@@ -430,7 +442,11 @@ public class GameSystems {
                         } else if (magazineShotgun == 0) {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
+                            int randomInt = randomS.nextInt( 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
                         }
@@ -447,7 +463,10 @@ public class GameSystems {
                         } else if (magazineSniper == 0) {
                             shootingCooldown = 6.0f;
                             System.out.println("Reloading Sniper!");
-                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
+
+                            int randomInt = randomS.nextInt( 16);
+                            if(randomInt == 5)
+                                MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
                             magazineSniper = 5;
                         }
@@ -727,6 +746,12 @@ public class GameSystems {
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
 
                         entityManager.destroyEntity(otherId);
+
+
+                        int randomInt = randomS.nextInt(8);
+                        if (randomInt == 5)
+                            MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
+
                     }
                 }
             } catch (Exception e) {
@@ -1816,7 +1841,8 @@ public class GameSystems {
         private void loadNextLevel(EntityManager manager) throws IOException {
             int maxMalteSeeker = 1;
 
-            startIndex = randomS.nextInt(0, spawnPositionsTurret.length);
+            startIndex = randomS.nextInt(spawnPositionsTurret.length );
+
             spawnedTurrets = 0;
 
             DrawingWindow.level = level;
@@ -1885,6 +1911,7 @@ public class GameSystems {
                             // Set up the transformation component
                             if (randomS.nextInt(0, 7) == 1 && maxMalteSeeker > 0) {
                                 maxMalteSeeker--;
+
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
                                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
                                 manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
@@ -1953,8 +1980,10 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             Color color = Color.yellow;
-                            switch (randomS.nextInt(0, 4)) {
-                                case 0 -> {
+
+                            switch (randomS.nextInt(4)){
+                                case 0 ->{
+
                                     color = Color.RED;
                                 }
                                 case 1 -> {
@@ -1969,7 +1998,9 @@ public class GameSystems {
                             }
                             int index = startIndex;
 
-                            float yS = randomS.nextFloat(1.0f, 3.2f);
+                            //float yS = randomS.nextFloat(1.0f, 3.2f);
+                            float yS = ((float)randomS.nextInt(220))/ 100.0f + 1.0f;
+
 
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", color);
                             manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
