@@ -1833,7 +1833,8 @@ public class GameSystems {
         private void loadNextLevel(EntityManager manager) throws IOException {
             int maxMalteSeeker = 1;
 
-            startIndex = randomS.nextInt(0, spawnPositionsTurret.length);
+            startIndex = randomS.nextInt(spawnPositionsTurret.length );
+
             spawnedTurrets = 0;
 
             DrawingWindow.level = level;
@@ -1986,7 +1987,9 @@ public class GameSystems {
                             }
                             int index = startIndex;
 
-                            float yS = randomS.nextFloat(1.0f, 3.2f);
+                            //float yS = randomS.nextFloat(1.0f, 3.2f);
+                            float yS = ((float)randomS.nextInt(220))/ 100.0f + 1.0f;
+
 
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", color);
                             manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);
