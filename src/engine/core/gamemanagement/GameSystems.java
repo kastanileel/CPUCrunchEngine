@@ -372,7 +372,7 @@ public class GameSystems {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Pistol!");
                             int randomInt = randomS.nextInt(5);
-                            if(randomInt == 0)
+                            if (randomInt == 0)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_PISTOL);
                             magazinePistol = 10;
@@ -395,7 +395,7 @@ public class GameSystems {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Machine Gun!");
                             int randomInt = randomS.nextInt(5);
-                            if(randomInt == 0)
+                            if (randomInt == 0)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_AK);
                             magazineMachineGun = 30;
@@ -419,7 +419,7 @@ public class GameSystems {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
                             int randomInt = randomS.nextInt(5);
-                            if(randomInt == 0)
+                            if (randomInt == 0)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
@@ -437,7 +437,7 @@ public class GameSystems {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
                             int randomInt = randomS.nextInt(5);
-                            if(randomInt == 0)
+                            if (randomInt == 0)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
                             magazineShotgun = 2;
@@ -456,7 +456,7 @@ public class GameSystems {
                             shootingCooldown = 6.0f;
                             System.out.println("Reloading Sniper!");
                             int randomInt = randomS.nextInt(5);
-                            if(randomInt == 0)
+                            if (randomInt == 0)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
                             magazineSniper = 5;
@@ -649,7 +649,7 @@ public class GameSystems {
                 case ENEMY -> {
                     manager.damageable[otherId].health -= 50;
                     System.out.println("Enemy health: " + manager.damageable[otherId].health);
-                    if(!DamageSystem.damagedEntities.contains(otherId))
+                    if (!DamageSystem.damagedEntities.contains(otherId))
                         DamageSystem.damagedEntities.add(otherId);
                 }
             }
@@ -1833,7 +1833,7 @@ public class GameSystems {
         private void loadNextLevel(EntityManager manager) throws IOException {
             int maxMalteSeeker = 1;
 
-            startIndex = randomS.nextInt(spawnPositionsTurret.length );
+            startIndex = randomS.nextInt(spawnPositionsTurret.length);
 
             spawnedTurrets = 0;
 
@@ -1924,7 +1924,6 @@ public class GameSystems {
                                 manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 1f, 1f);
                                 manager.collider[id].colliderSize = new Vector3(2.0f, 1.0f, 1.0f);
                                 manager.collider[id].center = manager.transform[id].pos;
-                                manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
                                 manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
 
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MALTESEEKER_SPAWN_AND_ATTACK);
@@ -1932,7 +1931,6 @@ public class GameSystems {
 
                             } else {
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/sightseeker128.png");
-
                                 manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
                                 manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
 
@@ -1988,7 +1986,7 @@ public class GameSystems {
                             int index = startIndex;
 
                             //float yS = randomS.nextFloat(1.0f, 3.2f);
-                            float yS = ((float)randomS.nextInt(220))/ 100.0f + 1.0f;
+                            float yS = ((float) randomS.nextInt(220)) / 100.0f + 1.0f;
 
 
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", color);
@@ -2219,7 +2217,7 @@ public class GameSystems {
                     manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", Color.GREEN);
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.OneColor; // Or other render types
 
-                    manager.transform[id].pos = new Vector3(-2.5f, 0.5f, 12.0f);
+                    manager.transform[id].pos = new Vector3(-1f, 0.5f, 13.0f);
                     manager.transform[id].rot = new Vector3(0.0f, 0.0f, 3.1415f);
                     manager.transform[id].scale = new Vector3(.2f, .2f, .2f);
 
@@ -2247,7 +2245,7 @@ public class GameSystems {
                 id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                 if (id > -1) {
                     // Set up the transformation component
-                    manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/sightseeker/texture.png");
+                    manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/sightseeker128.png");
                     manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
                     manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
 
@@ -2273,6 +2271,37 @@ public class GameSystems {
                     manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
                 }
                 visitIdList.add(id);
+
+                id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
+                if (id > -1) {
+                    // Set up the transformation component
+                    manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
+                    manager.rendering[id].renderType = GameComponents.Rendering.RenderType.Textured; // Or other render types
+                    manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.Textured);
+
+                    manager.transform[id].pos = new Vector3(-4f, 0.2f, 13.0f);
+                    manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
+                    manager.transform[id].scale = new Vector3(1f, 1f, 1f);
+
+                    manager.aiBehavior[id].spawnPoint = manager.transform[id].pos.clone();
+
+                    manager.aiBehavior[id].enemyType = GameComponents.EnemyType.MALTESEEKER;
+
+                    manager.aiBehavior[id].shootingCooldown = 0.8f;
+                    manager.aiBehavior[id].currentState = GameComponents.State.DEACTIVATED;
+                    manager.physicsBody[id].speed = 4f;
+                    manager.damageable[id].health = 100;
+                    manager.aiBehavior[id].chasingDistance = 50;
+                    manager.aiBehavior[id].attackingDistance = 10;
+                    manager.aiBehavior[id].damage = 1;
+                    manager.aiBehavior[id].wanderingDirection = new Vector3(1f, 1f, 1f);
+                    manager.collider[id].colliderSize = new Vector3(2.0f, 1.0f, 1.0f);
+                    manager.collider[id].center = manager.transform[id].pos;
+                    manager.collider[id].colliderTag = GameComponents.Collider.ColliderTag.ENEMY;
+                    manager.collider[id].colliderType = GameComponents.Collider.ColliderType.SPHERE;
+                }
+                visitIdList.add(id);
+
 
                 id = manager.createEntity(GameComponents.CAMERAELEMENT | GameComponents.PHYSICSBODY | GameComponents.TRANSFORM);
                 if (id > -1) {
@@ -2300,14 +2329,13 @@ public class GameSystems {
                     vector3ForRoute.add(manager.transform[visitIdList.get(2)].pos);
                     vector3ForRoute.add(manager.transform[visitIdList.get(0)].pos);
                     vector3ForRoute.add(manager.transform[visitIdList.get(3)].pos);
+                    vector3ForRoute.add(manager.transform[visitIdList.get(4)].pos);
                     manager.cameraElement[id].checkpointList = vector3ForRoute;
                     manager.transform[id].pos = new Vector3(-2.5f, 0.5f, 6.5f);
                     manager.transform[id].rot = new Vector3(0.0f, 0.0f, 0.0f);
                     manager.transform[id].scale = new Vector3(0.0f, 0.0f, 0.0f);
 
                 }
-
-
             } catch (Exception e) {
                 System.out.println(e);
             }
