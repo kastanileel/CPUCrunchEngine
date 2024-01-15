@@ -373,7 +373,7 @@ public class GameSystems {
                         } else if (magazinePistol == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Pistol!");
-                            int randomInt = randomS.nextInt(0, 16);
+                            int randomInt = randomS.nextInt(16);
                             if(randomInt == 5)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_PISTOL);
@@ -396,7 +396,7 @@ public class GameSystems {
                         } else if (magazineMachineGun == 0) {
                             shootingCooldown = 5.0f;
                             System.out.println("Reloading Machine Gun!");
-                            int randomInt = randomS.nextInt(0, 16);
+                            int randomInt = randomS.nextInt( 16);
                             if(randomInt == 5)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_AK);
@@ -420,7 +420,7 @@ public class GameSystems {
                         } else if (magazineShotgun == 0) {
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
-                            int randomInt = randomS.nextInt(0, 16);
+                            int randomInt = randomS.nextInt( 16);
                             if(randomInt == 5)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
@@ -439,7 +439,7 @@ public class GameSystems {
                         else if (magazineShotgun == 0){
                             shootingCooldown = 4.0f;
                             System.out.println("Reloading Shotgun!");
-                            int randomInt = randomS.nextInt(0, 16);
+                            int randomInt = randomS.nextInt( 16);
                             if(randomInt == 5)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SHOTGUN);
@@ -459,7 +459,7 @@ public class GameSystems {
                         else if (magazineSniper == 0){
                             shootingCooldown = 6.0f;
                             System.out.println("Reloading Sniper!");
-                            int randomInt = randomS.nextInt(0, 16);
+                            int randomInt = randomS.nextInt( 16);
                             if(randomInt == 5)
                                 MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.MORE_BULLETS);
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.RELOAD_SNIPER);
@@ -740,7 +740,7 @@ public class GameSystems {
 
                         entityManager.destroyEntity(otherId);
 
-                        int randomInt = randomS.nextInt(0, 8);
+                        int randomInt = randomS.nextInt(8);
                         if (randomInt == 5)
                             MusicPlayer.getInstance().playSound(MusicPlayer.SoundEffect.BIGGER_GUN);
                     }
@@ -1715,7 +1715,7 @@ public class GameSystems {
 
         private void loadNextLevel(EntityManager manager) throws IOException {
 
-            startIndex = randomS.nextInt(0, spawnPositionsTurret.length );
+            startIndex = randomS.nextInt(spawnPositionsTurret.length );
             spawnedTurrets = 0;
 
             DrawingWindow.level = level;
@@ -1786,7 +1786,7 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             // Set up the transformation component
-                            if(randomS.nextInt(0,10) == 5)
+                            if(randomS.nextInt(10) == 5)
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/textureMalte.png");
                             else
                                 manager.rendering[id].mesh = new Mesh("./src/objects/sightseeker/sightseeker.obj", "./src/objects/enemies/sightseeker/sightseeker128.png");
@@ -1829,7 +1829,7 @@ public class GameSystems {
                         int id = manager.createEntity(GameComponents.TRANSFORM | GameComponents.RENDER | GameComponents.PHYSICSBODY | GameComponents.COLLIDER | GameComponents.DAMAGEABLE | GameComponents.AIBEHAVIOR);
                         if (id > -1) {
                             Color color = Color.yellow;
-                            switch (randomS.nextInt(0,4)){
+                            switch (randomS.nextInt(4)){
                                 case 0 ->{
                                     color = Color.RED;
                                 }
@@ -1845,7 +1845,9 @@ public class GameSystems {
                             }
                             int index = startIndex;
 
-                            float yS = randomS.nextFloat(1.0f, 3.2f);
+                            //float yS = randomS.nextFloat(1.0f, 3.2f);
+                            float yS = ((float)randomS.nextInt(220))/ 100.0f + 1.0f;
+
 
                             manager.rendering[id].mesh = new Mesh("./src/objects/enemies/gunTurret/gunnerTurret.obj", color );
                             manager.rendering[id].mesh.updateRenderType(GameComponents.Rendering.RenderType.OneColor);

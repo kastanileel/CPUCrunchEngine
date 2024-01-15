@@ -2,6 +2,7 @@ package src.engine.core.tools;
 
 import src.engine.configuration.Configurator;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -26,6 +27,8 @@ public class MMouseListener extends MouseAdapter {
 
     float lastTimeMouseMoved = 0.0f;
 
+    private MMouseListenerWorker mouseListenerWorker;
+
     public static MMouseListener getInstance( ) {
         if (instance == null) instance = new MMouseListener();
         return instance;
@@ -40,7 +43,7 @@ public class MMouseListener extends MouseAdapter {
 
     }
 
-    public void attachToFrame(Frame frame) {
+    /*public void attachToFrame(Frame frame) {
         this.frame = frame;
         frame.addMouseListener(this);
         frame.addMouseMotionListener(this);
@@ -57,6 +60,24 @@ public class MMouseListener extends MouseAdapter {
         mouseY = height;
         lastMouseX = 0;
         lastMouseY = 0;
+    }*/
+
+    public void attachToFrame(Frame frame) {
+        this.frame = frame;
+        frame.addMouseListener(this);
+        frame.addMouseMotionListener(this);
+        frame.addMouseWheelListener(this);
+        hideCursor();
+        mouseX = width;
+        mouseY = height;
+        lastMouseX = 0;
+        lastMouseY = 0;
+        mouseListenerWorker = new MMouseListenerWorker(this);
+        mouseListenerWorker.execute();
+    }
+
+    public void stopMouseListenerWorker() {
+        mouseListenerWorker.cancel(true);
     }
 
     @Override
@@ -118,7 +139,7 @@ public class MMouseListener extends MouseAdapter {
 
         lastTimeMouseMoved += deltaTime;
 
-        if(lastTimeMouseMoved > 0.3f){
+        if(lastTimeMouseMoved > 0.2f){
 
             mouseX = x + width/2;
             mouseY = y + height/2;
@@ -183,13 +204,32 @@ public class MMouseListener extends MouseAdapter {
 
     public int getMouseDeltaX() {
         if (cooldown <= 0)
-            return mouseX - lastMouseX;
+            return (mouseX - lastMouseX) *2;
         return 0;
     }
 
     public int getMouseDeltaY() {
         if (cooldown <= 0)
-            return mouseY - lastMouseY;
+            return (mouseY - lastMouseY) *2;
         return 0;
+    }
+
+
+    class MMouseListenerWorker extends SwingWorker<Void, Void> {
+        private MMouseListener mouseListener;
+
+        public MMouseListenerWorker(MMouseListener mouseListener) {
+            this.mouseListener = mouseListener;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            while (!isCancelled()) {
+                // Perform the mouse listener update in the background
+                mouseListener.update(0.010f); // Adjust with your delta time or time step
+                Thread.sleep(10); // Adjust with your desired interval
+            }
+            return null;
+        }
     }
 }
