@@ -1,10 +1,15 @@
-# CPUCrunchEngine
-A java game engine without utilizing the gpu.
-
+# CPUCrunchEngine/ Alien Arena Shootout
+A java game engine without utilizing the gpu. And an arena shooter built with it.
 ***
-# Test Scene:
-![image](https://github.com/kastanileel/CPUCrunchEngine/assets/56845913/aae9ebac-9528-471b-89c4-78afc767a3f4)
 
+# Screenshots from the game
+![montage](https://github.com/kastanileel/CPUCrunchEngine/assets/56845913/c6070d5c-467f-464c-a960-7fd035d67279)
+# Test Scene Engine:
+![image](https://github.com/kastanileel/CPUCrunchEngine/assets/56845913/aae9ebac-9528-471b-89c4-78afc767a3f4)
+***
+# Run the Game
+1. Clone this repository
+2. Run the main method in the file: src/engine/core/gamemanagement/GameContainer.java
 ***
 # Documentation
 ## Getting Started 
